@@ -1,1056 +1,929 @@
 <!DOCTYPE html>
-<!--[if IE 8 ]><html class="no-js oldie ie8" lang="en"> <![endif]-->
-<!--[if IE 9 ]><html class="no-js oldie ie9" lang="en"> <![endif]-->
-<!--[if (gte IE 9)|!(IE)]><!--><html class="no-js" lang="en"> <!--<![endif]-->
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elyas Moshirpanahi | Senior Generative AI Engineer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;800&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- RESET & BASE --- */
+        :root {
+            --bg-dark: #050508;
+            --bg-panel: rgba(10, 10, 20, 0.7);
+            --neon-pink: #ff00ff;
+            --neon-cyan: #00ffff;
+            --neon-purple: #bc13fe;
+            --neon-blue: #0055ff;
+            --neon-green: #0aff0a;
+            --sun-gradient: linear-gradient(to bottom, #ffbd00, #ff5500, #ff00ff, #bc13fe);
+            --font-main: 'Inter', sans-serif;
+            --font-display: 'Orbitron', sans-serif;
+            --font-tech: 'Rajdhani', sans-serif;
+            --font-mono: 'Fira Code', monospace;
+        }
 
-   <!--- basic page needs
-   ================================================== -->
-   <meta charset="utf-8">
-	<title>Elyas Moshirpanahi</title>
-	<meta name="description" content="">  
-	<meta name="author" content="">
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
 
-   <!-- mobile specific metas
-   ================================================== -->
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
 
- 	<!-- CSS
-   ================================================== -->
-   <link rel="stylesheet" href="css/base.css">  
-   <link rel="stylesheet" href="css/main.css">
-   <link rel="stylesheet" href="css/vendor.css">     
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        /* --- SCROLLBAR --- */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: var(--neon-purple); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--neon-pink); }
 
+        /* --- UTILITIES --- */
+        .neon-text-pink { text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink); color: #fff; }
+        .neon-text-cyan { text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan); color: #fff; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 10; }
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            display: inline-block;
+        }
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 4px;
+            background: var(--neon-cyan);
+            box-shadow: 0 0 10px var(--neon-cyan);
+            margin-top: 5px;
+            transform: skewX(-20deg);
+        }
 
-   <!-- script
-   ================================================== -->   
-	<script src="js/modernizr.js"></script>
-	<script src="js/pace.min.js"></script>
-	<script src="https://unpkg.com/typed.js@2.0.132/dist/typed.umd.js"></script>
-   <!-- favicons
-	================================================== -->
-	<link rel="icon" type="image/png" href="https://jesse-zhou.com/assets/images/0adf2932e78e7213.png">
+        /* --- OPENING BLADES ANIMATION --- */
+        .blade-cover {
+            position: fixed;
+            top: 0;
+            width: 51vw;
+            height: 100vh;
+            background: #000;
+            z-index: 9999;
+            transition: transform 1.2s cubic-bezier(0.7, 0, 0.3, 1);
+            border-right: 2px solid var(--neon-cyan);
+            box-shadow: 0 0 20px var(--neon-cyan);
+        }
+        .blade-left { left: 0; }
+        .blade-right { right: 0; border-right: none; border-left: 2px solid var(--neon-pink); box-shadow: 0 0 20px var(--neon-pink); }
+        
+        body.loaded .blade-left { transform: translateX(-100%); }
+        body.loaded .blade-right { transform: translateX(100%); }
 
+        /* --- HERO SECTION --- */
+        #hero {
+            height: 100vh;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at center top, #1a0b2e 0%, #000000 70%);
+        }
+
+        /* RETRO SUN */
+        .retro-sun {
+            position: absolute;
+            top: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: var(--sun-gradient);
+            box-shadow: 0 0 60px rgba(255, 0, 255, 0.4);
+            z-index: 1;
+            /* The stripes mask */
+            -webkit-mask-image: linear-gradient(to bottom, black 0%, black 30%, transparent 30%, transparent 35%, black 35%, black 45%, transparent 45%, transparent 52%, black 52%, black 60%, transparent 60%, transparent 68%, black 68%, black 75%, transparent 75%, transparent 84%, black 84%, black 100%);
+            mask-image: linear-gradient(to bottom, black 50%, transparent 50%); 
+            mask-size: 100% 20px; 
+            /* Re-doing mask for animation compatibility */
+            -webkit-mask: repeating-linear-gradient(to bottom, #000 0%, #000 5%, transparent 5%, transparent 10%);
+            mask: repeating-linear-gradient(to bottom, #000 0%, #000 5%, transparent 5%, transparent 10%);
+            -webkit-mask-size: 100% 100%;
+            mask-size: 100% 100%;
+            animation: sunStripes 8s linear infinite;
+        }
+        
+        /* Better stripe animation using mask position is tricky cross-browser without SVG. 
+           Using a pseudo-element shutter approach for robust animation. */
+        .retro-sun {
+            -webkit-mask: none; mask: none; /* Reset */
+            overflow: hidden;
+        }
+        .retro-sun::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: transparent;
+            border-radius: 50%;
+            /* The horizontal bars that cut through the sun */
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent 0%,
+                transparent 60%,
+                #050508 60%,
+                #050508 100%
+            );
+            background-size: 100% 40px; /* Adjust for stripe density */
+            animation: sunScroll 4s linear infinite;
+        }
+
+        @keyframes sunScroll {
+            from { background-position: 0 0; }
+            to { background-position: 0 40px; }
+        }
+
+        /* CITYSCAPE */
+        .cityscape {
+            position: absolute;
+            bottom: 30%; /* Horizon line */
+            left: 0;
+            width: 100%;
+            height: 300px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" preserveAspectRatio="none"><path fill="%23020205" d="M0,300 L0,150 L50,150 L50,100 L100,100 L100,200 L150,200 L150,50 L200,50 L200,250 L250,250 L250,120 L300,120 L300,220 L350,220 L350,80 L450,80 L450,180 L500,180 L500,40 L600,40 L600,200 L650,200 L650,100 L750,100 L750,220 L800,220 L800,150 L850,150 L850,250 L900,250 L900,50 L950,50 L950,300 Z"/></svg>');
+            background-repeat: repeat-x;
+            background-size: 1000px 100%;
+            z-index: 2;
+            opacity: 0.9;
+        }
+        /* Add some neon windows */
+        .cityscape::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                radial-gradient(1px 1px at 10% 30%, rgba(0,255,255,0.8) 50%, transparent 51%),
+                radial-gradient(1px 1px at 25% 60%, rgba(255,0,255,0.8) 50%, transparent 51%),
+                radial-gradient(1px 1px at 45% 40%, rgba(0,255,255,0.8) 50%, transparent 51%),
+                radial-gradient(1px 1px at 60% 20%, rgba(255,0,255,0.8) 50%, transparent 51%),
+                radial-gradient(1px 1px at 85% 50%, rgba(0,255,255,0.8) 50%, transparent 51%);
+            background-size: 500px 300px;
+            z-index: 3;
+        }
+
+        /* GRID FLOOR */
+        .grid-floor {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30%; /* Matches horizon */
+            background: 
+                linear-gradient(transparent 0%, var(--neon-purple) 2%, transparent 3%),
+                linear-gradient(90deg, transparent 0%, rgba(188, 19, 254, 0.3) 1%, transparent 2%);
+            background-size: 100% 40px, 100px 100%;
+            transform: perspective(500px) rotateX(60deg) translateY(100px) scale(2);
+            z-index: 2;
+            box-shadow: 0 0 50px rgba(188, 19, 254, 0.2) inset;
+            animation: gridMove 10s linear infinite;
+        }
+        @keyframes gridMove {
+            from { background-position: 0 0; }
+            to { background-position: 0 40px; }
+        }
+        
+        /* RAIN */
+        .rain {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 4;
+            pointer-events: none;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="1" height="10" x="10" y="10" fill="rgba(0,255,255,0.1)"/><rect width="1" height="15" x="50" y="40" fill="rgba(255,0,255,0.1)"/><rect width="1" height="8" x="80" y="70" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: rainFall 1s linear infinite;
+        }
+        @keyframes rainFall {
+            from { background-position: 0 0; }
+            to { background-position: -20px 100px; }
+        }
+
+        /* CONTENT LAYER */
+        .hero-content {
+            position: absolute;
+            top: 15%;
+            width: 100%;
+            text-align: center;
+            z-index: 10;
+            padding: 0 20px;
+        }
+        
+        .kicker {
+            font-family: var(--font-tech);
+            color: var(--neon-cyan);
+            letter-spacing: 4px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 5px var(--neon-cyan);
+            opacity: 0;
+            animation: fadeIn 1s ease 1.5s forwards;
+        }
+
+        .main-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            color: #fff;
+            text-shadow: 4px 4px 0px var(--neon-purple);
+            margin-bottom: 0.5rem;
+            position: relative;
+            display: inline-block;
+            opacity: 0;
+            animation: glitchReveal 0.5s ease 1.8s forwards;
+        }
+        
+        .subtitle {
+            font-family: var(--font-main);
+            font-size: clamp(1rem, 4vw, 1.5rem);
+            color: #ccc;
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+            opacity: 0;
+            animation: slideUp 1s ease 2s forwards;
+        }
+
+        .cta-group {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: slideUp 1s ease 2.2s forwards;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 12px 24px;
+            color: #fff;
+            font-family: var(--font-tech);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            backdrop-filter: blur(5px);
+            position: relative;
+            overflow: hidden;
+        }
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+        .btn:hover::before { left: 100%; }
+        .btn:hover {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 15px var(--neon-cyan);
+            transform: translateY(-2px);
+        }
+        .btn.primary {
+            border-color: var(--neon-pink);
+        }
+        .btn.primary:hover {
+            box-shadow: 0 0 15px var(--neon-pink);
+        }
+
+        /* DELOREAN CAR */
+        .car-container {
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 150px;
+            z-index: 5;
+            opacity: 0;
+            animation: driveIn 2s ease-out 1s forwards;
+        }
+        .car-svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 10px 20px rgba(0, 255, 255, 0.4));
+        }
+        .car-reflection {
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background: radial-gradient(ellipse at center, var(--neon-pink) 0%, transparent 70%);
+            opacity: 0.5;
+            filter: blur(10px);
+            transform: scaleY(0.5);
+        }
+
+        @keyframes driveIn {
+            0% { transform: translateX(-50%) scale(0.8); opacity: 0; filter: blur(5px); }
+            100% { transform: translateX(-50%) scale(1); opacity: 1; filter: blur(0); }
+        }
+
+        /* --- SECTIONS GENERIC --- */
+        section {
+            padding: 80px 0;
+            position: relative;
+            z-index: 10;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        /* --- ABOUT SECTION --- */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+        }
+        @media(min-width: 768px) { .about-grid { grid-template-columns: 2fr 1fr; } }
+
+        .about-text p { margin-bottom: 1.5rem; font-size: 1.1rem; color: #ddd; }
+        .stat-card {
+            background: rgba(255,255,255,0.03);
+            border-left: 3px solid var(--neon-purple);
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: 0.3s;
+        }
+        .stat-card:hover { background: rgba(255,255,255,0.08); transform: translateX(5px); box-shadow: 0 0 15px rgba(188,19,254,0.2); }
+        .stat-num { font-family: var(--font-display); font-size: 2rem; color: var(--neon-pink); }
+        .stat-label { font-family: var(--font-tech); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* --- EXPERIENCE --- */
+        .timeline {
+            border-left: 2px solid rgba(255,255,255,0.1);
+            margin-left: 20px;
+            padding-left: 30px;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 50px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -37px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            background: var(--bg-dark);
+            border: 2px solid var(--neon-cyan);
+            box-shadow: 0 0 10px var(--neon-cyan);
+            border-radius: 50%;
+        }
+        .role { font-family: var(--font-display); font-size: 1.3rem; color: #fff; }
+        .company { font-family: var(--font-tech); color: var(--neon-pink); font-size: 1.1rem; margin-bottom: 10px; display: block; }
+        .date { font-family: var(--font-mono); font-size: 0.8rem; color: #888; margin-bottom: 15px; display: block; }
+        .timeline-item ul { margin-left: 15px; }
+        .timeline-item li { margin-bottom: 5px; color: #ccc; list-style-type: square; }
+
+        /* --- SKILLS --- */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .skill-category {
+            background: rgba(5, 5, 8, 0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .skill-category::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, var(--neon-cyan), transparent);
+        }
+        .skill-title { color: var(--neon-cyan); margin-bottom: 15px; font-family: var(--font-tech); text-transform: uppercase; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+        .tag {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            padding: 5px 10px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid transparent;
+            color: #aaa;
+            transition: 0.3s;
+        }
+        .tag:hover { border-color: var(--neon-pink); color: #fff; box-shadow: 0 0 5px var(--neon-pink); }
+
+        /* --- PROJECTS --- */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .project-card {
+            background: linear-gradient(145deg, rgba(20,20,30,0.9), rgba(10,10,15,0.95));
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 25px;
+            position: relative;
+            transition: 0.3s;
+            overflow: hidden;
+            cursor: pointer;
+            height: 220px; /* collapsed height */
+        }
+        .project-card.expanded {
+            height: auto;
+            border-color: var(--neon-green);
+            box-shadow: 0 0 20px rgba(10,255,10, 0.1);
+        }
+        .project-card:hover { transform: translateY(-5px); border-color: var(--neon-purple); }
+        
+        .p-title { font-family: var(--font-display); color: #fff; font-size: 1.2rem; margin-bottom: 5px; }
+        .p-role { font-family: var(--font-mono); color: var(--neon-pink); font-size: 0.8rem; margin-bottom: 15px; }
+        .p-desc { color: #ccc; font-size: 0.95rem; margin-bottom: 15px; }
+        .p-hidden { display: none; opacity: 0; transition: opacity 0.5s; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; margin-top: 15px; }
+        .project-card.expanded .p-hidden { display: block; opacity: 1; }
+        
+        .expand-hint {
+            position: absolute;
+            bottom: 15px; right: 15px;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: #666;
+        }
+        .project-card.expanded .expand-hint { display: none; }
+
+        /* --- TERMINAL --- */
+        #terminal-section {
+            background: radial-gradient(circle at center, #111, #000);
+        }
+        .terminal-window {
+            background: #050505;
+            border: 1px solid #333;
+            border-radius: 5px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            max-width: 800px;
+            margin: 0 auto;
+            overflow: hidden;
+            font-family: var(--font-mono);
+        }
+        .terminal-header {
+            background: #1a1a1a;
+            padding: 10px 15px;
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid #333;
+        }
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .red { background: #ff5f56; } .yellow { background: #ffbd2e; } .green { background: #27c93f; }
+        .terminal-title { margin-left: auto; margin-right: auto; color: #888; font-size: 0.8rem; }
+        
+        .terminal-body {
+            padding: 20px;
+            height: 400px;
+            overflow-y: auto;
+            color: #33ff00;
+            text-shadow: 0 0 2px #33ff00;
+            font-size: 0.9rem;
+        }
+        .output-line { margin-bottom: 5px; white-space: pre-wrap; }
+        .input-line { display: flex; }
+        .prompt { color: var(--neon-pink); margin-right: 10px; }
+        .cmd-input { 
+            background: transparent; 
+            border: none; 
+            color: #33ff00; 
+            font-family: var(--font-mono); 
+            flex-grow: 1; 
+            outline: none;
+            text-shadow: 0 0 2px #33ff00;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            padding: 50px 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .social-links a {
+            font-family: var(--font-tech);
+            font-size: 1.2rem;
+            margin: 0 15px;
+            color: #888;
+        }
+        .social-links a:hover { color: var(--neon-cyan); text-shadow: 0 0 10px var(--neon-cyan); }
+
+        /* --- ANIMATIONS --- */
+        @keyframes glitchReveal {
+            0% { opacity: 0; transform: translateX(-10px); clip-path: polygon(0 0, 100% 0, 100% 10%, 0 10%); }
+            20% { opacity: 1; transform: translateX(10px); clip-path: polygon(0 0, 100% 0, 100% 80%, 0 80%); }
+            40% { transform: translateX(-5px); clip-path: polygon(0 20%, 100% 20%, 100% 100%, 0 100%); }
+            60% { transform: translateX(5px); }
+            100% { opacity: 1; transform: translateX(0); clip-path: none; }
+        }
+        @keyframes slideUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* RESPONSIVE */
+        @media(max-width: 768px) {
+            .blade-cover { display: none; } /* Disable heavy blade anim on mobile for perf */
+            .main-title { font-size: 2.5rem; }
+            .car-container { width: 200px; bottom: 10%; }
+        }
+    </style>
 </head>
-
-<body id="top">
-<!-- <script>
-window.onload = function () {
-  var span = document.createElement('span');
-
-  span.className = 'fa';
-  span.style.display = 'none';
-  document.body.insertBefore(span, document.body.firstChild);
-  
-  alert(window.getComputedStyle(span, null).getPropertyValue('font-family'));
-    
-  document.body.removeChild(span);
-};
-</script> -->
-	<!-- header 
-   ================================================== -->
-   <header>   	
-   	<div class="row">
-
-   		<div class="top-bar">
-   			<a class="menu-toggle" href="#"><span>Menu</span></a>
-		   	<nav id="main-nav-wrap">
-					<ul class="main-navigation">
-						<li class="current"><a class="smoothscroll"  href="#intro" title="">Home</a></li>
-						<li><a class="smoothscroll"  href="#about" title="">About</a></li>
-						<li><a class="smoothscroll"  href="#resume" title="">Resume</a></li>
-						<li><a class="smoothscroll"  href="#portfolio" title="">Portfolio</a></li>
-						<li><a class="smoothscroll"  href="#services" title="">Services</a></li>					
-						<li><a class="smoothscroll"  href="#contact" title="">Contact</a></li>				
-					</ul>
-				</nav>    		
-   		</div> <!-- /top-bar --> 
-   		
-   	</div> <!-- /row --> 		
-   </header> <!-- /header -->
-
-	<!-- intro section
-   ================================================== -->
-   <section id="intro">   
-
-   	<div class="intro-overlay"></div>	
-
-   	<div class="intro-content">
-   		<div class="row">
-
-   			<div class="col-twelve">
-
-	   			<h5>Hello World.</h5>
-				<h1 style="font-size: 77px !important">I'm <span id="add_anim"></span></h1>
-
-	   			<a class="button stroke smoothscroll" href="#about" title="">More About Me</a>
-
-	   		</div>  
-   			
-   		</div> <i class=""></i>
-   	</div> <!-- /intro-content --> 
-
-   	<ul class="intro-social">        
-         <li><a class="git" href="https://github.com/elyasmoshirpanahi"><i class="my_anim fa-brands fa-github    fa-1x fa-fade"></i></a></li>
-         <li><a class="kaggle" href="https://www.kaggle.com/elyasmoshirpanahi"><i class="my_anim fa-brands fa-kaggle    fa-1x fa-fade"></i></a></li>
-         <li><a class="linkedin" href="https://www.linkedin.com/in/elyasmoshirpanahi/"><i class="my_anim fa-brands fa-linkedin  fa-1x fa-fade"></i></a></li>
-         <li><a class="my_insta" href="https://www.instagram.com/elyasmoshirpanahe"><i class="my_anim fa-brands fa-instagram  fa-1x fa-fade"></i></a></li>
-<!--          <li><a href="#"><i class="my_anim fa-brands fa-dribbble  fa-1x fa-fade"></i></a></li>
-         <li><a href="#"><i class="my_anim fa-brands fa-instagram fa-1x fa-fade"></i></a></li> -->
-      </ul> <!-- /intro-social -->      	
-
-   </section> <!-- /intro -->
-
-
-   <!-- about section
-   ================================================== -->
-   <section id="about">  
-
-   	<div class="row section-intro">
-   		<div class="col-twelve">
-
-   			<h5>About</h5>
-   			<h1>1% Better Everyday...</h1>
-
-   			<div class="intro-info">
-
-   				<img src="images/P1.jpg" alt="Profile Picture" style="box-shadow: 0px 0px 20px 2px #358df5;">
-
-   				<p class="lead">Starting from C++ as a beginer brings back a lot of memories,but a bigger leap for me was my activites in web development world which landed my first job.<br>Now? I am  in the path of using AI technologies turning dreams into reality!
-   				</p>
-   			</div>   			
-
-   		</div>   		
-   	</div> <!-- /section-intro -->
-
-   	<div class="row about-content">
-
-   		<div class="col-six tab-full">
-
-   			<h3>Profile</h3>
-   			<p>Passionate about learning latest Machine learning technologies and implementing them in real life scenarios.<br><i>Life's too short?  <b>I,ll do it anyway!</b></i></p>
-
-<!--    			<ul class="info-list">
-   				<li>
-   					<strong>Fullname:</strong>
-   					<span>Elyas Moshirpanahi</span>
-   				</li>
-   				<li>
-   					<strong>Birth Date:</strong>
-   					<span>May 06, 1997</span>
-   				</li>
-   				<li>
-   					<strong>Job:</strong>
-   					<span>Freelancer, Fullstack Developer</span>
-   				</li>
-   				<li>
-   					<strong>Email:</strong>
-   					<span>elyasmoshirpanahe1376@gmail.com</span>
-   				</li>
-
-   			</ul> <!-- /info-list -->
-			</div>
-
-   		<div class="col-six tab-full">
-
-   			<h3>Skills</h3>
-   			<p>I have 5+ years of experience in programming with various languages such as Python , PHP,etc, and most libraries required for ML tasks which bellow I,ll list them.</p>
-   		</div>
-<hr>
-		
-				<div class="col-six tab-full">
-	   			<h4>Programming Languages</h4>
-	   			<strong>Expert:</strong>
-					<ul>
-					   <li>Python</li>
-					   <li>PHP (Laravel)</li>
-					</ul>
-
-	   			<strong>Sufficent :</strong>
-					<ul>
-					   <li>Js , Jquery , Node.js</li>
-					   <li>C# (Winforms)</li>
-					   <li>Kotlin</li>
-					</ul>
-					
-<!-- 	   			<strong>Intermediate :</strong>
-					<ul>
-					   <li>GO</li>
-					   <li>Bash</li>
-					   <li>C/C++</li>
-					</ul> -->
-				 <strong>DBs :</strong>
-					<ul>
-					   <li>MySQL</li>
-					   <li>MongoDB</li>
-					</ul>
-				</div>
-
-				<div class="col-six tab-full">
-	   			<h4>My favorite Machine Learning libraries</h4>
-					<ul>
-					   <li>Pytorch</li>
-					   <li>Tensorflow</li>
-					   <li>Numpy , Pandas , Seaborn , Matplotlib , scipy</li>
-					   <li>OpenCV</li>
-					   <li>Scikit Learn , Statsmodels , Theano</li>
-					</ul>
-
-					<h4>Other Skills</h4>
-					<ul>
-					   <li>Git , Virtual env , Docker</li>
-					   <li>Linux</li>
-					   <li>Arduino Programming</li>
-					</ul>
-				</div>
-				<hr>
-				<div class="col-six tab-full">
-					<h5>Licenses & certifications</h5>
-						<ul id="licenses">
-							<li><a href="https://drive.google.com/file/d/1gB6o2aOtMDc8Qskn7BBFBH3Gi6ggnWh-/view">German Language (TestDaf L:4,H:4,S:3,S:4)</a></li>
-						   <li><a href="https://www.coursera.org/account/accomplishments/specialization/certificate/BDBSWRK29NFU">Machine Learning Specialization (3 Courses)</a></li>
-						   <li><a href="https://www.coursera.org/account/accomplishments/specialization/certificate/BDBSWRK29NFU">Deep Learning Specialization (5 Courses)</a></li>
-						   <li><a href="https://drive.google.com/file/d/1H6rGVGuQtunUoUz1pOLVtL3B3xeyXP8d/view">Amir Kabir Artificial Intelligence Competition</a></li>
-						   <li><a href="https://drive.google.com/file/d/12Fk3jFsMiUiIJrwYRRbdp3xNcjkNJz6D/view">Uok National Robotic Workshop</a></li>
-						   <li><a href="https://drive.google.com/file/d/1-MBiPz7s9Xhq-Ah-bTEVj6NwHL4O7zsZ/view">Deep Learning: Zero To Hero</a></li>
-						   <li><a href="https://drive.google.com/file/d/1-A7XxKObzxXiLsZpP1warJRyOkdJHAd5/view">Machine Learning and Data Science: Zero to Hero</a></li>
-						   <li><a href="https://www.udemy.com/course/python-data-science-machine-learning-bootcamp/">Complete 2022 Data Science & Machine Learning Bootcamp</a></li>
-						   <li><a href="https://www.udemy.com/course/artificial-intelligence-ars/">Artificial Intelligence (ARS): Build the Most Powerful AI</a></li>
-						   <li><a href="https://www.udemy.com/course/computer-vision-a-z/">Deep Learning and Computer Vision A-Z™: OpenCV, SSD & GANs</a></li>
-							<li><a href="https://www.udemy.com/course/python-for-time-series-data-analysis/">Python for Time Series Data Analysis</a></li>
-
-
-						</ul>
-				</div>
-				<div class="col-six tab-full">
-					<h5>Honors & awards</h5>
-						<ul>
-						   <li>Achieved 1st in  AAIC Competition in maximum profit</li>
-						   <li>Achieved 3rd in  AAIC Competition in Average profit</li>
-						   <li>Achieved 2nd in  Iran's national robotic workshop among 1000 competitors</li>
-						   <li>Achieved 1st team in National Movement Festival among 90 teams</li>
-						   <li>Achieved 1st student in  SI (Soroush institute) Tofel test</li>
-						</ul>
-				</div>
-   	</div>
-   	<div class="row button-section">
-   		<div class="col-twelve">
-   			<a href="#contact" title="Hire Me" class="button stroke smoothscroll">Hire Me</a>
-   			<a href="https://drive.google.com/u/0/uc?id=1zkvkHSvIWuMcyEfk0ggefNJiRdpfeSiE&export=download" title="Download CV" class="button button-primary" target="_blank">Download CV</a>
-   		</div>   		
-   	</div>
-
-   </section> <!-- /process-->    
-
-
-   <!-- resume Section
-   ================================================== -->
-	<section id="resume" class="grey-section">
-
-		<div class="row section-intro">
-   		<div class="col-twelve">
-
-   			<h5>Resume</h5>
-   			<h1>More of my credentials.</h1>
-
-   			<p class="lead">The demonostration of works i have done in the past as well as my educational background.</p>
-
-   		</div>   		
-   	</div> <!-- /section-intro--> 
-
-   	<div class="row resume-timeline">
-
-   		<div class="col-twelve resume-header">
-
-   			<h2>Work Experience</h2>
-
-   		</div> <!-- /resume-header -->
-
-   		<div class="col-twelve">
-
-   			<div class="timeline-wrap">
-
-   				<div class="timeline-block">
-
-	   				<div class="timeline-ico">
-	   					<i class="fa fa-briefcase"></i>
-	   				</div>
-
-	   				<div class="timeline-header">
-	   					<h3>Machine Learning engineer</h3>
-	   					<p>February 2023 - Present</p>
-	   				</div>
-
-	   				<div class="timeline-content">
-	   					<h4>FRVT Computer vision challange</h4>
-	   					<p>Working on a 7 level  face detection , ID confirmation ,Image segmentation and general KYC problem </p>
-	   				</div>
-
-	   			</div> <!-- /timeline-block -->
-
-   				<div class="timeline-block">
-
-	   				<div class="timeline-ico">
-	   					<i class="fa fa-briefcase"></i>
-	   				</div>
-
-	   				<div class="timeline-header">
-	   					<h3>Machine Learning engineer</h3>
-	   					<p>November 2021 - February 2022</p>
-	   				</div>
-
-	   				<div class="timeline-content">
-	   					<h4>Stock Market Prediction</h4>
-	   					<p>Achieved first place in maximum profit, resulting in a 20% increase for our shareholders.Completed second place in predicting overall indices.Delivered smart filtering system using LSTM and timeseries to list the top 10 stocks from 300..</p>
-	   				</div>
-
-	   			</div> <!-- /timeline-block -->
-
-	   			<div class="timeline-block">
-
-	   				<div class="timeline-ico">
-	   					<i class="fa fa-briefcase"></i>
-	   				</div>
-
-	   				<div class="timeline-header">
-	   					<h3>Full Stack Developer | Project Manager</h3>
-	   					<p>February 2020 - May 2021</p>
-	   				</div>
-
-	   				<div class="timeline-content">
-	   					<h4>YIWU dar tradingco.ltd</h4>
-	   					<p>Deployed a VPN platform from scratch with Efficient business logic, and user-friendly client apps that led to sales growth by 20%.Engineered robust MVC pattern as software architecture concluding in 85% increase in app stability.Simplified user-management system using cronjob automations, python and bash programming which tripled the speed of management.Organized VPN-server distribution for faster response times (with 4ms ping).</p>
-	   				</div>
-
-	   			</div> <!-- /timeline-block -->
-
-	   			<div class="timeline-block">
-
-	   				<div class="timeline-ico">
-	   					<i class="fa fa-briefcase"></i>
-	   				</div>
-
-	   				<div class="timeline-header">
-	   					<h3>PHP Developer | Web Designer</h3>
-	   					<p>October 2019 - Janurary 2020</p>
-	   				</div>
-
-	   				<div class="timeline-content">
-	   					<h4>Nika herb</h4>
-	   					<p>Configured user-friendly UX/UI and leveraging customer engagement which expanded yearly APY profit up to $20k.
-	   						Formulated quick, reliable and secure products with high performing infrastructure resulting in ease of handling more than 3000 requests per seconds.Accelerated accumulated sales by 30% in just the first week.</p>
-	   				</div>
-
-	   			</div> <!-- /timeline-block -->
-
-   			</div> <!-- /timeline-wrap -->   			
-
-   		</div> <!-- /col-twelve -->
-   		
-   	</div> <!-- /resume-timeline -->
- 	
-   	<div class="row resume-timeline">
-			<hr style="border: dotted 5px;
-			    border-bottom: none;
-			    width: 100%;
-			    color: #363554;">  
-   		<div class="col-twelve resume-header">
-
-   			<h2>Education</h2>
-
-   		</div> <!-- /resume-header -->
-
-   		<div class="col-twelve">
-
-   			<div class="timeline-wrap">
-
-
-	   			<div class="timeline-block">
-
-	   				<div class="timeline-ico">
-	   					<i class="fa fa-graduation-cap"></i>
-	   				</div>
-
-	   				<div class="timeline-header">
-	   					<h3>Bachelor Degree</h3>
-	   					<p>September 2022 - present</p>
-	   				</div>
-
-	   				<div class="timeline-content">
-	   					<h4>Plus mint </h4>
-	   					<p>Studying basis of data science and  AI at University of Saarland ,  Saarbrücken, Germany</p>
-	   				</div>
-
-	   			</div> <!-- /timeline-block -->
-
-	   			<div class="timeline-block">
-
-	   				<div class="timeline-ico">
-	   					<i class="fa fa-graduation-cap"></i>
-	   				</div>
-
-	   				<div class="timeline-header">
-	   					<h3>Bachelor Degree</h3>
-	   					<p>September 2016 - June 2020</p>
-	   				</div>
-
-	   				<div class="timeline-content">
-	   					<h4>Agriculture</h4>
-	   					<p>Studied Agriculture Genetic Engineering at University of Kurdistan , Iran , Sanandaj </p>
-	   				</div>
-
-	   			</div> <!-- /timeline-block -->
-
-   			</div> <!-- /timeline-wrap -->   			
-
-   		</div> <!-- /col-twelve -->
-   		
-   	</div> <!-- /resume-timeline -->
-	</section> <!-- /features -->
-
-
-	<!-- Portfolio Section
-   ================================================== -->
-	<section id="portfolio">
-
-		<div class="row section-intro">
-   		<div class="col-twelve">
-
-   			<h5>Portfolio</h5>
-   			<h1>Check Out Some of My Works and Projects.</h1>
-
-   			<p class="lead">Here are some of past project that i have been working on and some other more is coming soon!</p>
-
-   		</div>   		
-   	</div> <!-- /section-intro--> 
-
-   	<div class="row portfolio-content">
-
-   		<div class="col-twelve">
-
-   			<!-- portfolio-wrapper -->
-	         <div id="folio-wrapper" class="block-1-2 block-mob-full stack">
-
-	         	<div class="bgrid folio-item">
-	               <div class="item-wrap">
-	               	<img  src="images/portfolio/facecup.jpg" alt="facecup" >
-	                  <a href="#modal-01" class="overlay">	                  	           
-	                     <div class="folio-item-table">
-	                     	<div class="folio-item-cell">
-		     					       <h3 class="folio-title">Face cup competition</h3>	     					    
-		     					    	 <span class="folio-types">
-		     					       	  Computer vision
-		     					       </span>
-		     					   </div>	                      	
-	                     </div>                    
-	                  </a>
-	               </div>	               
-	        		</div> <!-- /folio-item -->
-	        		<div class="bgrid folio-item">
-	               <div class="item-wrap">
-	               	<img src="images/portfolio/AAIC.jpg" alt="Amirkabir artificial intelligence Competition" >
-	               	<a href="#modal-02" class="overlay">              		                  
-	                     <div class="folio-item-table">
-	                     	<div class="folio-item-cell">
-	                     		<h3 class="folio-title">Amirkabir AI Competition</h3>	     					    
-		     					    	<span class="folio-types">
-		     					       	  Deep learning and Time series
-		     					      </span>		     		
-		     					   </div> 	                      	
-	                     </div>                    
-	                  </a>
-	               </div>
-	        		</div> <!-- /folio-item -->
-
-	            <div class="bgrid folio-item">
-	               <div class="item-wrap">
-	               	<img src="images/portfolio/darvpn.png"alt="Darvpn">
-	                  <a href="#modal-03" class="overlay">             		                  
-	                     <div class="folio-item-table">
-	                     	<div class="folio-item-cell">
-	                     		<h3 class="folio-title">Darvpn</h3>	     					    
-		     					    	<span class="folio-types">
-		     					       	  Fullstack Developer | Project Manager
-		     					      </span>		     		
-		     					   </div> 	                      	
-	                     </div>                    
-	                  </a>
-	               </div>
-	        		</div> <!-- /folio-item -->
-
-	            <div class="bgrid folio-item">
-	               <div class="item-wrap">
-	               	<img src="images/portfolio/Deutsch_podcast.jpg" alt="DeutschePodcasts">
-	                  <a href="#modal-04" class="overlay">                  	                 
-	                     <div class="folio-item-table">
-	                     	<div class="folio-item-cell">
-	                     		<h3 class="folio-title">Auto German podcasing</h3>	     					    
-		     					    	<span class="folio-types">
-		     					       	  Python | Webscarping | Automation | Telegram bot api
-		     					      </span>		     		
-		     					   </div>  	                      	
-	                     </div>                    
-	                  </a>
-	               </div>
-	        		</div> <!-- /folio-item -->     
-
-	        		<div class="bgrid folio-item">
-	               <div class="item-wrap">
- 	              	<img src="images/portfolio/math_garden.png" alt="Math Garden">
-	                  <a href="#modal-05" class="overlay">             		                  
-	                     <div class="folio-item-table">
-	                     	<div class="folio-item-cell">
-	                     		<h3 class="folio-title">Math Garden</h3>	     					    
-		     					    	<span class="folio-types">
-		     					       	  Computer vision 
-		     					      </span>		     		
-		     					   </div> 	                      	
-	                     </div>                    
-	                  </a>
-	               </div>
-	        		</div> <!-- /folio-item -->
-
-	            <div class="bgrid folio-item">
-	               <div class="item-wrap">
-	               	<img src="images/portfolio/nikaherb.jpg" alt="Nika Herb">
-	                  <a href="#modal-06" class="overlay">
-	                     <div class="folio-item-table">
-	                     	<div class="folio-item-cell">
-	                     		<h3 class="folio-title">Nika Herb</h3>	     					    
-		     					    	<span class="folio-types">
-		     					       	  Fullstack Web developer
-		     					      </span>		     		
-		     					   </div>	                      	
-	                     </div>                    
-	                  </a>
-	               </div>
-	        		</div> <!-- /folio-item -->   
-
-	            <!-- modal popups - begin
-	            ============================================================= -->
-	            <div id="modal-01" class="popup-modal slider mfp-hide">	
-
-				     	<div class="media">
-				     		<img src="https://facecup.ir/wp-content/uploads/2022/12/Face-Cup_Animation_1.gif" style="background:#16155b;" alt="Facecup"/>
-				     	</div>      	
-
-					   <div class="description-box">
-					      <h4>Facecup</h4>		      
-					      <p>Face cup competition based on <b><a href="https://en.wikipedia.org/wiki/Face_Recognition_Vendor_Test">FRVT</a></b> standard which consist of 7 stages in total in which we develop machine learning models for passiv and active detection tasks such as: Open mouth detection , multi id detection ,  Face cover detection , Id confirmation , etc.</p>
-
-					      <div class="categories">Computer vision</div>			               
-					   </div>
-
-			         <div class="link-box">
-			            <a href="http://www.facecup.ir" target = "_blank">Details</a>
-					      <a href="#" class="popup-modal-dismiss">Close</a>
-			         </div>		      
-
-				   </div> <!-- /modal-01 -->
-				   <div id="modal-02" class="popup-modal slider mfp-hide">
-				     	<div class="animated hero media">
-				     		<img src="https://aaic.aut.ac.ir/static/img/hero.svg" alt="stockmarket gif" />
-				     	</div>      	
-
-					   <div class="description-box">
-					      <h4>Amirkabir AI Competition</h4>		      
-					      <p>Amirkabir AI Competition focased on predicting total market index of iran's stock market as well as portfolio among almost 300 different stocks. as a team we had to develop deep learning models for prediction, risk managment , and stock shares. </p>
-
-					      <div class="categories">Deep learning and Time series</div>			               
-					   </div>
-
-			         <div class="link-box">
-			            <a href="https://github.com/ElyasMoshirpanahi/AAIC_2022" target = "_blank">Details</a>
-					      <a href="#" class="popup-modal-dismiss">Close</a>
-			         </div>		      
-
-				   </div> <!-- /modal-02 -->
-
-				   <div id="modal-03" class="popup-modal slider mfp-hide">	
-
-				     	<div class="media">
-				     		<img src="images/portfolio/modals/vpn.gif" alt="Darvpn" />
-				     	</div>      	
-
-					   <div class="description-box">
-					      <h4>Darvpn</h4>		      
-					      <p>In this project i was asked to manage and develop a vpn platform from scratch for YIWU dar tradingco.ltd.I began developing website with api endpoints to inegrate with android and desktop apps which i developed latter to  get distributed vpn servers.This project helped me to learn a lot of practical technics used for managements in real life business solutions, you can check it bellow</p>
-
-					      <div class="categories">Fullstack programming | project manager</div>			               
-					   </div>
-
-			         <div class="link-box">
-			            <a href="http://www.darvpn.com" target = "_blank">Details</a>
-					      <a href="#" class="popup-modal-dismiss">Close</a>
-			         </div>		      
-
-				   </div> <!-- /modal-03 -->
-
-				   <div id="modal-04" class="popup-modal slider mfp-hide">	
-
-				     	<div class="media">
-				     		<img href="https://t.me/+y7-l2vGlTFQ2Njg0" src="images/portfolio/modals/podcast.gif" alt="DeutschePodcasts" />
-				     	</div>      	
-
-					   <div class="description-box">
-					      <h4>Auto German podcasing</h4>		      
-					      <p>I am a big fan of podcasts and since i wanted practice and make my German langauge better i listened german podcasts with transcripts everyday.But doing same thing over and over isn't what programmers do! so i coded an automation tool to scrape spektrum.de to fetch new podcasts daily and send them off to <b><a href="https://t.me/+y7-l2vGlTFQ2Njg0">my telegram channel </a></b>to do the same task only better!.I am happy to say that  now 700+ telegram users benefit from this program daily.<br>Click on the image above to join others!</p>
-
-					      <div class="categories">Python | Webscarping | Automation | Telegram bot api</div>			               
-					   </div>
-
-			         <div class="link-box">
-			            <a href="https://github.com/ElyasMoshirpanahi/Auto-German-Podcast" target = "_blank">Details</a>
-					      <a href="#" class="popup-modal-dismiss">Close</a>
-			         </div>		      
-
-				   </div> <!-- /modal-04 -->
-
-				   <div id="modal-05" class="popup-modal slider mfp-hide">	
-
-				     	<div class="media">
-				     		<img src="images/portfolio/modals/math_garden.gif" alt="math_garden" />
-				     	</div>      	
-
-					   <div class="description-box">
-					      <h4>Math Garden</h4>		      
-					      <p>This Game is based on Convolution neural networks (CNN) which classifies handwritten digits.It can be a good practice with fun enviroment for elemntry school kids to learn subtract and addition!</p>
-
-					      <div class="categories">Computer vision</div>			               
-					   </div>
-
-			         <div class="link-box">
-			            <a href="http://elyasmoshirpanahi.github.io/math-garden" target = "_blank">Details</a>
-					      <a href="#" class="popup-modal-dismiss">Close</a>
-			         </div>		      
-
-				   </div> <!-- /modal-05 -->
-
-				   <div id="modal-06" class="popup-modal slider mfp-hide">	
-
-				     	<div class="media">
-				     		<img src="images/portfolio/modals/m-nikaherb.png" alt="nika herb" />
-				     	</div>      	
-
-					   <div class="description-box">
-					      <h4>Nika Herb</h4>		      
-					      <p>Online Herbal Medicine Store , for selling various herbal teas and drinks as well as products.With admin controlling panels and friendly UI , Payment Gates.</p>
-
-					      <div class="categories">Fullstack Web developer</div>			               
-					   </div>
-
-			         <div class="link-box">
-			            <a href="https://web.archive.org/web/20210125095816/https:/nikaherb.com/" target = "_blank">Details</a>
-					      <a href="#" class="popup-modal-dismiss">Close</a>
-			         </div>		      
-
-				   </div> <!-- /modal-06 -->
-
-
-				   <!-- modal popups - end
-	            ============================================================= -->
-
-	         </div> <!-- /portfolio-wrapper --> 
-
-   		</div>  <!-- /twelve -->   
-
-   	</div> <!-- /portfolio-content --> 
-		
-	</section> <!-- /portfolio --> 
-
-
-	<!-- CTA Section
-   ================================================== -->
-	<section id="cta" class="grey-section">
-
-   	<div class="row cta-content">
-
-   		<div class="col-twelve section-ads">  
-
-	     		<h2 class="h01"><a href="#contact">Want to hire me?</a></h2>
-
-		      <p class="lead">
-		      Looking for an awesome and reliable Machine Learning developer | Fullstack developer?<br>Then contanct me with anyform you are ok with
-				<!-- Simply type	the promocode in the box labeled “Promo Code” when placing your order. -->	
-				</p>
-
-				<div class="action">
-			      <a class="button button-primary large" href="#contact">Contact me now!</a>
-		      </div>		     	
-
-   		</div>
-
-   	</div> <!-- /cta-content -->
-
-   </section> <!-- /cta --> 
-
-	
-	<!-- services Section
-   ================================================== -->
-	<section id="services">
-
-		<div class="overlay"></div>
-
-		<div class="row section-intro">
-   		<div class="col-twelve">
-
-   			<h5>Services</h5>
-   			<h1>What Can I Do For You?</h1>
-
-   			<p class="lead">Let's build future togather! , I will help you with my skills to build  your projects for better future.</p>
-
-   		</div>   		
-   	</div> <!-- /section-intro -->
-
-   	<div class="row services-content">
-
-   		<div id="owl-slider" class="owl-carousel services-list">
-				
-
-
-
-				<div class="service">	
-
-					<span class="icon"><i class="my_color fa-solid fa-robot"></i></span>                          
-
-	            <div class="service-content">	
-
-	            	<h3>Machine Learning Enineer</h3>  
-
-		            <p class="desc">As a Machine Learning Enineer , My skills in machine learning algorithms and deep learning frameworks enables me to deliver high-quality solutions. allow me to develop intelligent systems that learn from data and make accurate predictions with customized solutions for business problems that require predictive modeling or computer vision applications.Let's collaborate to leverage the power of machine learning to solve your business challenges.
-	         		</p>
-
-	            </div>	                          
-
-			   </div> <!-- /service -->
-	      	<div class="service">	
-
-	      		<span class="icon"><i class="my_color icon-earth"></i></span>            
-
-	            <div class="service-content">	
-
-	            	 <h3>Fullstack web developer</h3>
-
-		            <p class="desc">As a web developer, I can create a website aligned with your business goals. I deliver visually appealing, functional and easy to navigate websites, from simple to complex web applications, tailored to your needs. I'm experienced in programming languages such as HTML, CSS, JavaScript, and PHP and using popular web development frameworks and tools. Let's work together to achieve your business objectives.</p>
-	         		
-	         	</div> 	         	 
-
-				</div> <!-- /service -->
-
-
-				<div class="service">
-
-					<span class="icon"><i class="my_color icon-toggles"></i></span>	              
-
-	            <div class="service-content">
-
-	            	<h3>Android | Pc Software Developer</h3>
-
-		            <p class="desc">As a fullstack developer, I can build usefull windows as well as android apps with solid and readable codes , implementing business logic and secure connection to codebases and api endpoints using kotlin and C#.
-	         		</p> 
-	         		
-	            </div>                
-
-				</div> <!-- /service -->
-
-				<div class="service">
-
-					<span class="icon"><i class="my_color icon-paint-brush"></i></span>	              
-
-	            <div class="service-content">
-
-	            	<h3>UI/UX Designer</h3>
-
-		            <p class="desc">I also have a good design taste when it comes to UI/UX  regardless of the client or technology that i am working with either android / windows  or website, i will do my best sketch to make a look it's best.
-	         		</p> 
-	         		
-	            </div>                
-
-				</div> <!-- /service -->
-
-	      </div> <!-- /services-list -->
-   		
-   	</div> <!-- /services-content -->
-		
-	</section> <!-- /services -->	
-
-
-	<!-- stats Section
-   ================================================== -->
-	<section id="stats" class="count-up">
-
-		<div class="row">
-			<div class="col-twelve">
-
-				<div class="block-1-6 block-s-1-3 block-tab-1-2 block-mob-full stats-list">
-
-					<div class="bgrid stat">
-
-						<div class="icon-part">
-							<i class="icon-pencil-ruler"></i>
-						</div>
-
-						<h3 class="stat-count">
-							17
-						</h3>
-
-						<h5 class="stat-title">
-							Projects Completed
-						</h5>
-
-					</div> <!-- /stat -->					
-
-					<div class="bgrid stat">
-
-						<div class="icon-part">
-							<i class="icon-users"></i>
-						</div>
-
-						<h3 class="stat-count">
-							1000
-						</h3>
-
-						<h5 class="stat-title">
-							Happy Clients
-						</h5>
-
-					</div> <!-- /stat -->
-
-					<div class="bgrid stat">
-
-						<div class="icon-part">
-							<i class="icon-badge"></i>
-						</div>
-
-						<h3 class="stat-count" id="stat-count">
-							<script>
-							const elm = document.getElementById("stat-count");
-							elm.innerHTML = document.getElementById("licenses").getElementsByTagName("li").length;
-							</script>
-							
-						</h3>
-
-						<h5 class="stat-title">
-							CERTIFICATIONS Received
-						</h5>
-
-					</div> <!-- /stat -->									
-
-					<div class="bgrid stat">
-
-						<div class="icon-part">
-							<i class="icon-light-bulb"></i>
-						</div>
-
-						<h3 class="stat-count">
-							120
-						</h3>
-
-						<h5 class="stat-title">
-							Crazy Ideas
-						</h5>
-
-					</div> <!-- /stat -->
-
-					<div class="bgrid stat">
-
-						<div class="icon-part">
-							<i class="icon-cup"></i>
-						</div>
-
-						<h3 class="stat-count">
-							1500
-						</h3>
-
-						<h5 class="stat-title">
-							Coffee Cups
-						</h5>
-
-					</div> <!-- /stat -->
-
-					<div class="bgrid stat">
-
-						<div class="icon-part">
-							<i class="icon-clock"></i>
-						</div>
-
-						<h3 class="stat-count">
-							7200
-						</h3>
-
-						<h5 class="stat-title">
-							Hours of learning
-						</h5>
-
-					</div> <!-- /stat -->
-
-				</div> <!-- /stats-list -->
-
-			</div> <!-- /twelve -->
-		</div> <!-- /row -->
-
-	</section> <!-- /stats -->
-
-	
-   <!-- contact
-   ================================================== -->
-	<section id="contact">
-
-		<div class="row section-intro">
-   		<div class="col-twelve">
-
-   			<h5>Contact</h5>
-   			<h1>I'd Love To Hear From You.</h1>
-
-   			<p class="lead">Feel free to email me via links bellow.<br>You can also contact me via linkedin or other social medias.</p>
-
-   		</div> 
-   	</div> <!-- /section-intro -->
-
-   	<div class="row contact-form">
-
-   		<div class="col-twelve">
-
-            <form   action="https://formspree.io/f/mgebzjbg" method="POST" >
-      			<fieldset>
-<!-- 
-                  <div class="form-field">
- 						   <input name="contactName" type="text" id="contactName" placeholder="Name" value="" minlength="2" required="">
-                  </div> -->
-                  <div class="form-field">
-	      			   <input type="email" name="email"  placeholder="Enter Your email" value="" required="">
-	               </div>
-<!--                   <div class="form-field">
-	     				   <input name="contactSubject" type="text" id="contactSubject" placeholder="Subject" value="">
-	               </div>                        -->
-                  <div class="form-field">
-	                 	<textarea name="message"   placeholder="message" required=""></textarea>
-	               </div>                      
-                 <div class="form-field">
-                     <button class="submitform" type="submit">Submit</button>
-                     <div id="submit-loader">
-                        <div class="text-loader">Sending...</div>                             
-       				      <div class="s-loader">
-								  	<div class="bounce1"></div>
-								  	<div class="bounce2"></div>
-								  	<div class="bounce3"></div>
-								</div>
-							</div>
-                  </div>
-
-      			</fieldset>
-      		</form> 
-
-
-            <div id="message-warning">            	
-            </div>            
-
-      		<div id="message-success">
-               <i class="fa fa-check"></i>Your message was sent, thank you!<br>
-      		</div>
-
-         </div></div> 
-
-
-   	<div class="row contact-info">
-
-<!--    		<div class="col-four tab-full">
-
-   			<div class="icon">
-   				<i class="icon-pin"></i>
-   			</div>
-
-   			<h5>Where to find me</h5>
-
-   			<p>
-            1600 Amphitheatre Parkway<br>
-            Mountain View, CA<br>
-            94043 US
-            </p>
-
-   		</div> -->
-
-   		<div class="col-four tab-full collapse">
-
-   			<div class="icon my_anim">
-   				<a class="personal_link" href="mailto:elyasmoshirpanahe1376@gmail.com"><i class="personal_link icon-mail my_anim"></i></a>
-   			</div>
-
-   			<h5><a class="personal_link" href="mailto:elyasmoshirpanahe1376@gmail.com">Email Me</a></h5>
-
-   		</div>
-   		<div class="col-four tab-full">
-
-   			<div class="icon my_anim">
-   				<a class="personal_link" href="https://t.me/Retrotechdeveloper1997"><i class="personal_link fa-brands fa-telegram my_anim"></i></a>
-   			</div>
-
-   			<h5><a class="personal_link" href="https://t.me/Retrotechdeveloper1997">Message Me via telegram</a></h5>
-   		</div>
-   		
-   		<div class="col-four tab-full">
-
-   			<div class="icon my_anim">
-   				<a class="personal_link" href="https://join.skype.com/invite/JBmSwuFKlMqE"><i class="personal_link fa-brands fa-skype"></i></a>
-   			</div>
-
-   			<h5><a class="personal_link" href="https://join.skype.com/invite/JBmSwuFKlMqE">Call Via Skype </a></h5>
-   		</div>
-   		
-   	</div> <!-- /contact-info -->
-		
-	</section> <!-- /contact -->
-
-
-   <!-- footer
-   ================================================== -->
-
-   <footer>
-     	<div class="row">
-
-     		<div class="col-six tab-full pull-right social">
-
-     			<ul class="footer-social">        
-		         <li><a class="git" href="https://github.com/elyasmoshirpanahi" target="_blank"><i class="my_anim fa-brands fa-github    fa-2x fa-fade"></i></a></li>
-		         <li><a class="kaggle" href="https://www.kaggle.com/elyasmoshirpanahi" target="_blank"><i class="my_anim fa-brands fa-kaggle    fa-2x fa-fade"></i></a></li>
-		         <li><a class="linkedin" href="https://www.linkedin.com/in/elyasmoshirpanahi/" target="_blank"><i class="my_anim fa-brands fa-linkedin  fa-2x fa-fade"></i></a></li>
-		         <li><a class="my_insta" href="https://www.instagram.com/elyasmoshirpanahe" target="_blank"><i class="my_anim fa-brands fa-instagram  fa-2x fa-fade"></i></a></li>
-			   </ul> 
-	      		
-	      </div>
-
-      	<div style="float:right;" class="col-twelve tab-full">
-	      	<div class="copyright">
-		        	<span>© Copyright 2023 </span> 
-		        	<span>Made with love by Elyas Moshirpanahi <i class="fa-solid fa-heart fa-beat" style="color:red;--fa-animation-duration: 2s;"></i></span>          	
-		         </div>		                  
-	      	</div>
-
-	      	<div id="go-top">
-		         <a class="smoothscroll" title="Back to Top" href="#top"><i class="fa-solid fa-arrow-up"></i></a>
-		      </div>
-
-      	</div> <!-- /row -->     	
-   </footer>  
-
-   <div id="preloader"> 
-    	<div id="loader"></div>
-   </div> 
-
-   <!-- Java Script
-   ================================================== --> 
-   <script src="js/jquery-2.1.3.min.js"></script>
-   <script src="js/plugins.js"></script>
-   <script src="js/main.js"></script>
-     <script>
-    var typed = new Typed('#add_anim', {
-      strings: ['Elyas Moshirpanahi.','Machine Learning Engineer.','Data Scientist.', 'Fullstack Developer.'],
-      typeSpeed: 55,
-      backSpeed: 55,
-      loop:true
-    });
-  </script>
+<body>
+
+    <!-- OPENING BLADES -->
+    <div class="blade-cover blade-left"></div>
+    <div class="blade-cover blade-right"></div>
+
+    <!-- HERO SECTION -->
+    <header id="hero">
+        <div class="rain"></div>
+        <div class="retro-sun"></div>
+        <div class="cityscape"></div>
+        <div class="grid-floor"></div>
+        
+        <div class="hero-content">
+            <div class="kicker">GEN AI · LLMs · AGENTS · SYSTEMS</div>
+            <h1 class="main-title">ELYAS MOSHIRPANAHI</h1>
+            <p class="subtitle">SENIOR GENERATIVE AI ENGINEER</p>
+            
+            <div class="cta-group">
+                <a href="#projects" class="btn primary">View Projects</a>
+                <a href="#terminal-section" class="btn">Open Terminal</a>
+                <a href="#contact" class="btn">Connect</a>
+            </div>
+        </div>
+
+        <div class="car-container">
+            <!-- Stylized DeLorean SVG -->
+            <svg class="car-svg" viewBox="0 0 300 150" fill="none" stroke="cyan" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <defs>
+                    <filter id="glow">
+                        <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+                        <feMerge>
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+                <g filter="url(#glow)">
+                    <!-- Body Outline -->
+                    <path d="M20,110 L40,110 L50,80 L100,75 L200,75 L250,85 L280,110 L20,110 Z" stroke="#ff00ff" fill="rgba(0,0,0,0.8)"/>
+                    <!-- Roof/Glass -->
+                    <path d="M60,75 L80,50 L220,50 L240,78" stroke="#00ffff" fill="rgba(0,255,255,0.1)"/>
+                    <!-- Gullwing hint -->
+                    <line x1="150" y1="50" x2="150" y2="75" stroke="#00ffff" stroke-dasharray="4 2"/>
+                    <!-- Wheels -->
+                    <circle cx="60" cy="110" r="18" fill="#111" stroke="#333"/>
+                    <circle cx="240" cy="110" r="18" fill="#111" stroke="#333"/>
+                    <circle cx="60" cy="110" r="10" stroke="#ff00ff"/>
+                    <circle cx="240" cy="110" r="10" stroke="#ff00ff"/>
+                    <!-- Tail Light Strip -->
+                    <rect x="20" y="95" width="10" height="10" fill="#ff0000" stroke="none"/>
+                    <!-- Front Light -->
+                    <rect x="275" y="98" width="5" height="5" fill="#fff" stroke="none"/>
+                    <!-- Underglow -->
+                    <line x1="40" y1="125" x2="260" y2="125" stroke="#ff00ff" stroke-width="4" opacity="0.6"/>
+                </g>
+            </svg>
+            <div class="car-reflection"></div>
+        </div>
+    </header>
+
+    <!-- ABOUT SECTION -->
+    <section id="about">
+        <div class="container">
+            <h2 class="section-title">System Status</h2>
+            <div class="about-grid">
+                <div class="about-text">
+                    <p>I am a Senior Generative AI Engineer specializing in Large Language Models, Autonomous Agents, and Production Machine Learning Systems. With a deep background in full-stack engineering and algorithmic optimization, I bridge the gap between research-grade AI and scalable, real-world applications.</p>
+                    <p>My core focus is architecting robust RAG pipelines, optimizing inference infrastructure, and deploying agentic workflows that solve complex reasoning tasks. I don't just train models; I build the ecosystems they live in.</p>
+                </div>
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-num">4+</div>
+                        <div class="stat-label">Years ML/Dev Exp</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-num">1st</div>
+                        <div class="stat-label">Place AAIC Competition</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-num">20k+</div>
+                        <div class="stat-label">Users Impacted</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EXPERIENCE SECTION -->
+    <section id="experience">
+        <div class="container">
+            <h2 class="section-title">Experience Log</h2>
+            <div class="timeline">
+                
+                <div class="timeline-item">
+                    <h3 class="role">Machine Learning Engineer</h3>
+                    <span class="company">Tech / Stealth Startup</span>
+                    <span class="date">Feb 2023 – Present</span>
+                    <ul>
+                        <li>Architecting Generative AI solutions using PyTorch, LangChain, and Vector Databases.</li>
+                        <li>Deployed LLaMA-based agents for automated reasoning and data extraction tasks.</li>
+                        <li>Optimized inference latency by 40% through model quantization and ONNX runtime integration.</li>
+                        <li>Built end-to-end MLOps pipelines ensuring reproducibility and continuous evaluation.</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <h3 class="role">Full Stack Developer & Project Manager</h3>
+                    <span class="company">YIWU Dar Trading Co.</span>
+                    <span class="date">2021 – 2023</span>
+                    <ul>
+                        <li>Engineered a high-scale VPN platform ("SecureNet") serving thousands of concurrent users.</li>
+                        <li>Designed a robust MVC architecture in Laravel/PHP increasing system stability by 85%.</li>
+                        <li>Automated server management with Python & Bash cronjobs, reducing maintenance time by 3x.</li>
+                        <li>Led a cross-functional team to deliver features that drove 20% sales growth.</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <h3 class="role">PHP Developer & Web Designer</h3>
+                    <span class="company">Nika Herb</span>
+                    <span class="date">2019 – 2021</span>
+                    <ul>
+                        <li>Developed a custom e-commerce platform focusing on high-conversion UX/UI.</li>
+                        <li>Optimized database queries and caching strategies, handling high traffic spikes.</li>
+                        <li>Accelerated accumulated sales by 30% in the first week of launch.</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SKILLS SECTION -->
+    <section id="skills">
+        <div class="container">
+            <h2 class="section-title">Tech Stack</h2>
+            <div class="skills-grid">
+                
+                <div class="skill-category">
+                    <h4 class="skill-title">Generative AI & LLMs</h4>
+                    <div class="skill-tags">
+                        <span class="tag">PyTorch</span>
+                        <span class="tag">TensorFlow</span>
+                        <span class="tag">LangChain</span>
+                        <span class="tag">HuggingFace</span>
+                        <span class="tag">LlamaIndex</span>
+                        <span class="tag">RAG</span>
+                        <span class="tag">Fine-tuning (LoRA)</span>
+                        <span class="tag">OpenAI API</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h4 class="skill-title">Backend & Infra</h4>
+                    <div class="skill-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">FastAPI</span>
+                        <span class="tag">Docker</span>
+                        <span class="tag">Kubernetes</span>
+                        <span class="tag">PHP (Laravel)</span>
+                        <span class="tag">Node.js</span>
+                        <span class="tag">Redis</span>
+                        <span class="tag">Linux/Bash</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h4 class="skill-title">Data Science & Core ML</h4>
+                    <div class="skill-tags">
+                        <span class="tag">NumPy / Pandas</span>
+                        <span class="tag">Scikit-learn</span>
+                        <span class="tag">Computer Vision (OpenCV)</span>
+                        <span class="tag">Time Series (LSTM)</span>
+                        <span class="tag">Matplotlib</span>
+                        <span class="tag">Statsmodels</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- PROJECTS SECTION -->
+    <section id="projects">
+        <div class="container">
+            <h2 class="section-title">Mission Archives</h2>
+            <div class="projects-grid">
+                
+                <!-- Project 1 -->
+                <div class="project-card" onclick="toggleCard(this)">
+                    <h3 class="p-title">Market Sentinel (AAIC Winner)</h3>
+                    <div class="p-role">Algorithmic Trading Agent</div>
+                    <p class="p-desc">An LSTM-based time-series forecasting system that identified top performing stocks with high precision.</p>
+                    <div class="p-hidden">
+                        <p><strong>Challenge:</strong> Filtering noise from volatile market data across 300+ tickers.</p>
+                        <p><strong>Solution:</strong> Built a custom recurrent neural network (RNN/LSTM) pipeline for smart filtering and trend analysis.</p>
+                        <p><strong>Outcome:</strong> 1st Place in Max Profit category; delivered 20% portfolio increase.</p>
+                    </div>
+                    <div class="expand-hint">[ CLICK TO EXPAND ]</div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="project-card" onclick="toggleCard(this)">
+                    <h3 class="p-title">FaceCup Vision</h3>
+                    <div class="p-role">Computer Vision System</div>
+                    <p class="p-desc">Advanced facial recognition and verification system developed for the Amirkabir AI Competition.</p>
+                    <div class="p-hidden">
+                        <p><strong>Challenge:</strong> Handling occlusion and lighting variance in real-time streams.</p>
+                        <p><strong>Solution:</strong> Implemented CNN architectures optimized for edge cases and low-latency inference.</p>
+                        <p><strong>Outcome:</strong> High accuracy benchmarks in controlled and wild datasets.</p>
+                    </div>
+                    <div class="expand-hint">[ CLICK TO EXPAND ]</div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="project-card" onclick="toggleCard(this)">
+                    <h3 class="p-title">SecureNet Infrastructure</h3>
+                    <div class="p-role">High-Scale VPN Platform</div>
+                    <p class="p-desc">A distributed network privacy solution handling thousands of concurrent connections.</p>
+                    <div class="p-hidden">
+                        <p><strong>Challenge:</strong> Managing user sessions and server load balancing at scale.</p>
+                        <p><strong>Solution:</strong> Developed a custom MVC management panel with automated Python/Bash cronjobs for server rotation.</p>
+                        <p><strong>Outcome:</strong> 85% increase in stability and 20% sales growth.</p>
+                    </div>
+                    <div class="expand-hint">[ CLICK TO EXPAND ]</div>
+                </div>
+
+                <!-- Project 4 -->
+                <div class="project-card" onclick="toggleCard(this)">
+                    <h3 class="p-title">RAG Knowledge Agent</h3>
+                    <div class="p-role">GenAI Research</div>
+                    <p class="p-desc">Prototype specific-domain Q&A bot utilizing retrieval augmented generation.</p>
+                    <div class="p-hidden">
+                        <p><strong>Stack:</strong> LangChain, Pinecone, OpenAI, Streamlit.</p>
+                        <p><strong>Feature:</strong> Ingests technical documentation and provides cited, accurate answers with minimal hallucination.</p>
+                    </div>
+                    <div class="expand-hint">[ CLICK TO EXPAND ]</div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- TERMINAL SECTION -->
+    <section id="terminal-section">
+        <div class="container">
+            <h2 class="section-title">Interactive Terminal</h2>
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                    <div class="terminal-title">elyas@genai-server:~</div>
+                </div>
+                <div class="terminal-body" id="terminal-output">
+                    <div class="output-line">Welcome to ElyasOS v2.5.5 (GNU/Linux)</div>
+                    <div class="output-line">Type 'help' to see available commands.</div>
+                    <br>
+                    <div class="input-line">
+                        <span class="prompt">elyas@genai:~$</span>
+                        <input type="text" class="cmd-input" id="cmd-input" autocomplete="off" autofocus>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="contact">
+        <div class="container">
+            <h2 class="section-title">Initialize Uplink</h2>
+            <div class="social-links">
+                <a href="https://linkedin.com/in/elyasmoshirpanahi" target="_blank">LINKEDIN</a>
+                <a href="https://github.com/elyasmoshirpanahi" target="_blank">GITHUB</a>
+                <a href="mailto:contact@elyas.dev">EMAIL</a>
+            </div>
+            <p style="margin-top: 30px; color: #555; font-size: 0.8rem;">&copy; 2025 Elyas Moshirpanahi. System Safe.</p>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script>
+        // BLADE ANIMATION ON LOAD
+        window.onload = () => {
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+            }, 500);
+        };
+
+        // CARD EXPANSION
+        function toggleCard(card) {
+            card.classList.toggle('expanded');
+        }
+
+        // TERMINAL LOGIC
+        const input = document.getElementById('cmd-input');
+        const outputContainer = document.getElementById('terminal-output');
+        const inputLine = document.querySelector('.input-line');
+
+        const commands = {
+            'help': [
+                "Available commands:",
+                "- about: Display summary info",
+                "- list_experience: Show work history",
+                "- list_projects: Show key projects",
+                "- show_stack: List technical skills",
+                "- contact: Show contact details",
+                "- clear: Clear terminal"
+            ],
+            'about': [
+                "Elyas Moshirpanahi",
+                "Senior Generative AI Engineer.",
+                "Specializing in LLMs, Autonomous Agents, and Scalable Systems.",
+                "Based in: Global / Remote"
+            ],
+            'list_experience': [
+                "1. Machine Learning Engineer (2023-Present)",
+                "2. Full Stack Dev & PM @ YIWU Dar (2021-2023)",
+                "3. PHP Developer @ Nika Herb (2019-2021)"
+            ],
+            'list_projects': [
+                "* Market Sentinel (AAIC Winner) - LSTM Trading Bot",
+                "* FaceCup Vision - Identity Verification",
+                "* SecureNet VPN - High-Scale Infra",
+                "* RAG Knowledge Agent - Doc QA System"
+            ],
+            'show_stack': [
+                "LANGUAGES: Python, PHP, JavaScript, C++, Kotlin",
+                "AI/ML: PyTorch, TensorFlow, LangChain, LlamaIndex",
+                "INFRA: Docker, Kubernetes, Linux, AWS"
+            ],
+            'contact': [
+                "LinkedIn: linkedin.com/in/elyasmoshirpanahi",
+                "Email: contact@elyas.dev"
+            ]
+        };
+
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const cmd = this.value.trim().toLowerCase();
+                
+                // Add old input line to history
+                const historyLine = document.createElement('div');
+                historyLine.className = 'output-line';
+                historyLine.innerHTML = `<span style="color:#ff00ff; margin-right:10px;">elyas@genai:~$</span> ${this.value}`;
+                outputContainer.insertBefore(historyLine, inputLine);
+
+                // Process command
+                if (cmd === 'clear') {
+                    // Remove all output lines except the input line
+                    const lines = outputContainer.querySelectorAll('.output-line');
+                    lines.forEach(line => line.remove());
+                } else if (commands[cmd]) {
+                    commands[cmd].forEach(text => {
+                        const responseLine = document.createElement('div');
+                        responseLine.className = 'output-line';
+                        responseLine.style.color = '#ccc';
+                        responseLine.textContent = text;
+                        outputContainer.insertBefore(responseLine, inputLine);
+                    });
+                } else if (cmd !== '') {
+                    const errorLine = document.createElement('div');
+                    errorLine.className = 'output-line';
+                    errorLine.style.color = '#ff5f56';
+                    errorLine.textContent = `Command not found: ${cmd}. Type 'help' for list.`;
+                    outputContainer.insertBefore(errorLine, inputLine);
+                }
+
+                // Reset input and scroll
+                this.value = '';
+                outputContainer.scrollTop = outputContainer.scrollHeight;
+            }
+        });
+
+        // Focus terminal on click
+        document.querySelector('.terminal-window').addEventListener('click', () => {
+            input.focus();
+        });
+
+    </script>
 </body>
-
 </html>
