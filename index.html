@@ -202,7 +202,7 @@
             opacity: 0.5;
         }
 
-        /* GRID FLOOR */
+        /* GRID FLOOR - ENHANCED */
         .grid-floor {
             position: absolute;
             bottom: -100px;
@@ -210,12 +210,12 @@
             width: 200%;
             height: 50%; /* Perspective plane */
             background: 
-                linear-gradient(transparent 0%, var(--neon-purple) 2%, transparent 3%),
-                linear-gradient(90deg, transparent 0%, rgba(188, 19, 254, 0.3) 1%, transparent 2%);
+                linear-gradient(transparent 0%, var(--neon-pink) 2%, transparent 3%),
+                linear-gradient(90deg, transparent 0%, rgba(0, 255, 255, 0.4) 1%, transparent 2%);
             background-size: 100% 40px, 80px 100%;
             transform: perspective(500px) rotateX(60deg);
             z-index: 2;
-            box-shadow: 0 0 50px rgba(188, 19, 254, 0.3) inset;
+            box-shadow: 0 0 80px rgba(255, 0, 255, 0.4) inset;
             animation: gridMove 0.4s linear infinite;
         }
         @keyframes gridMove {
@@ -262,46 +262,51 @@
             to { background-position: 0 100px; }
         }
         
-        /* MOVING PALM TREES */
-        .palm-container {
+        /* RETRO PALMS STYLING */
+        .retro-palm-container {
             position: absolute;
-            bottom: 30%; /* Horizon */
-            left: 50%;
+            bottom: 10%; /* Grounded on the grid */
+            width: 250px; /* Large, prominent */
+            height: 500px;
+            z-index: 5; /* Behind the car, in front of city */
+            pointer-events: none;
+            opacity: 0;
+            animation: palmRise 2s ease-out 0.5s forwards;
+        }
+        .left-palm {
+            left: 5%;
+            transform-origin: bottom center;
+            transform: skewX(-5deg);
+        }
+        .right-palm {
+            right: 5%;
+            transform-origin: bottom center;
+            transform: skewX(5deg);
+        }
+        .palm-svg {
             width: 100%;
             height: 100%;
-            z-index: 4;
-            pointer-events: none;
-            transform: translateX(-50%);
-            perspective: 500px; /* Matches grid/road perspective */
+            filter: drop-shadow(0 0 10px rgba(188, 19, 254, 0.5));
         }
         
-        .palm {
+        @keyframes palmRise {
+            from { opacity: 0; transform: translateY(100px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* ENHANCED GRID & HORIZON */
+        .horizon-glow {
             position: absolute;
-            bottom: 0;
-            width: 120px;
-            height: 240px;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 200"><path fill="black" d="M45,200 L55,200 L50,50 Z M50,50 Q20,20 10,60 M50,50 Q80,20 90,60 M50,50 Q30,10 0,30 M50,50 Q70,10 100,30 M50,50 Q40,0 20,10 M50,50 Q60,0 80,10"/><path stroke="%23ff00ff" stroke-width="2" fill="none" d="M45,200 L50,50 L55,200"/></svg>');
-            background-size: contain;
-            background-repeat: no-repeat;
-            transform-origin: bottom center;
+            bottom: 30%;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background: linear-gradient(to top, var(--neon-pink), transparent);
+            z-index: 4;
+            opacity: 0.6;
+            filter: blur(20px);
         }
 
-        /* Palm Animations - Spawning wider apart to frame the road */
-        .palm.left { animation: movePalmLeft 3s linear infinite; }
-        .palm.right { animation: movePalmRight 3s linear infinite; }
-        .palm.left-delayed { animation: movePalmLeft 3s linear infinite 1.5s; }
-        .palm.right-delayed { animation: movePalmRight 3s linear infinite 1.5s; }
-
-        @keyframes movePalmLeft {
-            0% { transform: translate3d(-100px, 0, -1000px) scale(0.1); opacity: 0; }
-            20% { opacity: 1; }
-            100% { transform: translate3d(-900px, 100px, 0) scale(2.5); opacity: 1; }
-        }
-        @keyframes movePalmRight {
-            0% { transform: translate3d(100px, 0, -1000px) scale(0.1); opacity: 0; }
-            20% { opacity: 1; }
-            100% { transform: translate3d(900px, 100px, 0) scale(2.5); opacity: 1; }
-        }
 
         /* CONTENT LAYER */
         .hero-content {
@@ -365,38 +370,35 @@
         }
 
         .btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255,255,255,0.2);
-            padding: 12px 24px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid var(--neon-cyan);
+            padding: 14px 30px;
             color: #fff;
             font-family: var(--font-tech);
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             backdrop-filter: blur(5px);
             position: relative;
             overflow: hidden;
             cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+            transition: all 0.3s ease;
         }
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: 0.5s;
-        }
-        .btn:hover::before { left: 100%; }
         .btn:hover {
-            border-color: var(--neon-cyan);
-            box-shadow: 0 0 15px var(--neon-cyan);
-            transform: translateY(-2px);
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 40px var(--neon-cyan);
+            transform: translateY(-3px) scale(1.05);
         }
         .btn.primary {
             border-color: var(--neon-pink);
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.2);
         }
         .btn.primary:hover {
-            box-shadow: 0 0 15px var(--neon-pink);
+            background: var(--neon-pink);
+            color: #fff;
+            box-shadow: 0 0 40px var(--neon-pink);
         }
 
         /* DELOREAN CAR (REAR VIEW - RESIZED) */
@@ -677,18 +679,110 @@
         <div class="rain"></div>
         <div class="retro-sun"></div>
         <div class="cityscape"></div>
+        <div class="horizon-glow"></div>
         <div class="grid-floor"></div>
         
         <!-- DEDICATED ROAD -->
         <div class="road"></div>
         
-        <!-- MOVING PALMS (Perspective Trick) -->
-        <div class="palm-container">
-            <div class="palm left"></div>
-            <div class="palm right"></div>
-            <div class="palm left-delayed"></div>
-            <div class="palm right-delayed"></div>
+        <!-- RETROWAVE PALMS (Fixed framing) -->
+        <div class="retro-palm-container left-palm">
+            <svg class="palm-svg" viewBox="0 0 200 300" preserveAspectRatio="xMidYMax meet">
+                <defs>
+                    <linearGradient id="palm-trunk-grad" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stop-color="#000" />
+                        <stop offset="50%" stop-color="#1a0b2e" />
+                        <stop offset="100%" stop-color="#000" />
+                    </linearGradient>
+                    <filter id="palm-glow">
+                        <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                        <feMerge>
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+                <!-- Trunk (Segmented) -->
+                <path d="M95,300 L105,300 L100,50 Z" fill="url(#palm-trunk-grad)" stroke="none"/>
+                <g stroke="#bc13fe" stroke-width="1" fill="none" opacity="0.5">
+                    <path d="M96,280 L104,280" /><path d="M96.5,260 L103.5,260" />
+                    <path d="M97,240 L103,240" /><path d="M97.5,220 L102.5,220" />
+                    <path d="M98,200 L102,200" /><path d="M98.5,180 L101.5,180" />
+                    <path d="M99,160 L101,160" /><path d="M99.5,140 L100.5,140" />
+                </g>
+                
+                <!-- Leaves (Sharp, Angular, Cyan/Magenta Edges) -->
+                <g filter="url(#palm-glow)">
+                    <!-- Left Set -->
+                    <path d="M100,50 Q60,20 40,80" fill="none" stroke="#00ffff" stroke-width="2" />
+                    <path d="M100,50 Q60,20 40,80 L50,85 L100,55 Z" fill="#000" opacity="0.8"/>
+
+                    <path d="M100,50 Q50,0 20,30" fill="none" stroke="#ff00ff" stroke-width="2" />
+                    <path d="M100,50 Q50,0 20,30 L28,38 L100,55 Z" fill="#000" opacity="0.8"/>
+                    
+                    <path d="M100,50 Q70,-20 30,0" fill="none" stroke="#00ffff" stroke-width="2" />
+                    <path d="M100,50 Q70,-20 30,0 L40,10 L100,55 Z" fill="#000" opacity="0.8"/>
+
+                    <!-- Right Set -->
+                    <path d="M100,50 Q140,20 160,80" fill="none" stroke="#ff00ff" stroke-width="2" />
+                    <path d="M100,50 Q140,20 160,80 L150,85 L100,55 Z" fill="#000" opacity="0.8"/>
+
+                    <path d="M100,50 Q150,0 180,30" fill="none" stroke="#00ffff" stroke-width="2" />
+                    <path d="M100,50 Q150,0 180,30 L172,38 L100,55 Z" fill="#000" opacity="0.8"/>
+
+                    <path d="M100,50 Q130,-20 170,0" fill="none" stroke="#ff00ff" stroke-width="2" />
+                    <path d="M100,50 Q130,-20 170,0 L160,10 L100,55 Z" fill="#000" opacity="0.8"/>
+                    
+                    <!-- Top -->
+                    <path d="M100,50 Q100,-30 80,-10" fill="none" stroke="#00ffff" stroke-width="2" />
+                    <path d="M100,50 Q100,-30 120,-10" fill="none" stroke="#ff00ff" stroke-width="2" />
+                </g>
+            </svg>
         </div>
+
+        <div class="retro-palm-container right-palm">
+            <svg class="palm-svg" viewBox="0 0 200 300" preserveAspectRatio="xMidYMax meet" style="transform: scaleX(-1);">
+                <use href="#palm-trunk-grad" />
+                <use href="#palm-glow" />
+                <!-- Re-using paths via the SVG content above, just flipped -->
+                <!-- Trunk (Segmented) -->
+                <path d="M95,300 L105,300 L100,50 Z" fill="url(#palm-trunk-grad)" stroke="none"/>
+                <g stroke="#bc13fe" stroke-width="1" fill="none" opacity="0.5">
+                    <path d="M96,280 L104,280" /><path d="M96.5,260 L103.5,260" />
+                    <path d="M97,240 L103,240" /><path d="M97.5,220 L102.5,220" />
+                    <path d="M98,200 L102,200" /><path d="M98.5,180 L101.5,180" />
+                    <path d="M99,160 L101,160" /><path d="M99.5,140 L100.5,140" />
+                </g>
+                
+                <!-- Leaves (Sharp, Angular, Cyan/Magenta Edges) -->
+                <g filter="url(#palm-glow)">
+                    <!-- Left Set -->
+                    <path d="M100,50 Q60,20 40,80" fill="none" stroke="#00ffff" stroke-width="2" />
+                    <path d="M100,50 Q60,20 40,80 L50,85 L100,55 Z" fill="#000" opacity="0.8"/>
+
+                    <path d="M100,50 Q50,0 20,30" fill="none" stroke="#ff00ff" stroke-width="2" />
+                    <path d="M100,50 Q50,0 20,30 L28,38 L100,55 Z" fill="#000" opacity="0.8"/>
+                    
+                    <path d="M100,50 Q70,-20 30,0" fill="none" stroke="#00ffff" stroke-width="2" />
+                    <path d="M100,50 Q70,-20 30,0 L40,10 L100,55 Z" fill="#000" opacity="0.8"/>
+
+                    <!-- Right Set -->
+                    <path d="M100,50 Q140,20 160,80" fill="none" stroke="#ff00ff" stroke-width="2" />
+                    <path d="M100,50 Q140,20 160,80 L150,85 L100,55 Z" fill="#000" opacity="0.8"/>
+
+                    <path d="M100,50 Q150,0 180,30" fill="none" stroke="#00ffff" stroke-width="2" />
+                    <path d="M100,50 Q150,0 180,30 L172,38 L100,55 Z" fill="#000" opacity="0.8"/>
+
+                    <path d="M100,50 Q130,-20 170,0" fill="none" stroke="#ff00ff" stroke-width="2" />
+                    <path d="M100,50 Q130,-20 170,0 L160,10 L100,55 Z" fill="#000" opacity="0.8"/>
+                    
+                    <!-- Top -->
+                    <path d="M100,50 Q100,-30 80,-10" fill="none" stroke="#00ffff" stroke-width="2" />
+                    <path d="M100,50 Q100,-30 120,-10" fill="none" stroke="#ff00ff" stroke-width="2" />
+                </g>
+            </svg>
+        </div>
+
         
         <div class="hero-content">
             <div class="kicker">GEN AI · LLMs · AGENTS · SYSTEMS</div>
