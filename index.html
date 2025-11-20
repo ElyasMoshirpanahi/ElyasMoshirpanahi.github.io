@@ -1,1056 +1,868 @@
 <!DOCTYPE html>
-<!--[if IE 8 ]><html class="no-js oldie ie8" lang="en"> <![endif]-->
-<!--[if IE 9 ]><html class="no-js oldie ie9" lang="en"> <![endif]-->
-<!--[if (gte IE 9)|!(IE)]><!--><html class="no-js" lang="en"> <!--<![endif]-->
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senior GenAI Engineer | Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --panel-color: #0a0a0a;
+            --text-color: #e0e0e0;
+            --neon-cyan: #00f3ff;
+            --neon-magenta: #ff00ff;
+            --neon-purple: #bc13fe;
+            --neon-green: #0aff00;
+            --grid-color: rgba(0, 243, 255, 0.1);
+            --font-heading: 'Orbitron', sans-serif;
+            --font-body: 'Rajdhani', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+        }
 
-   <!--- basic page needs
-   ================================================== -->
-   <meta charset="utf-8">
-	<title>Elyas Moshirpanahi</title>
-	<meta name="description" content="">  
-	<meta name="author" content="">
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-   <!-- mobile specific metas
-   ================================================== -->
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
 
- 	<!-- CSS
-   ================================================== -->
-   <link rel="stylesheet" href="css/base.css">  
-   <link rel="stylesheet" href="css/main.css">
-   <link rel="stylesheet" href="css/vendor.css">     
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        /* --- BACKGROUND EFFECTS --- */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -2;
+            perspective: 500px;
+            transform: scale(1.2);
+            opacity: 0.5;
+        }
 
+        .fog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(188, 19, 254, 0.1), transparent 70%);
+            z-index: -1;
+            animation: pulseFog 10s infinite alternate;
+            pointer-events: none;
+        }
 
-   <!-- script
-   ================================================== -->   
-	<script src="js/modernizr.js"></script>
-	<script src="js/pace.min.js"></script>
-	<script src="https://unpkg.com/typed.js@2.0.132/dist/typed.umd.js"></script>
-   <!-- favicons
-	================================================== -->
-	<link rel="icon" type="image/png" href="https://jesse-zhou.com/assets/images/0adf2932e78e7213.png">
+        @keyframes pulseFog {
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 0.6; transform: scale(1.1); }
+        }
 
+        /* --- TYPOGRAPHY & UTILS --- */
+        h1, h2, h3 {
+            font-family: var(--font-heading);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .neon-text-cyan {
+            color: var(--neon-cyan);
+            text-shadow: 0 0 5px var(--neon-cyan), 0 0 10px var(--neon-cyan);
+        }
+
+        .neon-text-magenta {
+            color: var(--neon-magenta);
+            text-shadow: 0 0 5px var(--neon-magenta), 0 0 10px var(--neon-magenta);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* --- LOADING BLADES --- */
+        .blade-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            display: flex;
+            pointer-events: none;
+        }
+
+        .blade {
+            width: 50%;
+            height: 100%;
+            background: #000;
+            border-right: 2px solid var(--neon-cyan); /* Left blade border */
+            position: relative;
+            transition: transform 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .blade:last-child {
+            border-right: none;
+            border-left: 2px solid var(--neon-magenta);
+        }
+
+        .blade-overlay.open .blade:first-child {
+            transform: translateX(-100%);
+        }
+        .blade-overlay.open .blade:last-child {
+            transform: translateX(100%);
+        }
+
+        /* --- NAV --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 0;
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: #fff;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            margin-left: 30px;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--neon-cyan);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--neon-cyan);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            padding-top: 60px;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Glitch Effect Keyframes */
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        .glitch {
+            animation: glitch 2s infinite;
+            animation-delay: 3s; /* Subtle occasional glitch */
+        }
+
+        .hero-content h2 {
+            font-size: 1.5rem;
+            color: var(--neon-magenta);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .cta-buttons {
+            margin-top: 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: transparent;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            font-family: var(--font-mono);
+            font-weight: bold;
+            text-decoration: none;
+            margin: 0 10px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+            clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%);
+        }
+
+        .btn:hover {
+            background: rgba(0, 243, 255, 0.1);
+            box-shadow: 0 0 15px var(--neon-cyan);
+            text-shadow: 0 0 5px var(--neon-cyan);
+        }
+
+        .btn-secondary {
+            border-color: var(--neon-magenta);
+            color: var(--neon-magenta);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 0, 255, 0.1);
+            box-shadow: 0 0 15px var(--neon-magenta);
+            text-shadow: 0 0 5px var(--neon-magenta);
+        }
+
+        /* --- SECTION GENERAL --- */
+        section {
+            padding: 100px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            border-left: 5px solid var(--neon-cyan);
+            padding-left: 20px;
+            background: linear-gradient(90deg, rgba(0, 243, 255, 0.1), transparent);
+        }
+
+        /* --- ABOUT --- */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .bio-card {
+            background: var(--panel-color);
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .bio-card::before {
+            content: '';
+            position: absolute;
+            top: -1px; left: -1px;
+            width: 20px; height: 20px;
+            border-top: 2px solid var(--neon-cyan);
+            border-left: 2px solid var(--neon-cyan);
+        }
+
+        .bio-card::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; right: -1px;
+            width: 20px; height: 20px;
+            border-bottom: 2px solid var(--neon-cyan);
+            border-right: 2px solid var(--neon-cyan);
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 3rem;
+            font-family: var(--font-heading);
+            color: var(--neon-magenta);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+
+        /* --- SKILLS --- */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .skill-category {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(188, 19, 254, 0.3);
+            padding: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .skill-category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(188, 19, 254, 0.2);
+            border-color: var(--neon-purple);
+        }
+
+        .skill-category h3 {
+            color: var(--neon-purple);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tag {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            padding: 5px 10px;
+            background: rgba(188, 19, 254, 0.1);
+            border: 1px solid rgba(188, 19, 254, 0.3);
+            color: #ddd;
+        }
+
+        /* --- PROJECTS (BLADE STYLE) --- */
+        .project-card {
+            background: var(--panel-color);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .project-card:hover {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
+        }
+
+        .project-header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(90deg, rgba(0, 243, 255, 0.05), transparent);
+        }
+
+        .project-title {
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+            color: #fff;
+        }
+
+        .project-status {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--neon-green);
+            border: 1px solid var(--neon-green);
+            padding: 2px 8px;
+            border-radius: 2px;
+        }
+
+        .project-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
+            background: rgba(0, 0, 0, 0.5);
+            padding: 0 20px;
+        }
+
+        .project-card.expanded .project-details {
+            max-height: 500px; /* Approximated max height */
+            padding-bottom: 20px;
+            border-top: 1px solid rgba(0, 243, 255, 0.2);
+        }
+
+        .project-card.expanded .project-header {
+            background: linear-gradient(90deg, rgba(0, 243, 255, 0.2), transparent);
+        }
+
+        .detail-section {
+            margin-top: 15px;
+        }
+
+        .detail-label {
+            color: var(--neon-cyan);
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .toggle-icon {
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .project-card.expanded .toggle-icon {
+            transform: rotate(180deg);
+            color: var(--neon-cyan);
+        }
+
+        /* --- TERMINAL --- */
+        .terminal-window {
+            background: #000;
+            border: 2px solid #333;
+            border-radius: 5px;
+            font-family: var(--font-mono);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .terminal-header {
+            background: #222;
+            padding: 10px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .red { background: #ff5f56; }
+        .yellow { background: #ffbd2e; }
+        .green { background: #27c93f; }
+
+        .terminal-body {
+            padding: 20px;
+            color: var(--neon-green);
+            min-height: 300px;
+            font-size: 0.9rem;
+        }
+
+        .command-line {
+            margin-bottom: 10px;
+        }
+        .prompt { color: var(--neon-magenta); margin-right: 10px; }
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background: var(--neon-green);
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* --- CONTACT --- */
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            font-size: 2rem;
+        }
+
+        .contact-links a {
+            color: #fff;
+            transition: color 0.3s, text-shadow 0.3s;
+            text-decoration: none;
+        }
+
+        .contact-links a:hover {
+            color: var(--neon-cyan);
+            text-shadow: 0 0 15px var(--neon-cyan);
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #555;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .about-grid { grid-template-columns: 1fr; }
+            .hero-content h1 { font-size: 2.5rem; }
+            .stats-container { flex-wrap: wrap; gap: 20px; justify-content: center; }
+        }
+    </style>
 </head>
-
-<body id="top">
-<!-- <script>
-window.onload = function () {
-  var span = document.createElement('span');
-
-  span.className = 'fa';
-  span.style.display = 'none';
-  document.body.insertBefore(span, document.body.firstChild);
-  
-  alert(window.getComputedStyle(span, null).getPropertyValue('font-family'));
-    
-  document.body.removeChild(span);
-};
-</script> -->
-	<!-- header 
-   ================================================== -->
-   <header>   	
-   	<div class="row">
-
-   		<div class="top-bar">
-   			<a class="menu-toggle" href="#"><span>Menu</span></a>
-		   	<nav id="main-nav-wrap">
-					<ul class="main-navigation">
-						<li class="current"><a class="smoothscroll"  href="#intro" title="">Home</a></li>
-						<li><a class="smoothscroll"  href="#about" title="">About</a></li>
-						<li><a class="smoothscroll"  href="#resume" title="">Resume</a></li>
-						<li><a class="smoothscroll"  href="#portfolio" title="">Portfolio</a></li>
-						<li><a class="smoothscroll"  href="#services" title="">Services</a></li>					
-						<li><a class="smoothscroll"  href="#contact" title="">Contact</a></li>				
-					</ul>
-				</nav>    		
-   		</div> <!-- /top-bar --> 
-   		
-   	</div> <!-- /row --> 		
-   </header> <!-- /header -->
-
-	<!-- intro section
-   ================================================== -->
-   <section id="intro">   
-
-   	<div class="intro-overlay"></div>	
-
-   	<div class="intro-content">
-   		<div class="row">
-
-   			<div class="col-twelve">
-
-	   			<h5>Hello World.</h5>
-				<h1 style="font-size: 77px !important">I'm <span id="add_anim"></span></h1>
-
-	   			<a class="button stroke smoothscroll" href="#about" title="">More About Me</a>
-
-	   		</div>  
-   			
-   		</div> <i class=""></i>
-   	</div> <!-- /intro-content --> 
-
-   	<ul class="intro-social">        
-         <li><a class="git" href="https://github.com/elyasmoshirpanahi"><i class="my_anim fa-brands fa-github    fa-1x fa-fade"></i></a></li>
-         <li><a class="kaggle" href="https://www.kaggle.com/elyasmoshirpanahi"><i class="my_anim fa-brands fa-kaggle    fa-1x fa-fade"></i></a></li>
-         <li><a class="linkedin" href="https://www.linkedin.com/in/elyasmoshirpanahi/"><i class="my_anim fa-brands fa-linkedin  fa-1x fa-fade"></i></a></li>
-         <li><a class="my_insta" href="https://www.instagram.com/elyasmoshirpanahe"><i class="my_anim fa-brands fa-instagram  fa-1x fa-fade"></i></a></li>
-<!--          <li><a href="#"><i class="my_anim fa-brands fa-dribbble  fa-1x fa-fade"></i></a></li>
-         <li><a href="#"><i class="my_anim fa-brands fa-instagram fa-1x fa-fade"></i></a></li> -->
-      </ul> <!-- /intro-social -->      	
-
-   </section> <!-- /intro -->
-
-
-   <!-- about section
-   ================================================== -->
-   <section id="about">  
-
-   	<div class="row section-intro">
-   		<div class="col-twelve">
-
-   			<h5>About</h5>
-   			<h1>1% Better Everyday...</h1>
-
-   			<div class="intro-info">
-
-   				<img src="images/P1.jpg" alt="Profile Picture" style="box-shadow: 0px 0px 20px 2px #358df5;">
-
-   				<p class="lead">Starting from C++ as a beginer brings back a lot of memories,but a bigger leap for me was my activites in web development world which landed my first job.<br>Now? I am  in the path of using AI technologies turning dreams into reality!
-   				</p>
-   			</div>   			
-
-   		</div>   		
-   	</div> <!-- /section-intro -->
-
-   	<div class="row about-content">
-
-   		<div class="col-six tab-full">
-
-   			<h3>Profile</h3>
-   			<p>Passionate about learning latest Machine learning technologies and implementing them in real life scenarios.<br><i>Life's too short?  <b>I,ll do it anyway!</b></i></p>
-
-<!--    			<ul class="info-list">
-   				<li>
-   					<strong>Fullname:</strong>
-   					<span>Elyas Moshirpanahi</span>
-   				</li>
-   				<li>
-   					<strong>Birth Date:</strong>
-   					<span>May 06, 1997</span>
-   				</li>
-   				<li>
-   					<strong>Job:</strong>
-   					<span>Freelancer, Fullstack Developer</span>
-   				</li>
-   				<li>
-   					<strong>Email:</strong>
-   					<span>elyasmoshirpanahe1376@gmail.com</span>
-   				</li>
-
-   			</ul> <!-- /info-list -->
-			</div>
-
-   		<div class="col-six tab-full">
-
-   			<h3>Skills</h3>
-   			<p>I have 5+ years of experience in programming with various languages such as Python , PHP,etc, and most libraries required for ML tasks which bellow I,ll list them.</p>
-   		</div>
-<hr>
-		
-				<div class="col-six tab-full">
-	   			<h4>Programming Languages</h4>
-	   			<strong>Expert:</strong>
-					<ul>
-					   <li>Python</li>
-					   <li>PHP (Laravel)</li>
-					</ul>
-
-	   			<strong>Sufficent :</strong>
-					<ul>
-					   <li>Js , Jquery , Node.js</li>
-					   <li>C# (Winforms)</li>
-					   <li>Kotlin</li>
-					</ul>
-					
-<!-- 	   			<strong>Intermediate :</strong>
-					<ul>
-					   <li>GO</li>
-					   <li>Bash</li>
-					   <li>C/C++</li>
-					</ul> -->
-				 <strong>DBs :</strong>
-					<ul>
-					   <li>MySQL</li>
-					   <li>MongoDB</li>
-					</ul>
-				</div>
-
-				<div class="col-six tab-full">
-	   			<h4>My favorite Machine Learning libraries</h4>
-					<ul>
-					   <li>Pytorch</li>
-					   <li>Tensorflow</li>
-					   <li>Numpy , Pandas , Seaborn , Matplotlib , scipy</li>
-					   <li>OpenCV</li>
-					   <li>Scikit Learn , Statsmodels , Theano</li>
-					</ul>
-
-					<h4>Other Skills</h4>
-					<ul>
-					   <li>Git , Virtual env , Docker</li>
-					   <li>Linux</li>
-					   <li>Arduino Programming</li>
-					</ul>
-				</div>
-				<hr>
-				<div class="col-six tab-full">
-					<h5>Licenses & certifications</h5>
-						<ul id="licenses">
-							<li><a href="https://drive.google.com/file/d/1gB6o2aOtMDc8Qskn7BBFBH3Gi6ggnWh-/view">German Language (TestDaf L:4,H:4,S:3,S:4)</a></li>
-						   <li><a href="https://www.coursera.org/account/accomplishments/specialization/certificate/BDBSWRK29NFU">Machine Learning Specialization (3 Courses)</a></li>
-						   <li><a href="https://www.coursera.org/account/accomplishments/specialization/certificate/BDBSWRK29NFU">Deep Learning Specialization (5 Courses)</a></li>
-						   <li><a href="https://drive.google.com/file/d/1H6rGVGuQtunUoUz1pOLVtL3B3xeyXP8d/view">Amir Kabir Artificial Intelligence Competition</a></li>
-						   <li><a href="https://drive.google.com/file/d/12Fk3jFsMiUiIJrwYRRbdp3xNcjkNJz6D/view">Uok National Robotic Workshop</a></li>
-						   <li><a href="https://drive.google.com/file/d/1-MBiPz7s9Xhq-Ah-bTEVj6NwHL4O7zsZ/view">Deep Learning: Zero To Hero</a></li>
-						   <li><a href="https://drive.google.com/file/d/1-A7XxKObzxXiLsZpP1warJRyOkdJHAd5/view">Machine Learning and Data Science: Zero to Hero</a></li>
-						   <li><a href="https://www.udemy.com/course/python-data-science-machine-learning-bootcamp/">Complete 2022 Data Science & Machine Learning Bootcamp</a></li>
-						   <li><a href="https://www.udemy.com/course/artificial-intelligence-ars/">Artificial Intelligence (ARS): Build the Most Powerful AI</a></li>
-						   <li><a href="https://www.udemy.com/course/computer-vision-a-z/">Deep Learning and Computer Vision A-Z™: OpenCV, SSD & GANs</a></li>
-							<li><a href="https://www.udemy.com/course/python-for-time-series-data-analysis/">Python for Time Series Data Analysis</a></li>
-
-
-						</ul>
-				</div>
-				<div class="col-six tab-full">
-					<h5>Honors & awards</h5>
-						<ul>
-						   <li>Achieved 1st in  AAIC Competition in maximum profit</li>
-						   <li>Achieved 3rd in  AAIC Competition in Average profit</li>
-						   <li>Achieved 2nd in  Iran's national robotic workshop among 1000 competitors</li>
-						   <li>Achieved 1st team in National Movement Festival among 90 teams</li>
-						   <li>Achieved 1st student in  SI (Soroush institute) Tofel test</li>
-						</ul>
-				</div>
-   	</div>
-   	<div class="row button-section">
-   		<div class="col-twelve">
-   			<a href="#contact" title="Hire Me" class="button stroke smoothscroll">Hire Me</a>
-   			<a href="https://drive.google.com/u/0/uc?id=1zkvkHSvIWuMcyEfk0ggefNJiRdpfeSiE&export=download" title="Download CV" class="button button-primary" target="_blank">Download CV</a>
-   		</div>   		
-   	</div>
-
-   </section> <!-- /process-->    
-
-
-   <!-- resume Section
-   ================================================== -->
-	<section id="resume" class="grey-section">
-
-		<div class="row section-intro">
-   		<div class="col-twelve">
-
-   			<h5>Resume</h5>
-   			<h1>More of my credentials.</h1>
-
-   			<p class="lead">The demonostration of works i have done in the past as well as my educational background.</p>
-
-   		</div>   		
-   	</div> <!-- /section-intro--> 
-
-   	<div class="row resume-timeline">
-
-   		<div class="col-twelve resume-header">
-
-   			<h2>Work Experience</h2>
-
-   		</div> <!-- /resume-header -->
-
-   		<div class="col-twelve">
-
-   			<div class="timeline-wrap">
-
-   				<div class="timeline-block">
-
-	   				<div class="timeline-ico">
-	   					<i class="fa fa-briefcase"></i>
-	   				</div>
-
-	   				<div class="timeline-header">
-	   					<h3>Machine Learning engineer</h3>
-	   					<p>February 2023 - Present</p>
-	   				</div>
-
-	   				<div class="timeline-content">
-	   					<h4>FRVT Computer vision challange</h4>
-	   					<p>Working on a 7 level  face detection , ID confirmation ,Image segmentation and general KYC problem </p>
-	   				</div>
-
-	   			</div> <!-- /timeline-block -->
-
-   				<div class="timeline-block">
-
-	   				<div class="timeline-ico">
-	   					<i class="fa fa-briefcase"></i>
-	   				</div>
-
-	   				<div class="timeline-header">
-	   					<h3>Machine Learning engineer</h3>
-	   					<p>November 2021 - February 2022</p>
-	   				</div>
-
-	   				<div class="timeline-content">
-	   					<h4>Stock Market Prediction</h4>
-	   					<p>Achieved first place in maximum profit, resulting in a 20% increase for our shareholders.Completed second place in predicting overall indices.Delivered smart filtering system using LSTM and timeseries to list the top 10 stocks from 300..</p>
-	   				</div>
-
-	   			</div> <!-- /timeline-block -->
-
-	   			<div class="timeline-block">
-
-	   				<div class="timeline-ico">
-	   					<i class="fa fa-briefcase"></i>
-	   				</div>
-
-	   				<div class="timeline-header">
-	   					<h3>Full Stack Developer | Project Manager</h3>
-	   					<p>February 2020 - May 2021</p>
-	   				</div>
-
-	   				<div class="timeline-content">
-	   					<h4>YIWU dar tradingco.ltd</h4>
-	   					<p>Deployed a VPN platform from scratch with Efficient business logic, and user-friendly client apps that led to sales growth by 20%.Engineered robust MVC pattern as software architecture concluding in 85% increase in app stability.Simplified user-management system using cronjob automations, python and bash programming which tripled the speed of management.Organized VPN-server distribution for faster response times (with 4ms ping).</p>
-	   				</div>
-
-	   			</div> <!-- /timeline-block -->
-
-	   			<div class="timeline-block">
-
-	   				<div class="timeline-ico">
-	   					<i class="fa fa-briefcase"></i>
-	   				</div>
-
-	   				<div class="timeline-header">
-	   					<h3>PHP Developer | Web Designer</h3>
-	   					<p>October 2019 - Janurary 2020</p>
-	   				</div>
-
-	   				<div class="timeline-content">
-	   					<h4>Nika herb</h4>
-	   					<p>Configured user-friendly UX/UI and leveraging customer engagement which expanded yearly APY profit up to $20k.
-	   						Formulated quick, reliable and secure products with high performing infrastructure resulting in ease of handling more than 3000 requests per seconds.Accelerated accumulated sales by 30% in just the first week.</p>
-	   				</div>
-
-	   			</div> <!-- /timeline-block -->
-
-   			</div> <!-- /timeline-wrap -->   			
-
-   		</div> <!-- /col-twelve -->
-   		
-   	</div> <!-- /resume-timeline -->
- 	
-   	<div class="row resume-timeline">
-			<hr style="border: dotted 5px;
-			    border-bottom: none;
-			    width: 100%;
-			    color: #363554;">  
-   		<div class="col-twelve resume-header">
-
-   			<h2>Education</h2>
-
-   		</div> <!-- /resume-header -->
-
-   		<div class="col-twelve">
-
-   			<div class="timeline-wrap">
-
-
-	   			<div class="timeline-block">
-
-	   				<div class="timeline-ico">
-	   					<i class="fa fa-graduation-cap"></i>
-	   				</div>
-
-	   				<div class="timeline-header">
-	   					<h3>Bachelor Degree</h3>
-	   					<p>September 2022 - present</p>
-	   				</div>
-
-	   				<div class="timeline-content">
-	   					<h4>Plus mint </h4>
-	   					<p>Studying basis of data science and  AI at University of Saarland ,  Saarbrücken, Germany</p>
-	   				</div>
-
-	   			</div> <!-- /timeline-block -->
-
-	   			<div class="timeline-block">
-
-	   				<div class="timeline-ico">
-	   					<i class="fa fa-graduation-cap"></i>
-	   				</div>
-
-	   				<div class="timeline-header">
-	   					<h3>Bachelor Degree</h3>
-	   					<p>September 2016 - June 2020</p>
-	   				</div>
-
-	   				<div class="timeline-content">
-	   					<h4>Agriculture</h4>
-	   					<p>Studied Agriculture Genetic Engineering at University of Kurdistan , Iran , Sanandaj </p>
-	   				</div>
-
-	   			</div> <!-- /timeline-block -->
-
-   			</div> <!-- /timeline-wrap -->   			
-
-   		</div> <!-- /col-twelve -->
-   		
-   	</div> <!-- /resume-timeline -->
-	</section> <!-- /features -->
-
-
-	<!-- Portfolio Section
-   ================================================== -->
-	<section id="portfolio">
-
-		<div class="row section-intro">
-   		<div class="col-twelve">
-
-   			<h5>Portfolio</h5>
-   			<h1>Check Out Some of My Works and Projects.</h1>
-
-   			<p class="lead">Here are some of past project that i have been working on and some other more is coming soon!</p>
-
-   		</div>   		
-   	</div> <!-- /section-intro--> 
-
-   	<div class="row portfolio-content">
-
-   		<div class="col-twelve">
-
-   			<!-- portfolio-wrapper -->
-	         <div id="folio-wrapper" class="block-1-2 block-mob-full stack">
-
-	         	<div class="bgrid folio-item">
-	               <div class="item-wrap">
-	               	<img  src="images/portfolio/facecup.jpg" alt="facecup" >
-	                  <a href="#modal-01" class="overlay">	                  	           
-	                     <div class="folio-item-table">
-	                     	<div class="folio-item-cell">
-		     					       <h3 class="folio-title">Face cup competition</h3>	     					    
-		     					    	 <span class="folio-types">
-		     					       	  Computer vision
-		     					       </span>
-		     					   </div>	                      	
-	                     </div>                    
-	                  </a>
-	               </div>	               
-	        		</div> <!-- /folio-item -->
-	        		<div class="bgrid folio-item">
-	               <div class="item-wrap">
-	               	<img src="images/portfolio/AAIC.jpg" alt="Amirkabir artificial intelligence Competition" >
-	               	<a href="#modal-02" class="overlay">              		                  
-	                     <div class="folio-item-table">
-	                     	<div class="folio-item-cell">
-	                     		<h3 class="folio-title">Amirkabir AI Competition</h3>	     					    
-		     					    	<span class="folio-types">
-		     					       	  Deep learning and Time series
-		     					      </span>		     		
-		     					   </div> 	                      	
-	                     </div>                    
-	                  </a>
-	               </div>
-	        		</div> <!-- /folio-item -->
-
-	            <div class="bgrid folio-item">
-	               <div class="item-wrap">
-	               	<img src="images/portfolio/darvpn.png"alt="Darvpn">
-	                  <a href="#modal-03" class="overlay">             		                  
-	                     <div class="folio-item-table">
-	                     	<div class="folio-item-cell">
-	                     		<h3 class="folio-title">Darvpn</h3>	     					    
-		     					    	<span class="folio-types">
-		     					       	  Fullstack Developer | Project Manager
-		     					      </span>		     		
-		     					   </div> 	                      	
-	                     </div>                    
-	                  </a>
-	               </div>
-	        		</div> <!-- /folio-item -->
-
-	            <div class="bgrid folio-item">
-	               <div class="item-wrap">
-	               	<img src="images/portfolio/Deutsch_podcast.jpg" alt="DeutschePodcasts">
-	                  <a href="#modal-04" class="overlay">                  	                 
-	                     <div class="folio-item-table">
-	                     	<div class="folio-item-cell">
-	                     		<h3 class="folio-title">Auto German podcasing</h3>	     					    
-		     					    	<span class="folio-types">
-		     					       	  Python | Webscarping | Automation | Telegram bot api
-		     					      </span>		     		
-		     					   </div>  	                      	
-	                     </div>                    
-	                  </a>
-	               </div>
-	        		</div> <!-- /folio-item -->     
-
-	        		<div class="bgrid folio-item">
-	               <div class="item-wrap">
- 	              	<img src="images/portfolio/math_garden.png" alt="Math Garden">
-	                  <a href="#modal-05" class="overlay">             		                  
-	                     <div class="folio-item-table">
-	                     	<div class="folio-item-cell">
-	                     		<h3 class="folio-title">Math Garden</h3>	     					    
-		     					    	<span class="folio-types">
-		     					       	  Computer vision 
-		     					      </span>		     		
-		     					   </div> 	                      	
-	                     </div>                    
-	                  </a>
-	               </div>
-	        		</div> <!-- /folio-item -->
-
-	            <div class="bgrid folio-item">
-	               <div class="item-wrap">
-	               	<img src="images/portfolio/nikaherb.jpg" alt="Nika Herb">
-	                  <a href="#modal-06" class="overlay">
-	                     <div class="folio-item-table">
-	                     	<div class="folio-item-cell">
-	                     		<h3 class="folio-title">Nika Herb</h3>	     					    
-		     					    	<span class="folio-types">
-		     					       	  Fullstack Web developer
-		     					      </span>		     		
-		     					   </div>	                      	
-	                     </div>                    
-	                  </a>
-	               </div>
-	        		</div> <!-- /folio-item -->   
-
-	            <!-- modal popups - begin
-	            ============================================================= -->
-	            <div id="modal-01" class="popup-modal slider mfp-hide">	
-
-				     	<div class="media">
-				     		<img src="https://facecup.ir/wp-content/uploads/2022/12/Face-Cup_Animation_1.gif" style="background:#16155b;" alt="Facecup"/>
-				     	</div>      	
-
-					   <div class="description-box">
-					      <h4>Facecup</h4>		      
-					      <p>Face cup competition based on <b><a href="https://en.wikipedia.org/wiki/Face_Recognition_Vendor_Test">FRVT</a></b> standard which consist of 7 stages in total in which we develop machine learning models for passiv and active detection tasks such as: Open mouth detection , multi id detection ,  Face cover detection , Id confirmation , etc.</p>
-
-					      <div class="categories">Computer vision</div>			               
-					   </div>
-
-			         <div class="link-box">
-			            <a href="http://www.facecup.ir" target = "_blank">Details</a>
-					      <a href="#" class="popup-modal-dismiss">Close</a>
-			         </div>		      
-
-				   </div> <!-- /modal-01 -->
-				   <div id="modal-02" class="popup-modal slider mfp-hide">
-				     	<div class="animated hero media">
-				     		<img src="https://aaic.aut.ac.ir/static/img/hero.svg" alt="stockmarket gif" />
-				     	</div>      	
-
-					   <div class="description-box">
-					      <h4>Amirkabir AI Competition</h4>		      
-					      <p>Amirkabir AI Competition focased on predicting total market index of iran's stock market as well as portfolio among almost 300 different stocks. as a team we had to develop deep learning models for prediction, risk managment , and stock shares. </p>
-
-					      <div class="categories">Deep learning and Time series</div>			               
-					   </div>
-
-			         <div class="link-box">
-			            <a href="https://github.com/ElyasMoshirpanahi/AAIC_2022" target = "_blank">Details</a>
-					      <a href="#" class="popup-modal-dismiss">Close</a>
-			         </div>		      
-
-				   </div> <!-- /modal-02 -->
-
-				   <div id="modal-03" class="popup-modal slider mfp-hide">	
-
-				     	<div class="media">
-				     		<img src="images/portfolio/modals/vpn.gif" alt="Darvpn" />
-				     	</div>      	
-
-					   <div class="description-box">
-					      <h4>Darvpn</h4>		      
-					      <p>In this project i was asked to manage and develop a vpn platform from scratch for YIWU dar tradingco.ltd.I began developing website with api endpoints to inegrate with android and desktop apps which i developed latter to  get distributed vpn servers.This project helped me to learn a lot of practical technics used for managements in real life business solutions, you can check it bellow</p>
-
-					      <div class="categories">Fullstack programming | project manager</div>			               
-					   </div>
-
-			         <div class="link-box">
-			            <a href="http://www.darvpn.com" target = "_blank">Details</a>
-					      <a href="#" class="popup-modal-dismiss">Close</a>
-			         </div>		      
-
-				   </div> <!-- /modal-03 -->
-
-				   <div id="modal-04" class="popup-modal slider mfp-hide">	
-
-				     	<div class="media">
-				     		<img href="https://t.me/+y7-l2vGlTFQ2Njg0" src="images/portfolio/modals/podcast.gif" alt="DeutschePodcasts" />
-				     	</div>      	
-
-					   <div class="description-box">
-					      <h4>Auto German podcasing</h4>		      
-					      <p>I am a big fan of podcasts and since i wanted practice and make my German langauge better i listened german podcasts with transcripts everyday.But doing same thing over and over isn't what programmers do! so i coded an automation tool to scrape spektrum.de to fetch new podcasts daily and send them off to <b><a href="https://t.me/+y7-l2vGlTFQ2Njg0">my telegram channel </a></b>to do the same task only better!.I am happy to say that  now 700+ telegram users benefit from this program daily.<br>Click on the image above to join others!</p>
-
-					      <div class="categories">Python | Webscarping | Automation | Telegram bot api</div>			               
-					   </div>
-
-			         <div class="link-box">
-			            <a href="https://github.com/ElyasMoshirpanahi/Auto-German-Podcast" target = "_blank">Details</a>
-					      <a href="#" class="popup-modal-dismiss">Close</a>
-			         </div>		      
-
-				   </div> <!-- /modal-04 -->
-
-				   <div id="modal-05" class="popup-modal slider mfp-hide">	
-
-				     	<div class="media">
-				     		<img src="images/portfolio/modals/math_garden.gif" alt="math_garden" />
-				     	</div>      	
-
-					   <div class="description-box">
-					      <h4>Math Garden</h4>		      
-					      <p>This Game is based on Convolution neural networks (CNN) which classifies handwritten digits.It can be a good practice with fun enviroment for elemntry school kids to learn subtract and addition!</p>
-
-					      <div class="categories">Computer vision</div>			               
-					   </div>
-
-			         <div class="link-box">
-			            <a href="http://elyasmoshirpanahi.github.io/math-garden" target = "_blank">Details</a>
-					      <a href="#" class="popup-modal-dismiss">Close</a>
-			         </div>		      
-
-				   </div> <!-- /modal-05 -->
-
-				   <div id="modal-06" class="popup-modal slider mfp-hide">	
-
-				     	<div class="media">
-				     		<img src="images/portfolio/modals/m-nikaherb.png" alt="nika herb" />
-				     	</div>      	
-
-					   <div class="description-box">
-					      <h4>Nika Herb</h4>		      
-					      <p>Online Herbal Medicine Store , for selling various herbal teas and drinks as well as products.With admin controlling panels and friendly UI , Payment Gates.</p>
-
-					      <div class="categories">Fullstack Web developer</div>			               
-					   </div>
-
-			         <div class="link-box">
-			            <a href="https://web.archive.org/web/20210125095816/https:/nikaherb.com/" target = "_blank">Details</a>
-					      <a href="#" class="popup-modal-dismiss">Close</a>
-			         </div>		      
-
-				   </div> <!-- /modal-06 -->
-
-
-				   <!-- modal popups - end
-	            ============================================================= -->
-
-	         </div> <!-- /portfolio-wrapper --> 
-
-   		</div>  <!-- /twelve -->   
-
-   	</div> <!-- /portfolio-content --> 
-		
-	</section> <!-- /portfolio --> 
-
-
-	<!-- CTA Section
-   ================================================== -->
-	<section id="cta" class="grey-section">
-
-   	<div class="row cta-content">
-
-   		<div class="col-twelve section-ads">  
-
-	     		<h2 class="h01"><a href="#contact">Want to hire me?</a></h2>
-
-		      <p class="lead">
-		      Looking for an awesome and reliable Machine Learning developer | Fullstack developer?<br>Then contanct me with anyform you are ok with
-				<!-- Simply type	the promocode in the box labeled “Promo Code” when placing your order. -->	
-				</p>
-
-				<div class="action">
-			      <a class="button button-primary large" href="#contact">Contact me now!</a>
-		      </div>		     	
-
-   		</div>
-
-   	</div> <!-- /cta-content -->
-
-   </section> <!-- /cta --> 
-
-	
-	<!-- services Section
-   ================================================== -->
-	<section id="services">
-
-		<div class="overlay"></div>
-
-		<div class="row section-intro">
-   		<div class="col-twelve">
-
-   			<h5>Services</h5>
-   			<h1>What Can I Do For You?</h1>
-
-   			<p class="lead">Let's build future togather! , I will help you with my skills to build  your projects for better future.</p>
-
-   		</div>   		
-   	</div> <!-- /section-intro -->
-
-   	<div class="row services-content">
-
-   		<div id="owl-slider" class="owl-carousel services-list">
-				
-
-
-
-				<div class="service">	
-
-					<span class="icon"><i class="my_color fa-solid fa-robot"></i></span>                          
-
-	            <div class="service-content">	
-
-	            	<h3>Machine Learning Enineer</h3>  
-
-		            <p class="desc">As a Machine Learning Enineer , My skills in machine learning algorithms and deep learning frameworks enables me to deliver high-quality solutions. allow me to develop intelligent systems that learn from data and make accurate predictions with customized solutions for business problems that require predictive modeling or computer vision applications.Let's collaborate to leverage the power of machine learning to solve your business challenges.
-	         		</p>
-
-	            </div>	                          
-
-			   </div> <!-- /service -->
-	      	<div class="service">	
-
-	      		<span class="icon"><i class="my_color icon-earth"></i></span>            
-
-	            <div class="service-content">	
-
-	            	 <h3>Fullstack web developer</h3>
-
-		            <p class="desc">As a web developer, I can create a website aligned with your business goals. I deliver visually appealing, functional and easy to navigate websites, from simple to complex web applications, tailored to your needs. I'm experienced in programming languages such as HTML, CSS, JavaScript, and PHP and using popular web development frameworks and tools. Let's work together to achieve your business objectives.</p>
-	         		
-	         	</div> 	         	 
-
-				</div> <!-- /service -->
-
-
-				<div class="service">
-
-					<span class="icon"><i class="my_color icon-toggles"></i></span>	              
-
-	            <div class="service-content">
-
-	            	<h3>Android | Pc Software Developer</h3>
-
-		            <p class="desc">As a fullstack developer, I can build usefull windows as well as android apps with solid and readable codes , implementing business logic and secure connection to codebases and api endpoints using kotlin and C#.
-	         		</p> 
-	         		
-	            </div>                
-
-				</div> <!-- /service -->
-
-				<div class="service">
-
-					<span class="icon"><i class="my_color icon-paint-brush"></i></span>	              
-
-	            <div class="service-content">
-
-	            	<h3>UI/UX Designer</h3>
-
-		            <p class="desc">I also have a good design taste when it comes to UI/UX  regardless of the client or technology that i am working with either android / windows  or website, i will do my best sketch to make a look it's best.
-	         		</p> 
-	         		
-	            </div>                
-
-				</div> <!-- /service -->
-
-	      </div> <!-- /services-list -->
-   		
-   	</div> <!-- /services-content -->
-		
-	</section> <!-- /services -->	
-
-
-	<!-- stats Section
-   ================================================== -->
-	<section id="stats" class="count-up">
-
-		<div class="row">
-			<div class="col-twelve">
-
-				<div class="block-1-6 block-s-1-3 block-tab-1-2 block-mob-full stats-list">
-
-					<div class="bgrid stat">
-
-						<div class="icon-part">
-							<i class="icon-pencil-ruler"></i>
-						</div>
-
-						<h3 class="stat-count">
-							17
-						</h3>
-
-						<h5 class="stat-title">
-							Projects Completed
-						</h5>
-
-					</div> <!-- /stat -->					
-
-					<div class="bgrid stat">
-
-						<div class="icon-part">
-							<i class="icon-users"></i>
-						</div>
-
-						<h3 class="stat-count">
-							1000
-						</h3>
-
-						<h5 class="stat-title">
-							Happy Clients
-						</h5>
-
-					</div> <!-- /stat -->
-
-					<div class="bgrid stat">
-
-						<div class="icon-part">
-							<i class="icon-badge"></i>
-						</div>
-
-						<h3 class="stat-count" id="stat-count">
-							<script>
-							const elm = document.getElementById("stat-count");
-							elm.innerHTML = document.getElementById("licenses").getElementsByTagName("li").length;
-							</script>
-							
-						</h3>
-
-						<h5 class="stat-title">
-							CERTIFICATIONS Received
-						</h5>
-
-					</div> <!-- /stat -->									
-
-					<div class="bgrid stat">
-
-						<div class="icon-part">
-							<i class="icon-light-bulb"></i>
-						</div>
-
-						<h3 class="stat-count">
-							120
-						</h3>
-
-						<h5 class="stat-title">
-							Crazy Ideas
-						</h5>
-
-					</div> <!-- /stat -->
-
-					<div class="bgrid stat">
-
-						<div class="icon-part">
-							<i class="icon-cup"></i>
-						</div>
-
-						<h3 class="stat-count">
-							1500
-						</h3>
-
-						<h5 class="stat-title">
-							Coffee Cups
-						</h5>
-
-					</div> <!-- /stat -->
-
-					<div class="bgrid stat">
-
-						<div class="icon-part">
-							<i class="icon-clock"></i>
-						</div>
-
-						<h3 class="stat-count">
-							7200
-						</h3>
-
-						<h5 class="stat-title">
-							Hours of learning
-						</h5>
-
-					</div> <!-- /stat -->
-
-				</div> <!-- /stats-list -->
-
-			</div> <!-- /twelve -->
-		</div> <!-- /row -->
-
-	</section> <!-- /stats -->
-
-	
-   <!-- contact
-   ================================================== -->
-	<section id="contact">
-
-		<div class="row section-intro">
-   		<div class="col-twelve">
-
-   			<h5>Contact</h5>
-   			<h1>I'd Love To Hear From You.</h1>
-
-   			<p class="lead">Feel free to email me via links bellow.<br>You can also contact me via linkedin or other social medias.</p>
-
-   		</div> 
-   	</div> <!-- /section-intro -->
-
-   	<div class="row contact-form">
-
-   		<div class="col-twelve">
-
-            <form   action="https://formspree.io/f/mgebzjbg" method="POST" >
-      			<fieldset>
-<!-- 
-                  <div class="form-field">
- 						   <input name="contactName" type="text" id="contactName" placeholder="Name" value="" minlength="2" required="">
-                  </div> -->
-                  <div class="form-field">
-	      			   <input type="email" name="email"  placeholder="Enter Your email" value="" required="">
-	               </div>
-<!--                   <div class="form-field">
-	     				   <input name="contactSubject" type="text" id="contactSubject" placeholder="Subject" value="">
-	               </div>                        -->
-                  <div class="form-field">
-	                 	<textarea name="message"   placeholder="message" required=""></textarea>
-	               </div>                      
-                 <div class="form-field">
-                     <button class="submitform" type="submit">Submit</button>
-                     <div id="submit-loader">
-                        <div class="text-loader">Sending...</div>                             
-       				      <div class="s-loader">
-								  	<div class="bounce1"></div>
-								  	<div class="bounce2"></div>
-								  	<div class="bounce3"></div>
-								</div>
-							</div>
-                  </div>
-
-      			</fieldset>
-      		</form> 
-
-
-            <div id="message-warning">            	
-            </div>            
-
-      		<div id="message-success">
-               <i class="fa fa-check"></i>Your message was sent, thank you!<br>
-      		</div>
-
-         </div></div> 
-
-
-   	<div class="row contact-info">
-
-<!--    		<div class="col-four tab-full">
-
-   			<div class="icon">
-   				<i class="icon-pin"></i>
-   			</div>
-
-   			<h5>Where to find me</h5>
-
-   			<p>
-            1600 Amphitheatre Parkway<br>
-            Mountain View, CA<br>
-            94043 US
-            </p>
-
-   		</div> -->
-
-   		<div class="col-four tab-full collapse">
-
-   			<div class="icon my_anim">
-   				<a class="personal_link" href="mailto:elyasmoshirpanahe1376@gmail.com"><i class="personal_link icon-mail my_anim"></i></a>
-   			</div>
-
-   			<h5><a class="personal_link" href="mailto:elyasmoshirpanahe1376@gmail.com">Email Me</a></h5>
-
-   		</div>
-   		<div class="col-four tab-full">
-
-   			<div class="icon my_anim">
-   				<a class="personal_link" href="https://t.me/Retrotechdeveloper1997"><i class="personal_link fa-brands fa-telegram my_anim"></i></a>
-   			</div>
-
-   			<h5><a class="personal_link" href="https://t.me/Retrotechdeveloper1997">Message Me via telegram</a></h5>
-   		</div>
-   		
-   		<div class="col-four tab-full">
-
-   			<div class="icon my_anim">
-   				<a class="personal_link" href="https://join.skype.com/invite/JBmSwuFKlMqE"><i class="personal_link fa-brands fa-skype"></i></a>
-   			</div>
-
-   			<h5><a class="personal_link" href="https://join.skype.com/invite/JBmSwuFKlMqE">Call Via Skype </a></h5>
-   		</div>
-   		
-   	</div> <!-- /contact-info -->
-		
-	</section> <!-- /contact -->
-
-
-   <!-- footer
-   ================================================== -->
-
-   <footer>
-     	<div class="row">
-
-     		<div class="col-six tab-full pull-right social">
-
-     			<ul class="footer-social">        
-		         <li><a class="git" href="https://github.com/elyasmoshirpanahi" target="_blank"><i class="my_anim fa-brands fa-github    fa-2x fa-fade"></i></a></li>
-		         <li><a class="kaggle" href="https://www.kaggle.com/elyasmoshirpanahi" target="_blank"><i class="my_anim fa-brands fa-kaggle    fa-2x fa-fade"></i></a></li>
-		         <li><a class="linkedin" href="https://www.linkedin.com/in/elyasmoshirpanahi/" target="_blank"><i class="my_anim fa-brands fa-linkedin  fa-2x fa-fade"></i></a></li>
-		         <li><a class="my_insta" href="https://www.instagram.com/elyasmoshirpanahe" target="_blank"><i class="my_anim fa-brands fa-instagram  fa-2x fa-fade"></i></a></li>
-			   </ul> 
-	      		
-	      </div>
-
-      	<div style="float:right;" class="col-twelve tab-full">
-	      	<div class="copyright">
-		        	<span>© Copyright 2023 </span> 
-		        	<span>Made with love by Elyas Moshirpanahi <i class="fa-solid fa-heart fa-beat" style="color:red;--fa-animation-duration: 2s;"></i></span>          	
-		         </div>		                  
-	      	</div>
-
-	      	<div id="go-top">
-		         <a class="smoothscroll" title="Back to Top" href="#top"><i class="fa-solid fa-arrow-up"></i></a>
-		      </div>
-
-      	</div> <!-- /row -->     	
-   </footer>  
-
-   <div id="preloader"> 
-    	<div id="loader"></div>
-   </div> 
-
-   <!-- Java Script
-   ================================================== --> 
-   <script src="js/jquery-2.1.3.min.js"></script>
-   <script src="js/plugins.js"></script>
-   <script src="js/main.js"></script>
-     <script>
-    var typed = new Typed('#add_anim', {
-      strings: ['Elyas Moshirpanahi.','Machine Learning Engineer.','Data Scientist.', 'Fullstack Developer.'],
-      typeSpeed: 55,
-      backSpeed: 55,
-      loop:true
-    });
-  </script>
+<body>
+
+    <!-- SOUND ASSETS (Placeholders) -->
+    <audio id="snd-hover" src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA="></audio> 
+    <!-- Note: In a real deployment, replace src with actual files like 'assets/hover.mp3'. 
+         The data URI above is a silent placeholder to prevent 404 errors in console. -->
+
+    <!-- BLADE OVERLAY -->
+    <div class="blade-overlay" id="bladeOverlay">
+        <div class="blade"></div>
+        <div class="blade"></div>
+    </div>
+
+    <!-- BACKGROUND -->
+    <div class="bg-grid"></div>
+    <div class="fog"></div>
+
+    <!-- NAVIGATION -->
+    <nav>
+        <div class="container nav-content">
+            <div class="logo neon-text-cyan">NEXUS<span style="color:white">_</span>AI</div>
+            <div class="nav-links">
+                <a href="#about" class="nav-item">ABOUT</a>
+                <a href="#skills" class="nav-item">STACK</a>
+                <a href="#projects" class="nav-item">PROJECTS</a>
+                <a href="#terminal" class="nav-item">TERM</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="hero">
+        <div class="container hero-content">
+            <h1 class="glitch neon-text-cyan">SENIOR GEN_AI<br>ENGINEER</h1>
+            <h2 class="neon-text-magenta">ARCHITECT OF AUTONOMOUS INTELLIGENCE</h2>
+            <div class="cta-buttons">
+                <a href="#projects" class="btn">VIEW PROTOCOLS</a>
+                <a href="#contact" class="btn btn-secondary">INITIATE CONTACT</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- ABOUT SECTION -->
+        <section id="about">
+            <h2 class="section-title">SYSTEM OVERVIEW</h2>
+            <div class="about-grid">
+                <div class="bio-card">
+                    <p>
+                        Specialized in the design and deployment of Large Language Models and autonomous agentic systems. 
+                        Merging rigorous backend engineering with cutting-edge generative AI research to build 
+                        scalable, self-improving cognitive architectures.
+                    </p>
+                    <br>
+                    <p style="font-family: var(--font-mono); color: #aaa;">
+                        > Current Status: ONLINE<br>
+                        > Location: [REDACTED]<br>
+                        > Clearance: LEVEL 5
+                    </p>
+                </div>
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <span class="stat-number" data-val="8">8+</span>
+                        <span class="stat-label">YEARS EXP</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" data-val="12">12</span>
+                        <span class="stat-label">LLMs DEPLOYED</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" data-val="50">50+</span>
+                        <span class="stat-label">AGENTS ACTIVE</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SKILLS SECTION -->
+        <section id="skills">
+            <h2 class="section-title">TECH STACK</h2>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h3>GENERATIVE AI</h3>
+                    <div class="skill-tags">
+                        <span class="tag">PyTorch</span>
+                        <span class="tag">Transformers</span>
+                        <span class="tag">LangChain</span>
+                        <span class="tag">LlamaIndex</span>
+                        <span class="tag">Fine-tuning (LoRA)</span>
+                        <span class="tag">RAG Architectures</span>
+                        <span class="tag">Prompt Engineering</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>BACKEND INFRA</h3>
+                    <div class="skill-tags">
+                        <span class="tag">Python (FastAPI)</span>
+                        <span class="tag">Docker</span>
+                        <span class="tag">Kubernetes</span>
+                        <span class="tag">Redis Vector DB</span>
+                        <span class="tag">PostgreSQL</span>
+                        <span class="tag">AWS / GCP</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>MLOPS & TOOLS</h3>
+                    <div class="skill-tags">
+                        <span class="tag">MLflow</span>
+                        <span class="tag">Weights & Biases</span>
+                        <span class="tag">HuggingFace</span>
+                        <span class="tag">CI/CD Pipelines</span>
+                        <span class="tag">Model Evals</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECTS SECTION -->
+        <section id="projects">
+            <h2 class="section-title">ACTIVE PROTOCOLS</h2>
+
+            <!-- Project 1 -->
+            <div class="project-card" onclick="toggleProject(this)">
+                <div class="project-header">
+                    <div>
+                        <div class="project-title">AUTONOMOUS CODING AGENT</div>
+                        <div style="font-family: var(--font-mono); font-size: 0.8rem; color: #888; margin-top: 5px;">Python, LangGraph, GPT-4</div>
+                    </div>
+                    <div class="toggle-icon">+</div>
+                </div>
+                <div class="project-details">
+                    <div class="detail-section">
+                        <span class="detail-label">Objective</span>
+                        <p>Develop a self-correcting coding assistant capable of executing shell commands and editing files autonomously.</p>
+                    </div>
+                    <div class="detail-section">
+                        <span class="detail-label">Architecture</span>
+                        <p>Utilized a multi-step reasoning loop (ReAct) with tool-use capabilities. Implemented a sandbox environment for safe execution.</p>
+                    </div>
+                    <div class="detail-section">
+                        <span class="detail-label">Outcome</span>
+                        <p>Reduced developer boilerplate time by 40%. Achieved 85% success rate on unit test generation.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 2 -->
+            <div class="project-card" onclick="toggleProject(this)">
+                <div class="project-header">
+                    <div>
+                        <div class="project-title">ENTERPRISE RAG SYSTEM</div>
+                        <div style="font-family: var(--font-mono); font-size: 0.8rem; color: #888; margin-top: 5px;">Pinecone, OpenAI, FastAPI</div>
+                    </div>
+                    <div class="toggle-icon">+</div>
+                </div>
+                <div class="project-details">
+                    <div class="detail-section">
+                        <span class="detail-label">Objective</span>
+                        <p>Create a semantic search engine for 1M+ legal documents with sub-second latency.</p>
+                    </div>
+                    <div class="detail-section">
+                        <span class="detail-label">Architecture</span>
+                        <p>Hybrid search (dense + sparse vectors). Custom chunking strategy for legalese context preservation.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 3 -->
+            <div class="project-card" onclick="toggleProject(this)">
+                <div class="project-header">
+                    <div>
+                        <div class="project-title">MULTI-MODAL STORYTELLER</div>
+                        <div style="font-family: var(--font-mono); font-size: 0.8rem; color: #888; margin-top: 5px;">Stable Diffusion, Llama 2, React</div>
+                    </div>
+                    <div class="toggle-icon">+</div>
+                </div>
+                <div class="project-details">
+                    <div class="detail-section">
+                        <span class="detail-label">Objective</span>
+                        <p>Real-time generation of visual novels based on user text input.</p>
+                    </div>
+                    <div class="detail-section">
+                        <span class="detail-label">Architecture</span>
+                        <p>Orchestrated distinct models for narrative generation and image synthesis. Optimized inference with TensorRT.</p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- TERMINAL EASTER EGG -->
+        <section id="terminal">
+            <h2 class="section-title">DEBUG CONSOLE</h2>
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                </div>
+                <div class="terminal-body" id="terminalOutput">
+                    <!-- JS writes here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT -->
+        <section id="contact">
+            <h2 class="section-title" style="text-align: center; border: none;">ESTABLISH CONNECTION</h2>
+            <div class="contact-links">
+                <a href="#" target="_blank" title="GitHub">GITHUB</a>
+                <a href="#" target="_blank" title="LinkedIn">LINKEDIN</a>
+                <a href="#" title="Email">EMAIL</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>SYSTEM VERSION 2.4.1 // © 2025 [YOUR NAME]</p>
+    </footer>
+
+    <script>
+        // --- SOUND CONTROLLER ---
+        const playSound = (id) => {
+            try {
+                const audio = document.getElementById(id);
+                if (audio) {
+                    audio.currentTime = 0;
+                    audio.play().catch(e => console.log("Audio autoplay blocked or missing source"));
+                }
+            } catch (err) {
+                // Graceful degradation
+            }
+        };
+
+        // --- BLADE ANIMATION ON LOAD ---
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const overlay = document.getElementById('bladeOverlay');
+                overlay.classList.add('open');
+                playSound('snd-hover'); // Simulating a mechanical opening sound
+                
+                // Start terminal after blades open
+                setTimeout(startTerminal, 1500);
+            }, 500);
+        });
+
+        // --- PROJECT EXPANSION ---
+        function toggleProject(card) {
+            // Close others
+            document.querySelectorAll('.project-card').forEach(c => {
+                if (c !== card) c.classList.remove('expanded');
+            });
+            
+            // Toggle current
+            card.classList.toggle('expanded');
+            playSound('snd-hover');
+        }
+
+        // --- FAKE TERMINAL ---
+        const terminalContent = [
+            { type: 'cmd', text: 'sys_check --full' },
+            { type: 'output', text: 'Checking Core Modules... [OK]' },
+            { type: 'output', text: 'Loading Neural Weights... [OK]' },
+            { type: 'output', text: 'Connecting to Neural Link... [ESTABLISHED]' },
+            { type: 'cmd', text: 'cat current_mission.txt' },
+            { type: 'output', text: 'MISSION: Build the future of AGI.' },
+            { type: 'output', text: 'STATUS: Active and Recruiting.' },
+            { type: 'cmd', text: '' } // Idle cursor
+        ];
+
+        let lineIndex = 0;
+        let charIndex = 0;
+        const terminalBody = document.getElementById('terminalOutput');
+
+        function startTerminal() {
+            typeLine();
+        }
+
+        function typeLine() {
+            if (lineIndex >= terminalContent.length) return;
+
+            const line = terminalContent[lineIndex];
+            const div = document.createElement('div');
+            div.className = 'command-line';
+            
+            if (line.type === 'cmd') {
+                div.innerHTML = '<span class="prompt">usr@nexus:~$</span><span class="text"></span><span class="cursor"></span>';
+                terminalBody.appendChild(div);
+                
+                // Remove cursor from previous line if exists
+                const prevCursors = terminalBody.querySelectorAll('.cursor');
+                if (prevCursors.length > 1) {
+                    prevCursors[prevCursors.length - 2].style.display = 'none';
+                }
+
+                const textSpan = div.querySelector('.text');
+                typeCharacters(textSpan, line.text, () => {
+                    lineIndex++;
+                    setTimeout(typeLine, 800); // Pause between commands
+                });
+            } else {
+                // Output lines appear instantly or fast
+                div.innerHTML = `<span style="color: #ccc">${line.text}</span>`;
+                terminalBody.appendChild(div);
+                terminalBody.scrollTop = terminalBody.scrollHeight;
+                lineIndex++;
+                setTimeout(typeLine, 200);
+            }
+        }
+
+        function typeCharacters(element, text, callback) {
+            let i = 0;
+            function step() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(step, 50 + Math.random() * 50); // Random typing speed
+                } else {
+                    callback();
+                }
+            }
+            step();
+        }
+
+        // --- NAV HIGHLIGHTING ---
+        document.querySelectorAll('.nav-item').forEach(link => {
+            link.addEventListener('mouseenter', () => playSound('snd-hover'));
+        });
+
+    </script>
 </body>
-
 </html>
