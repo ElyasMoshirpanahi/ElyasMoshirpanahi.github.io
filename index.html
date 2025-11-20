@@ -110,6 +110,8 @@
         #sound-toggle.muted {
             border-color: #555;
             color: #555;
+            background: transparent;
+            box-shadow: none;
         }
 
         /* --- HERO SECTION --- */
@@ -122,6 +124,7 @@
             align-items: center;
             justify-content: center;
             background: radial-gradient(circle at center top, #1a0b2e 0%, #000000 70%);
+            perspective: 1000px; /* For 3D elements */
         }
         
         /* SCANLINE OVERLAY */
@@ -143,14 +146,14 @@
         /* RETRO SUN */
         .retro-sun {
             position: absolute;
-            top: 15%;
+            top: 10%;
             left: 50%;
             transform: translateX(-50%);
-            width: 400px;
-            height: 400px;
+            width: 450px;
+            height: 450px;
             border-radius: 50%;
             background: var(--sun-gradient);
-            box-shadow: 0 0 60px rgba(255, 0, 255, 0.4);
+            box-shadow: 0 0 80px rgba(255, 0, 255, 0.5);
             z-index: 1;
             overflow: hidden;
         }
@@ -177,76 +180,136 @@
             to { background-position: 0 40px; }
         }
 
-        /* CITYSCAPE */
+        /* MOUNTAINS/CITY SCAPE */
         .cityscape {
             position: absolute;
             bottom: 30%; /* Horizon line */
             left: 0;
             width: 100%;
             height: 300px;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" preserveAspectRatio="none"><path fill="%23020205" d="M0,300 L0,150 L50,150 L50,100 L100,100 L100,200 L150,200 L150,50 L200,50 L200,250 L250,250 L250,120 L300,120 L300,220 L350,220 L350,80 L450,80 L450,180 L500,180 L500,40 L600,40 L600,200 L650,200 L650,100 L750,100 L750,220 L800,220 L800,150 L850,150 L850,250 L900,250 L900,50 L950,50 L950,300 Z"/></svg>');
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" preserveAspectRatio="none"><path fill="%230a0514" d="M0,300 L0,120 L100,200 L200,80 L300,180 L400,100 L500,160 L600,90 L700,190 L800,110 L900,170 L1000,100 L1000,300 Z"/></svg>');
             background-repeat: repeat-x;
             background-size: 1000px 100%;
             z-index: 2;
-            opacity: 0.9;
+            opacity: 1;
         }
-        /* Add some neon windows */
         .cityscape::after {
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: 
-                radial-gradient(1px 1px at 10% 30%, rgba(0,255,255,0.8) 50%, transparent 51%),
-                radial-gradient(1px 1px at 25% 60%, rgba(255,0,255,0.8) 50%, transparent 51%),
-                radial-gradient(1px 1px at 45% 40%, rgba(0,255,255,0.8) 50%, transparent 51%),
-                radial-gradient(1px 1px at 60% 20%, rgba(255,0,255,0.8) 50%, transparent 51%),
-                radial-gradient(1px 1px at 85% 50%, rgba(0,255,255,0.8) 50%, transparent 51%);
-            background-size: 500px 300px;
+            background: linear-gradient(to top, var(--neon-purple) 0%, transparent 20%);
             z-index: 3;
+            opacity: 0.5;
         }
 
         /* GRID FLOOR */
         .grid-floor {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 30%; /* Matches horizon */
+            bottom: -100px;
+            left: -50%;
+            width: 200%;
+            height: 50%; /* Perspective plane */
             background: 
                 linear-gradient(transparent 0%, var(--neon-purple) 2%, transparent 3%),
                 linear-gradient(90deg, transparent 0%, rgba(188, 19, 254, 0.3) 1%, transparent 2%);
-            background-size: 100% 40px, 100px 100%;
-            transform: perspective(500px) rotateX(60deg) translateY(100px) scale(2);
+            background-size: 100% 40px, 80px 100%;
+            transform: perspective(500px) rotateX(60deg);
             z-index: 2;
-            box-shadow: 0 0 50px rgba(188, 19, 254, 0.2) inset;
-            animation: gridMove 10s linear infinite;
+            box-shadow: 0 0 50px rgba(188, 19, 254, 0.3) inset;
+            animation: gridMove 0.4s linear infinite;
         }
         @keyframes gridMove {
             from { background-position: 0 0; }
             to { background-position: 0 40px; }
         }
-        
-        /* RAIN */
-        .rain {
+
+        /* ROAD */
+        .road {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%) perspective(500px) rotateX(60deg);
+            width: 300px; /* Road Width */
+            height: 50%;
+            background: linear-gradient(to bottom, #000 0%, #151515 100%);
+            z-index: 3;
+            box-shadow: 0 0 50px #000;
+            border-left: 2px solid var(--neon-pink);
+            border-right: 2px solid var(--neon-pink);
+        }
+        /* Road Markings */
+        .road::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 100%;
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent 0%,
+                transparent 40%,
+                var(--neon-cyan) 40%,
+                var(--neon-cyan) 80%
+            );
+            background-size: 100% 100px;
+            animation: roadLineScroll 0.4s linear infinite;
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+        @keyframes roadLineScroll {
+            from { background-position: 0 0; }
+            to { background-position: 0 100px; }
+        }
+        
+        /* MOVING PALM TREES */
+        .palm-container {
+            position: absolute;
+            bottom: 30%; /* Horizon */
+            left: 50%;
+            width: 100%;
+            height: 100%;
             z-index: 4;
             pointer-events: none;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="1" height="10" x="10" y="10" fill="rgba(0,255,255,0.1)"/><rect width="1" height="15" x="50" y="40" fill="rgba(255,0,255,0.1)"/><rect width="1" height="8" x="80" y="70" fill="rgba(255,255,255,0.1)"/></svg>');
-            animation: rainFall 1s linear infinite;
+            transform: translateX(-50%);
+            perspective: 500px; /* Matches grid/road perspective */
         }
-        @keyframes rainFall {
-            from { background-position: 0 0; }
-            to { background-position: -20px 100px; }
+        
+        .palm {
+            position: absolute;
+            bottom: 0;
+            width: 120px;
+            height: 240px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 200"><path fill="black" d="M45,200 L55,200 L50,50 Z M50,50 Q20,20 10,60 M50,50 Q80,20 90,60 M50,50 Q30,10 0,30 M50,50 Q70,10 100,30 M50,50 Q40,0 20,10 M50,50 Q60,0 80,10"/><path stroke="%23ff00ff" stroke-width="2" fill="none" d="M45,200 L50,50 L55,200"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            transform-origin: bottom center;
+        }
+
+        /* Palm Animations - Spawning wider apart to frame the road */
+        .palm.left { animation: movePalmLeft 3s linear infinite; }
+        .palm.right { animation: movePalmRight 3s linear infinite; }
+        .palm.left-delayed { animation: movePalmLeft 3s linear infinite 1.5s; }
+        .palm.right-delayed { animation: movePalmRight 3s linear infinite 1.5s; }
+
+        @keyframes movePalmLeft {
+            0% { transform: translate3d(-100px, 0, -1000px) scale(0.1); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translate3d(-900px, 100px, 0) scale(2.5); opacity: 1; }
+        }
+        @keyframes movePalmRight {
+            0% { transform: translate3d(100px, 0, -1000px) scale(0.1); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translate3d(900px, 100px, 0) scale(2.5); opacity: 1; }
         }
 
         /* CONTENT LAYER */
         .hero-content {
             position: absolute;
-            top: 15%;
+            top: 10%;
             width: 100%;
             text-align: center;
-            z-index: 10;
+            z-index: 20; /* Above car slightly if needed, but car is bottom */
             padding: 0 20px;
         }
         
@@ -263,7 +326,7 @@
 
         .main-title {
             font-family: var(--font-display);
-            font-size: clamp(4rem, 10vw, 7rem); /* LARGER TITLE */
+            font-size: clamp(4rem, 10vw, 7rem);
             font-weight: 900;
             line-height: 1;
             color: #fff;
@@ -279,7 +342,7 @@
         
         .subtitle {
             font-family: var(--font-main);
-            font-size: clamp(1.5rem, 5vw, 2rem); /* LARGER SUBTITLE */
+            font-size: clamp(1.5rem, 5vw, 2rem);
             color: #fff;
             text-shadow: 0 0 10px rgba(0,0,0,0.8);
             max-width: 800px;
@@ -336,38 +399,49 @@
             box-shadow: 0 0 15px var(--neon-pink);
         }
 
-        /* DELOREAN CAR */
+        /* DELOREAN CAR (REAR VIEW - RESIZED) */
         .car-container {
             position: absolute;
-            bottom: 5%;
+            bottom: 5%; /* Lower on the road */
             left: 50%;
             transform: translateX(-50%);
-            width: 300px;
-            height: 150px;
-            z-index: 5;
+            width: 320px; /* SMALLER SIZE */
+            height: 160px;
+            z-index: 15;
             opacity: 0;
-            animation: driveIn 2s ease-out 1s forwards;
+            animation: 
+                driveIn 2s ease-out 1s forwards,
+                carBounce 0.5s ease-in-out infinite alternate;
         }
         .car-svg {
             width: 100%;
             height: 100%;
-            filter: drop-shadow(0 10px 20px rgba(0, 255, 255, 0.4));
+            filter: drop-shadow(0 0 25px rgba(0, 255, 255, 0.3));
         }
         .car-reflection {
             position: absolute;
-            bottom: -20px;
+            bottom: -30px;
             left: 0;
             width: 100%;
-            height: 40px;
+            height: 50px;
             background: radial-gradient(ellipse at center, var(--neon-pink) 0%, transparent 70%);
-            opacity: 0.5;
-            filter: blur(10px);
+            opacity: 0.8;
+            filter: blur(15px);
             transform: scaleY(0.5);
+            animation: reflectionFlicker 0.08s infinite alternate;
         }
 
         @keyframes driveIn {
-            0% { transform: translateX(-50%) scale(0.8); opacity: 0; filter: blur(5px); }
-            100% { transform: translateX(-50%) scale(1); opacity: 1; filter: blur(0); }
+            0% { transform: translateX(-50%) scale(0.4); opacity: 0; filter: blur(15px); bottom: 15%; }
+            100% { transform: translateX(-50%) scale(1); opacity: 1; filter: blur(0); bottom: 5%; }
+        }
+        @keyframes carBounce {
+            from { transform: translateX(-50%) translateY(0); }
+            to { transform: translateX(-50%) translateY(1px); }
+        }
+        @keyframes reflectionFlicker {
+            from { opacity: 0.6; transform: scaleY(0.5) scaleX(0.99); }
+            to { opacity: 0.8; transform: scaleY(0.5) scaleX(1.01); }
         }
 
         /* --- SECTIONS GENERIC --- */
@@ -584,14 +658,14 @@
         @media(max-width: 768px) {
             .blade-cover { display: none; } /* Disable heavy blade anim on mobile for perf */
             .main-title { font-size: 2.5rem; }
-            .car-container { width: 200px; bottom: 10%; }
+            .car-container { width: 250px; bottom: 15%; }
         }
     </style>
 </head>
 <body>
 
     <!-- SOUND TOGGLE -->
-    <button id="sound-toggle" class="muted">Sound: OFF</button>
+    <button id="sound-toggle">Sound: ON</button>
 
     <!-- OPENING BLADES -->
     <div class="blade-cover blade-left"></div>
@@ -604,6 +678,17 @@
         <div class="retro-sun"></div>
         <div class="cityscape"></div>
         <div class="grid-floor"></div>
+        
+        <!-- DEDICATED ROAD -->
+        <div class="road"></div>
+        
+        <!-- MOVING PALMS (Perspective Trick) -->
+        <div class="palm-container">
+            <div class="palm left"></div>
+            <div class="palm right"></div>
+            <div class="palm left-delayed"></div>
+            <div class="palm right-delayed"></div>
+        </div>
         
         <div class="hero-content">
             <div class="kicker">GEN AI · LLMs · AGENTS · SYSTEMS</div>
@@ -618,36 +703,118 @@
         </div>
 
         <div class="car-container">
-            <!-- Stylized DeLorean SVG -->
-            <svg class="car-svg" viewBox="0 0 300 150" fill="none" stroke="cyan" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <!-- ULTRA-PREMIUM DELOREAN REAR VIEW SVG -->
+            <svg class="car-svg" viewBox="0 0 600 300" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
-                    <filter id="glow">
-                        <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+                    <!-- CHROME HORIZON REFLECTION (Key to Synthwave Look) -->
+                    <linearGradient id="chrome-body" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#050510"/>       <!-- Sky reflection (dark) -->
+                        <stop offset="48%" stop-color="#101025"/>      <!-- Horizon line darker -->
+                        <stop offset="50%" stop-color="#00ffff"/>      <!-- THE HORIZON LINE (Neon Cyan) -->
+                        <stop offset="52%" stop-color="#ff00ff"/>      <!-- Sunset bleed (Magenta) -->
+                        <stop offset="55%" stop-color="#222"/>         <!-- Ground reflection top -->
+                        <stop offset="100%" stop-color="#050505"/>     <!-- Ground reflection bottom -->
+                    </linearGradient>
+                    
+                    <!-- Neon Glow Filters -->
+                    <filter id="glow-cyan-intense" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur stdDeviation="4" result="blur"/>
+                        <feFlood flood-color="#00ffff" result="color"/>
+                        <feComposite in="color" in2="blur" operator="in" result="glow"/>
                         <feMerge>
-                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="glow"/>
+                            <feMergeNode in="glow"/> <!-- Double intensity -->
                             <feMergeNode in="SourceGraphic"/>
                         </feMerge>
                     </filter>
+                    
+                    <filter id="glow-magenta-soft" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur stdDeviation="6" result="blur"/>
+                        <feMerge>
+                            <feMergeNode in="blur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+
+                    <!-- Taillight Grid Pattern -->
+                    <pattern id="tail-grid" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+                        <rect x="0" y="0" width="7" height="7" fill="#ff0055" stroke="none"/>
+                        <rect x="7" y="0" width="1" height="8" fill="#300"/>
+                        <rect x="0" y="7" width="8" height="1" fill="#300"/>
+                    </pattern>
                 </defs>
-                <g filter="url(#glow)">
-                    <!-- Body Outline -->
-                    <path d="M20,110 L40,110 L50,80 L100,75 L200,75 L250,85 L280,110 L20,110 Z" stroke="#ff00ff" fill="rgba(0,0,0,0.8)"/>
-                    <!-- Roof/Glass -->
-                    <path d="M60,75 L80,50 L220,50 L240,78" stroke="#00ffff" fill="rgba(0,255,255,0.1)"/>
-                    <!-- Gullwing hint -->
-                    <line x1="150" y1="50" x2="150" y2="75" stroke="#00ffff" stroke-dasharray="4 2"/>
-                    <!-- Wheels -->
-                    <circle cx="60" cy="110" r="18" fill="#111" stroke="#333"/>
-                    <circle cx="240" cy="110" r="18" fill="#111" stroke="#333"/>
-                    <circle cx="60" cy="110" r="10" stroke="#ff00ff"/>
-                    <circle cx="240" cy="110" r="10" stroke="#ff00ff"/>
-                    <!-- Tail Light Strip -->
-                    <rect x="20" y="95" width="10" height="10" fill="#ff0000" stroke="none"/>
-                    <!-- Front Light -->
-                    <rect x="275" y="98" width="5" height="5" fill="#fff" stroke="none"/>
-                    <!-- Underglow -->
-                    <line x1="40" y1="125" x2="260" y2="125" stroke="#ff00ff" stroke-width="4" opacity="0.6"/>
+                
+                <!-- GROUND SHADOW -->
+                <ellipse cx="300" cy="265" rx="260" ry="15" fill="black" opacity="0.8" filter="url(#glow-magenta-soft)"/>
+
+                <!-- TIRES (Ultra Wide Cyberpunk Slicks) -->
+                <!-- Left -->
+                <path d="M60,180 L160,180 L160,270 L60,270 Z" fill="#111"/>
+                <path d="M60,180 L80,180 L80,270 L60,270 Z" fill="#000" opacity="0.5"/> <!-- Side wall -->
+                <!-- Tread marks -->
+                <path d="M90,180 L90,270 M110,180 L110,270 M130,180 L130,270 M150,180 L150,270" stroke="#1a1a1a" stroke-width="3"/>
+                
+                <!-- Right -->
+                <path d="M440,180 L540,180 L540,270 L440,270 Z" fill="#111"/>
+                <path d="M520,180 L540,180 L540,270 L520,270 Z" fill="#000" opacity="0.5"/>
+                <path d="M450,180 L450,270 M470,180 L470,270 M490,180 L490,270 M510,180 L510,270" stroke="#1a1a1a" stroke-width="3"/>
+
+                <!-- MAIN BODY SHELL (Chassis) -->
+                <path d="M90,215 L510,215 L490,140 L110,140 Z" fill="url(#chrome-body)"/>
+                
+                <!-- REAR BUMPER (Matte Black Carbon) -->
+                <path d="M90,215 L510,215 L510,255 L90,255 Z" fill="#080808"/>
+                <!-- Diffuser fins -->
+                <path d="M150,255 L150,240 M250,255 L250,240 M350,255 L350,240 M450,255 L450,240" stroke="#222" stroke-width="2"/>
+
+                <!-- LICENSE PLATE (Glowing) -->
+                <rect x="260" y="225" width="80" height="22" fill="#000" stroke="#333"/>
+                <rect x="262" y="227" width="76" height="18" fill="#001111"/>
+                <text x="300" y="241" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="14" fill="#00ffff" filter="url(#glow-cyan-intense)" letter-spacing="2">NEON-88</text>
+
+                <!-- REAR WINDOW LOUVERS (The Iconic Slats) -->
+                <!-- Base darkness -->
+                <path d="M150,140 L450,140 L410,55 L190,55 Z" fill="rgba(0,0,0,0.9)"/>
+                <!-- Slats with Chrome Highlights -->
+                <g stroke="url(#chrome-body)" stroke-width="3" opacity="0.8">
+                    <line x1="160" y1="125" x2="440" y2="125"/>
+                    <line x1="170" y1="108" x2="430" y2="108"/>
+                    <line x1="180" y1="91" x2="420" y2="91"/>
+                    <line x1="190" y1="74" x2="410" y2="74"/>
                 </g>
+                
+                <!-- ROOF -->
+                <path d="M210,55 L390,55 L370,35 L230,35 Z" fill="#1a1a1a" stroke="#333"/>
+
+                <!-- TAILLIGHTS (Grid + Glow) -->
+                <!-- Left -->
+                <rect x="100" y="185" width="130" height="25" fill="url(#tail-grid)" filter="url(#glow-magenta-soft)"/>
+                <!-- Right -->
+                <rect x="370" y="185" width="130" height="25" fill="url(#tail-grid)" filter="url(#glow-magenta-soft)"/>
+                
+                <!-- Center Panel (Blacked out) -->
+                <rect x="230" y="185" width="140" height="25" fill="#000"/>
+                <text x="300" y="202" text-anchor="middle" font-family="sans-serif" font-size="10" letter-spacing="4" fill="#fff" opacity="0.6">DMC-12</text>
+
+                <!-- CYBERNETIC UPGRADES (Neon Piping) -->
+                <!-- Roof Rails -->
+                <path d="M120,140 Q100,90 130,55" stroke="#00ffff" stroke-width="3" fill="none" filter="url(#glow-cyan-intense)" opacity="0.9"/>
+                <path d="M480,140 Q500,90 470,55" stroke="#00ffff" stroke-width="3" fill="none" filter="url(#glow-cyan-intense)" opacity="0.9"/>
+                
+                <!-- Side Vent Glows -->
+                <rect x="80" y="160" width="10" height="40" fill="#ff00ff" filter="url(#glow-magenta-soft)" opacity="0.6"/>
+                <rect x="510" y="160" width="10" height="40" fill="#ff00ff" filter="url(#glow-magenta-soft)" opacity="0.6"/>
+
+                <!-- EXHAUST PORTS (Ion Drive) -->
+                <circle cx="130" cy="235" r="14" fill="#111" stroke="#333"/>
+                <circle cx="130" cy="235" r="8" fill="#00ffff" filter="url(#glow-cyan-intense)"/>
+                
+                <circle cx="470" cy="235" r="14" fill="#111" stroke="#333"/>
+                <circle cx="470" cy="235" r="8" fill="#00ffff" filter="url(#glow-cyan-intense)"/>
+
+                <!-- UNDERGLOW (Ground Reflection) -->
+                <line x1="60" y1="265" x2="540" y2="265" stroke="#ff00ff" stroke-width="6" filter="url(#glow-magenta-soft)" opacity="0.8"/>
+
             </svg>
             <div class="car-reflection"></div>
         </div>
@@ -879,9 +1046,9 @@
         class SoundSystem {
             constructor() {
                 this.ctx = null;
-                this.enabled = false;
-                this.osc = null;
-                this.gain = null;
+                // Default state: assume we WANT sound, but need a gesture
+                this.enabled = true; 
+                this.initialized = false;
             }
 
             init() {
@@ -889,61 +1056,54 @@
                     const AudioContext = window.AudioContext || window.webkitAudioContext;
                     this.ctx = new AudioContext();
                 }
-                this.enabled = true;
-                // Play a startup sound
-                this.playTone(440, 'square', 0.1, 0.1);
-                setTimeout(() => this.playTone(880, 'square', 0.1, 0.3), 150);
+                this.initialized = true;
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+                // Slight startup chirp
+                this.playTone(880, 'sine', 0.1, 0.05);
             }
 
             toggle() {
-                if (this.enabled) {
-                    this.enabled = false;
-                    if(this.ctx) this.ctx.suspend();
-                    return false;
-                } else {
-                    if(!this.ctx) this.init();
-                    else {
-                        this.ctx.resume();
-                        this.enabled = true;
-                    }
-                    return true;
-                }
+                this.enabled = !this.enabled;
+                return this.enabled;
             }
 
             playTone(freq, type, duration, vol = 0.1) {
-                if (!this.enabled || !this.ctx) return;
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.type = type;
-                osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-                gain.gain.setValueAtTime(vol, this.ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + duration);
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start();
-                osc.stop(this.ctx.currentTime + duration);
+                if (!this.enabled || !this.initialized || !this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + duration);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + duration);
+                } catch(e) { console.log("Audio error", e); }
             }
 
-            playHover() {
-                // Quick high blip
-                this.playTone(800, 'sine', 0.05, 0.05);
-            }
-
-            playClick() {
-                // Retro 'select' sound
-                this.playTone(300, 'square', 0.1, 0.1);
-            }
-            
-            playType() {
-                // Mechanical keyboard tick
-                this.playTone(1200, 'triangle', 0.03, 0.02);
-            }
+            playHover() { this.playTone(800, 'sine', 0.05, 0.05); }
+            playClick() { this.playTone(300, 'square', 0.1, 0.1); }
+            playType() { this.playTone(1200, 'triangle', 0.03, 0.02); }
         }
 
         const soundSys = new SoundSystem();
         const toggleBtn = document.getElementById('sound-toggle');
 
-        toggleBtn.addEventListener('click', () => {
+        // --- AUTO-INIT AUDIO ON FIRST CLICK ANYWHERE ---
+        document.addEventListener('click', () => {
+            if (!soundSys.initialized) {
+                soundSys.init();
+            }
+        }, { once: true });
+
+        toggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Don't double init
+            if (!soundSys.initialized) soundSys.init();
+            
             const isOn = soundSys.toggle();
             toggleBtn.textContent = isOn ? "Sound: ON" : "Sound: OFF";
             toggleBtn.classList.toggle('muted', !isOn);
@@ -1013,7 +1173,6 @@
 
         input.addEventListener('keydown', function(e) {
             if (this.value.length > 0 && e.key !== 'Enter') {
-                 // typing sound
                  soundSys.playType();
             }
 
