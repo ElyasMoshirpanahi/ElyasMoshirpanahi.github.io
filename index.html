@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,9 @@
     <link rel="icon" type="image/gif" href="favicon.gif">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;800&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;800&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* --- RESET & BASE --- */
@@ -26,8 +29,16 @@
             --font-mono: 'Fira Code', monospace;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             background-color: var(--bg-dark);
             color: #ffffff;
@@ -36,64 +47,127 @@
             line-height: 1.6;
         }
 
-        a { text-decoration: none; color: inherit; transition: 0.3s; }
-        ul { list-style: none; }
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
+
+        ul {
+            list-style: none;
+        }
 
         /* --- BACKGROUND EFFECTS --- */
         .retro-fog {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: radial-gradient(circle at 50% 50%, rgba(188, 19, 254, 0.05), transparent 80%);
             z-index: -1;
             pointer-events: none;
             animation: pulseFog 8s infinite alternate;
         }
+
         @keyframes pulseFog {
-            0% { opacity: 0.3; transform: scale(1); }
-            100% { opacity: 0.6; transform: scale(1.1); }
+            0% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+
+            100% {
+                opacity: 0.6;
+                transform: scale(1.1);
+            }
         }
+
         .vhs-overlay {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent 0px,
-                rgba(0, 255, 255, 0.03) 1px,
-                transparent 2px
-            );
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg,
+                    transparent 0px,
+                    rgba(0, 255, 255, 0.03) 1px,
+                    transparent 2px);
             pointer-events: none;
             z-index: 998;
             opacity: 0.3;
             animation: vhsScan 10s linear infinite;
         }
+
         @keyframes vhsScan {
-            from { background-position: 0 0; }
-            to { background-position: 0 100vh; }
+            from {
+                background-position: 0 0;
+            }
+
+            to {
+                background-position: 0 100vh;
+            }
         }
+
         .rain-overlay {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAIklEQVQIW2NkQAKrVq36zwjjgzhhYWGMYAEYB8RmROaABADeOQ8CXl/xfgAAAABJRU5ErkJggg==');
             opacity: 0.05;
             z-index: 997;
             animation: rainFall 0.5s linear infinite;
             pointer-events: none;
         }
+
         @keyframes rainFall {
-            from { background-position: 0 0; }
-            to { background-position: 20px 40px; }
+            from {
+                background-position: 0 0;
+            }
+
+            to {
+                background-position: 20px 40px;
+            }
         }
 
         /* --- SCROLLBAR --- */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: var(--neon-purple); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--neon-pink); }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--neon-purple);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--neon-pink);
+        }
 
         /* --- UTILITIES --- */
-        .neon-text-pink { text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink); color: #fff; }
-        .neon-text-cyan { text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan); color: #fff; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 10; }
+        .neon-text-pink {
+            text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink);
+            color: #fff;
+        }
+
+        .neon-text-cyan {
+            text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
         .section-title {
             font-family: var(--font-display);
             font-size: 2.5rem;
@@ -103,6 +177,7 @@
             position: relative;
             display: inline-block;
         }
+
         .section-title::after {
             content: '';
             display: block;
@@ -126,11 +201,25 @@
             border-right: 2px solid var(--neon-cyan);
             box-shadow: 0 0 20px var(--neon-cyan);
         }
-        .blade-left { left: 0; }
-        .blade-right { right: 0; border-right: none; border-left: 2px solid var(--neon-pink); box-shadow: 0 0 20px var(--neon-pink); }
-        
-        body.loaded .blade-left { transform: translateX(-100%); }
-        body.loaded .blade-right { transform: translateX(100%); }
+
+        .blade-left {
+            left: 0;
+        }
+
+        .blade-right {
+            right: 0;
+            border-right: none;
+            border-left: 2px solid var(--neon-pink);
+            box-shadow: 0 0 20px var(--neon-pink);
+        }
+
+        body.loaded .blade-left {
+            transform: translateX(-100%);
+        }
+
+        body.loaded .blade-right {
+            transform: translateX(100%);
+        }
 
         /* --- SOUND TOGGLE --- */
         #sound-toggle {
@@ -138,7 +227,7 @@
             top: 20px;
             right: 20px;
             z-index: 10000;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0, 0, 0, 0.8);
             border: 1px solid var(--neon-cyan);
             color: var(--neon-cyan);
             padding: 8px 15px;
@@ -150,11 +239,13 @@
             transition: 0.3s;
             border-radius: 2px;
         }
+
         #sound-toggle:hover {
             background: var(--neon-cyan);
             color: #000;
             box-shadow: 0 0 15px var(--neon-cyan);
         }
+
         #sound-toggle.muted {
             border-color: #555;
             color: #555;
@@ -172,21 +263,23 @@
             align-items: center;
             justify-content: center;
             background: radial-gradient(circle at center top, #1a0b2e 0%, #000000 70%);
-            perspective: 1000px; /* For 3D elements */
+            perspective: 1000px;
+            /* For 3D elements */
         }
-        
+
         /* SCANLINE OVERLAY */
         .scanline-overlay {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
-            background: repeating-linear-gradient(
-                to bottom,
-                transparent 0px,
-                transparent 2px,
-                rgba(0,0,0,0.3) 3px,
-                rgba(0,0,0,0.3) 4px
-            );
+            background: repeating-linear-gradient(to bottom,
+                    transparent 0px,
+                    transparent 2px,
+                    rgba(0, 0, 0, 0.3) 3px,
+                    rgba(0, 0, 0, 0.3) 4px);
             z-index: 999;
             opacity: 0.3;
         }
@@ -197,7 +290,8 @@
             top: 12%;
             left: 50%;
             transform: translateX(-50%);
-            width: 400px; /* Slightly smaller to make content pop */
+            width: 400px;
+            /* Slightly smaller to make content pop */
             height: 400px;
             border-radius: 50%;
             background: var(--sun-gradient);
@@ -205,33 +299,42 @@
             z-index: 1;
             overflow: hidden;
         }
+
         .retro-sun::after {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background: transparent;
             border-radius: 50%;
             /* The horizontal bars that cut through the sun */
-            background: repeating-linear-gradient(
-                to bottom,
-                transparent 0%,
-                transparent 60%,
-                #050508 60%,
-                #050508 100%
-            );
-            background-size: 100% 40px; /* Adjust for stripe density */
+            background: repeating-linear-gradient(to bottom,
+                    transparent 0%,
+                    transparent 60%,
+                    #050508 60%,
+                    #050508 100%);
+            background-size: 100% 40px;
+            /* Adjust for stripe density */
             animation: sunScroll 4s linear infinite;
         }
 
         @keyframes sunScroll {
-            from { background-position: 0 0; }
-            to { background-position: 0 40px; }
+            from {
+                background-position: 0 0;
+            }
+
+            to {
+                background-position: 0 40px;
+            }
         }
 
         /* MOUNTAINS/CITY SCAPE */
         .cityscape {
             position: absolute;
-            bottom: 30%; /* Horizon line */
+            bottom: 30%;
+            /* Horizon line */
             left: 0;
             width: 100%;
             height: 300px;
@@ -241,10 +344,14 @@
             z-index: 2;
             opacity: 1;
         }
+
         .cityscape::after {
             content: '';
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: linear-gradient(to top, var(--neon-purple) 0%, transparent 20%);
             z-index: 3;
             opacity: 0.5;
@@ -256,8 +363,9 @@
             bottom: -100px;
             left: -50%;
             width: 200%;
-            height: 50%; /* Perspective plane */
-            background: 
+            height: 50%;
+            /* Perspective plane */
+            background:
                 linear-gradient(transparent 0%, var(--neon-pink) 2%, transparent 3%),
                 linear-gradient(90deg, transparent 0%, rgba(0, 255, 255, 0.4) 1%, transparent 2%);
             background-size: 100% 40px, 80px 100%;
@@ -266,9 +374,15 @@
             box-shadow: 0 0 80px rgba(255, 0, 255, 0.4) inset;
             animation: gridMove 0.4s linear infinite;
         }
+
         @keyframes gridMove {
-            from { background-position: 0 0; }
-            to { background-position: 0 40px; }
+            from {
+                background-position: 0 0;
+            }
+
+            to {
+                background-position: 0 40px;
+            }
         }
 
         /* ROAD */
@@ -277,7 +391,8 @@
             bottom: -100px;
             left: 50%;
             transform: translateX(-50%) perspective(500px) rotateX(60deg);
-            width: 300px; /* Road Width */
+            width: 300px;
+            /* Road Width */
             height: 50%;
             background: linear-gradient(to bottom, #000 0%, #151515 100%);
             z-index: 3;
@@ -285,6 +400,7 @@
             border-left: 2px solid var(--neon-pink);
             border-right: 2px solid var(--neon-pink);
         }
+
         /* Road Markings */
         .road::after {
             content: '';
@@ -294,108 +410,157 @@
             transform: translateX(-50%);
             width: 10px;
             height: 100%;
-            background: repeating-linear-gradient(
-                to bottom,
-                transparent 0%,
-                transparent 40%,
-                var(--neon-cyan) 40%,
-                var(--neon-cyan) 80%
-            );
+            background: repeating-linear-gradient(to bottom,
+                    transparent 0%,
+                    transparent 40%,
+                    var(--neon-cyan) 40%,
+                    var(--neon-cyan) 80%);
             background-size: 100% 100px;
             animation: roadLineScroll 0.4s linear infinite;
             box-shadow: 0 0 10px var(--neon-cyan);
         }
+
         @keyframes roadLineScroll {
-            from { background-position: 0 0; }
-            to { background-position: 0 100px; }
+            from {
+                background-position: 0 0;
+            }
+
+            to {
+                background-position: 0 100px;
+            }
         }
-        
-        /* --- DYNAMIC PALM SYSTEM (DRIVING ILLUSION) --- */
+
+
+        /* --- PALM TREES ALONG ROAD EDGES --- */
         .palm-system {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
             overflow: hidden;
-            z-index: 16; /* Above grid, behind car/text */
+            z-index: 4;
+            /* Behind text, above road */
         }
-        
+
         .moving-palm {
             position: absolute;
-            width: 200px; /* Base size before scale */
-            height: 320px;
-            /* Origin at bottom center for correct scaling from ground */
+            width: 120px;
+            height: 200px;
             transform-origin: bottom center;
-            will-change: transform, opacity, bottom, left, right;
+            will-change: transform, bottom;
         }
 
         .palm-svg {
             width: 100%;
             height: 100%;
-            filter: drop-shadow(0 0 8px rgba(188, 19, 254, 0.6));
+            filter: drop-shadow(0 0 10px rgba(188, 19, 254, 0.7));
         }
 
-        /* 
-           DRIVING ANIMATION LOGIC:
-           To create the illusion of driving FORWARD:
-           1. Palms spawn at the Horizon (vanishing point).
-           2. Move Outward (Left/Right) and Downward (Y) as they get "closer".
-           3. Scale Up significantly (perspective).
+        /*
+          SYNCHRONIZED WITH ROAD STRIPES:
+          - Road stripes: 0.4s cycle, moving 100px
+          - Palm animation: 2s total (5 stripe cycles)
+          - Road width: 300px centered
+          - Left palms: just outside left border
+          - Right palms: just outside right border (FIXED SYMMETRY)
+          - Reduced to 5 palms per side for cleaner look
         */
 
-        /* Left Side: Spawns center-left, moves to bottom-left corner */
-        @keyframes driveLeft {
+        /* LEFT SIDE PALMS - Just outside left road border */
+        @keyframes palmLeft {
             0% {
                 bottom: 30%;
-                left: 49%; /* Horizon center-left */
-                transform: scale(0.05);
+                /* Horizon */
+                left: calc(50% - 165px);
+                /* Just left of road */
+                transform: scale(0.08);
                 opacity: 0;
             }
-            10% {
-                opacity: 1; /* Fade in quickly */
-            }
-            100% {
-                bottom: -15%;
-                left: 0%; /* Far left edge */
-                transform: scale(2.5); /* Huge close up */
+
+            8% {
                 opacity: 1;
+            }
+
+            100% {
+                bottom: -28%;
+                /* Off screen bottom */
+                left: calc(50% - 420px);
+                /* Far left */
+                transform: scale(4.5);
+                opacity: 0.85;
             }
         }
 
-        /* Right Side: Spawns center-right, moves to bottom-right corner */
-        @keyframes driveRight {
+        /* RIGHT SIDE PALMS - Just outside right road border (FIXED) */
+        @keyframes palmRight {
             0% {
                 bottom: 30%;
-                left: 51%; /* Horizon center-right */
-                transform: scale(0.05);
+                /* Horizon */
+                left: calc(50% + 45px);
+                /* Just right of road - ADJUSTED */
+                transform: scale(0.08);
                 opacity: 0;
             }
-            10% {
+
+            8% {
                 opacity: 1;
             }
+
             100% {
-                bottom: -15%;
-                left: 85%; /* Far right edge */
-                transform: scale(2.5);
-                opacity: 1;
+                bottom: -28%;
+                /* Off screen bottom */
+                left: calc(50% + 300px);
+                /* Far right - ADJUSTED */
+                transform: scale(4.5);
+                opacity: 0.85;
             }
         }
 
-        .move-left { animation: driveLeft 3.5s linear infinite; }
-        .move-right { animation: driveRight 3.5s linear infinite; }
 
-        /* Staggered delays for continuous flow */
-        .d1 { animation-delay: 0s; }
-        .d2 { animation-delay: 0.58s; }
-        .d3 { animation-delay: 1.16s; }
-        .d4 { animation-delay: 1.74s; }
-        .d5 { animation-delay: 2.32s; }
-        .d6 { animation-delay: 2.90s; }
+        /* Synced with road stripes - 2s duration (5 stripe cycles of 0.4s each) */
+        .move-left {
+            animation: palmLeft 2s linear infinite;
+        }
+
+        .move-right {
+            animation: palmRight 2s linear infinite;
+        }
+
+        /* Reduced to 5 palms per side, synced with stripe timing */
+        .d1 {
+            animation-delay: 0s;
+        }
+
+        .d2 {
+            animation-delay: 0.4s;
+        }
+
+        /* Matches 1 stripe cycle */
+        .d3 {
+            animation-delay: 0.8s;
+        }
+
+        /* Matches 2 stripe cycles */
+        .d4 {
+            animation-delay: 1.2s;
+        }
+
+        /* Matches 3 stripe cycles */
+        .d5 {
+            animation-delay: 1.6s;
+        }
+
+        /* Matches 4 stripe cycles */
+
 
 
         /* --- UPGRADED TRON STATION --- */
         .tron-station {
             position: absolute;
-            bottom: 30%; /* Horizon Level - Must match palm spawn Y */
+            bottom: 30%;
+            /* Horizon Level - Must match palm spawn Y */
             left: 50%;
             transform: translateX(-50%);
             width: 140px;
@@ -416,41 +581,66 @@
             transform-origin: center;
             animation: ringPulse 4s ease-in-out infinite;
         }
+
         .st-core-pulse {
             animation: coreGlow 3s ease-in-out infinite alternate;
         }
 
         @keyframes ringPulse {
-            0%, 100% { opacity: 0.6; transform: scale(1); stroke-width: 1; }
-            50% { opacity: 1; transform: scale(1.05); stroke-width: 2; }
+
+            0%,
+            100% {
+                opacity: 0.6;
+                transform: scale(1);
+                stroke-width: 1;
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+                stroke-width: 2;
+            }
         }
+
         @keyframes coreGlow {
-            from { fill: #00ffff; filter: drop-shadow(0 0 5px #00ffff); }
-            to { fill: #ffffff; filter: drop-shadow(0 0 15px #00ffff); }
+            from {
+                fill: #00ffff;
+                filter: drop-shadow(0 0 5px #00ffff);
+            }
+
+            to {
+                fill: #ffffff;
+                filter: drop-shadow(0 0 15px #00ffff);
+            }
         }
 
         /* BEAM CONTAINER & ANIMATION */
         .beam-container {
             position: absolute;
-            bottom: 35px; /* Aligned with station core top */
+            bottom: 35px;
+            /* Aligned with station core top */
             left: 50%;
             transform: translateX(-50%);
             width: 10px;
-            height: 100vh; /* Tall enough to go off screen */
+            height: 100vh;
+            /* Tall enough to go off screen */
             pointer-events: none;
             display: flex;
             justify-content: center;
-            align-items: flex-end; /* Grow from bottom */
-            z-index: 1; /* Behind station front structure */
+            align-items: flex-end;
+            /* Grow from bottom */
+            z-index: 1;
+            /* Behind station front structure */
         }
 
         .beam-core {
             width: 100%;
-            height: 0%; /* Starts hidden */
-            background: linear-gradient(to right, rgba(255,255,255,0.8) 20%, #fff 50%, rgba(255,255,255,0.8) 80%);
-            box-shadow: 
-                0 0 10px var(--neon-cyan), 
-                0 0 30px var(--neon-blue), 
+            height: 0%;
+            /* Starts hidden */
+            background: linear-gradient(to right, rgba(255, 255, 255, 0.8) 20%, #fff 50%, rgba(255, 255, 255, 0.8) 80%);
+            box-shadow:
+                0 0 10px var(--neon-cyan),
+                0 0 30px var(--neon-blue),
                 0 0 60px var(--neon-blue);
             border-radius: 4px 4px 0 0;
             opacity: 0;
@@ -463,28 +653,79 @@
 
         /* Enhanced Beam Sequence */
         @keyframes beamFireSequence {
-            0% { height: 0%; opacity: 0; width: 2px; }
+            0% {
+                height: 0%;
+                opacity: 0;
+                width: 2px;
+            }
+
             /* Charge */
-            10% { height: 5%; opacity: 1; width: 4px; box-shadow: 0 0 20px #fff; } 
+            10% {
+                height: 5%;
+                opacity: 1;
+                width: 4px;
+                box-shadow: 0 0 20px #fff;
+            }
+
             /* BLAST */
-            15% { height: 120%; opacity: 1; width: 12px; box-shadow: 0 0 50px var(--neon-cyan), 0 0 80px var(--neon-blue); }
+            15% {
+                height: 120%;
+                opacity: 1;
+                width: 12px;
+                box-shadow: 0 0 50px var(--neon-cyan), 0 0 80px var(--neon-blue);
+            }
+
             /* Flicker & Stabilize */
-            20% { width: 10px; opacity: 0.9; }
-            25% { width: 12px; opacity: 1; }
-            30% { width: 8px; opacity: 0.8; }
+            20% {
+                width: 10px;
+                opacity: 0.9;
+            }
+
+            25% {
+                width: 12px;
+                opacity: 1;
+            }
+
+            30% {
+                width: 8px;
+                opacity: 0.8;
+            }
+
             /* Fade Out */
-            60% { height: 120%; opacity: 0; width: 1px; }
-            100% { height: 0%; opacity: 0; }
+            60% {
+                height: 120%;
+                opacity: 0;
+                width: 1px;
+            }
+
+            100% {
+                height: 0%;
+                opacity: 0;
+            }
         }
 
         /* Station Reaction during Beam */
         .station-active .st-core-pulse {
             animation: coreOverload 3s ease-out forwards;
         }
+
         @keyframes coreOverload {
-            0% { fill: #fff; filter: drop-shadow(0 0 10px #fff); }
-            10% { fill: #fff; filter: drop-shadow(0 0 50px #00ffff); transform: scale(1.2); }
-            100% { fill: #00ffff; filter: drop-shadow(0 0 5px #00ffff); transform: scale(1); }
+            0% {
+                fill: #fff;
+                filter: drop-shadow(0 0 10px #fff);
+            }
+
+            10% {
+                fill: #fff;
+                filter: drop-shadow(0 0 50px #00ffff);
+                transform: scale(1.2);
+            }
+
+            100% {
+                fill: #00ffff;
+                filter: drop-shadow(0 0 5px #00ffff);
+                transform: scale(1);
+            }
         }
 
 
@@ -505,13 +746,14 @@
         /* --- POLISHED CONTENT LAYER --- */
         .hero-content {
             position: absolute;
-            top: 13%; /* Adjusted for better centering */
+            top: 13%;
+            /* Adjusted for better centering */
             width: 100%;
             text-align: center;
-            z-index: 20; 
+            z-index: 20;
             padding: 0 20px;
         }
-        
+
         .kicker {
             font-family: var(--font-tech);
             color: var(--neon-cyan);
@@ -525,32 +767,35 @@
 
         .main-title {
             font-family: var(--font-display);
-            font-size: clamp(3.5rem, 9vw, 6.5rem); /* Slightly tighter clamp */
+            font-size: clamp(3.5rem, 9vw, 6.5rem);
+            /* Slightly tighter clamp */
             font-weight: 900;
             line-height: 1.1;
             color: #fff;
-            text-shadow: 
+            text-shadow:
                 4px 4px 0px var(--neon-purple),
                 -2px -2px 0px var(--neon-cyan);
-            margin-bottom: 0.5rem; /* Closer to subtitle */
+            margin-bottom: 0.5rem;
+            /* Closer to subtitle */
             position: relative;
             display: inline-block;
             opacity: 0;
             animation: glitchReveal 0.5s ease 1.8s forwards;
         }
-        
+
         .subtitle {
             font-family: var(--font-main);
             font-size: clamp(1.2rem, 4vw, 1.8rem);
             color: #e0e0e0;
-            text-shadow: 0 0 10px rgba(0,0,0,0.8);
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
             max-width: 700px;
             margin: 0 auto 2.5rem auto;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(4px);
             padding: 6px 20px;
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 50px; /* Pill shape for modern look */
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 50px;
+            /* Pill shape for modern look */
             opacity: 0;
             animation: slideUp 1s ease 2s forwards;
         }
@@ -558,64 +803,97 @@
         .cta-group {
             display: flex;
             justify-content: center;
-            gap: 1.5rem; /* Cleaner separation */
+            gap: 1.5rem;
+            /* Cleaner separation */
             flex-wrap: wrap;
             opacity: 0;
             animation: slideUp 1s ease 2.2s forwards;
         }
 
         .btn {
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             border: 2px solid var(--neon-cyan);
-            padding: 12px 32px;
+            padding: 14px 36px;
             color: #fff;
             font-family: var(--font-tech);
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 2px;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
             position: relative;
             overflow: hidden;
             cursor: pointer;
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.15);
-            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2), 0 4px 15px rgba(0, 0, 0, 0.4);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             font-size: 0.9rem;
+            border-radius: 2px;
         }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(0, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
         .btn:hover {
             background: var(--neon-cyan);
             color: #000;
-            box-shadow: 0 0 30px var(--neon-cyan);
-            transform: translateY(-2px);
+            box-shadow: 0 0 35px var(--neon-cyan), 0 8px 25px rgba(0, 255, 255, 0.3);
+            transform: translateY(-3px);
+            border-color: var(--neon-cyan);
         }
+
         .btn.primary {
             border-color: var(--neon-pink);
-            box-shadow: 0 0 10px rgba(255, 0, 255, 0.2);
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.25), 0 4px 15px rgba(0, 0, 0, 0.4);
         }
+
+        .btn.primary::before {
+            background: rgba(255, 0, 255, 0.3);
+        }
+
         .btn.primary:hover {
             background: var(--neon-pink);
             color: #fff;
-            box-shadow: 0 0 40px var(--neon-pink);
+            box-shadow: 0 0 45px var(--neon-pink), 0 8px 25px rgba(255, 0, 255, 0.3);
+            border-color: var(--neon-pink);
         }
 
         /* DELOREAN CAR (REAR VIEW - RESIZED) */
         .car-container {
             position: absolute;
-            bottom: 5%; /* Lower on the road */
+            bottom: 5%;
+            /* Lower on the road */
             left: 50%;
             transform: translateX(-50%);
-            width: 320px; /* SMALLER SIZE */
+            width: 320px;
+            /* SMALLER SIZE */
             height: 160px;
             z-index: 15;
             opacity: 0;
-            animation: 
+            animation:
                 driveIn 2s ease-out 1s forwards,
                 carBounce 0.5s ease-in-out infinite alternate;
         }
+
         .car-svg {
             width: 100%;
             height: 100%;
             filter: drop-shadow(0 0 25px rgba(0, 255, 255, 0.3));
         }
+
         .car-reflection {
             position: absolute;
             bottom: -30px;
@@ -630,16 +908,41 @@
         }
 
         @keyframes driveIn {
-            0% { transform: translateX(-50%) scale(0.4); opacity: 0; filter: blur(15px); bottom: 15%; }
-            100% { transform: translateX(-50%) scale(1); opacity: 1; filter: blur(0); bottom: 5%; }
+            0% {
+                transform: translateX(-50%) scale(0.4);
+                opacity: 0;
+                filter: blur(15px);
+                bottom: 15%;
+            }
+
+            100% {
+                transform: translateX(-50%) scale(1);
+                opacity: 1;
+                filter: blur(0);
+                bottom: 5%;
+            }
         }
+
         @keyframes carBounce {
-            from { transform: translateX(-50%) translateY(0); }
-            to { transform: translateX(-50%) translateY(1px); }
+            from {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            to {
+                transform: translateX(-50%) translateY(1px);
+            }
         }
+
         @keyframes reflectionFlicker {
-            from { opacity: 0.6; transform: scaleY(0.5) scaleX(0.99); }
-            to { opacity: 0.8; transform: scaleY(0.5) scaleX(1.01); }
+            from {
+                opacity: 0.6;
+                transform: scaleY(0.5) scaleX(0.99);
+            }
+
+            to {
+                opacity: 0.8;
+                transform: scaleY(0.5) scaleX(1.01);
+            }
         }
 
         /* --- SECTIONS GENERIC --- */
@@ -647,47 +950,59 @@
             padding: 80px 0;
             position: relative;
             z-index: 10;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
-        
+
         /* --- RETRO CONTAINER VARIANTS --- */
-        
+
         /* Variant A: Neon Frame Card */
         .neon-frame-card {
-            background: rgba(5, 5, 8, 0.9);
+            background: rgba(5, 5, 8, 0.95);
             border: 1px solid var(--neon-cyan);
-            box-shadow: 0 0 5px rgba(0, 255, 255, 0.2), inset 0 0 20px rgba(0, 255, 255, 0.05);
+            box-shadow: 0 0 8px rgba(0, 255, 255, 0.25), inset 0 0 25px rgba(0, 255, 255, 0.06), 0 4px 15px rgba(0, 0, 0, 0.3);
             position: relative;
             overflow: hidden;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
+
         .neon-frame-card::before {
             content: '';
             position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 2px;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 3px;
             background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
-            transition: 0.5s;
+            transition: left 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 0 10px var(--neon-cyan);
         }
+
         .neon-frame-card:hover {
-            box-shadow: 0 0 15px var(--neon-cyan), inset 0 0 30px rgba(0, 255, 255, 0.1);
-            transform: translateY(-2px);
+            box-shadow: 0 0 20px var(--neon-cyan), inset 0 0 35px rgba(0, 255, 255, 0.12), 0 8px 25px rgba(0, 0, 0, 0.4);
+            transform: translateY(-4px);
+            border-color: rgba(0, 255, 255, 0.8);
         }
-        .neon-frame-card:hover::before { left: 100%; }
+
+        .neon-frame-card:hover::before {
+            left: 100%;
+        }
 
         /* Variant B: Glass-Neon Panel */
         .glass-neon-panel {
-            background: rgba(20, 20, 35, 0.4);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 0, 255, 0.3);
-            border-radius: 4px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            background: rgba(20, 20, 35, 0.5);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 0, 255, 0.35);
+            border-radius: 6px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2), 0 0 10px rgba(255, 0, 255, 0.1);
             position: relative;
-            transition: 0.3s;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
+
         .glass-neon-panel:hover {
             border-color: var(--neon-pink);
-            box-shadow: 0 0 20px rgba(255, 0, 255, 0.2);
+            box-shadow: 0 0 25px rgba(255, 0, 255, 0.3), 0 8px 35px rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px) scale(1.02);
+            background: rgba(25, 20, 40, 0.6);
         }
 
         /* Variant C: Vaporwave Gradient Block */
@@ -698,15 +1013,19 @@
             position: relative;
             transition: 0.3s;
         }
+
         .vaporwave-block::after {
             content: '';
             position: absolute;
-            bottom: 0; right: 0;
-            width: 30px; height: 30px;
+            bottom: 0;
+            right: 0;
+            width: 30px;
+            height: 30px;
             background: linear-gradient(-45deg, var(--neon-purple) 1px, transparent 1px);
             background-size: 4px 4px;
             opacity: 0.5;
         }
+
         .vaporwave-block:hover {
             transform: translateX(5px);
             border-left-color: var(--neon-pink);
@@ -716,18 +1035,22 @@
         /* Variant D: Holographic Grid Card */
         .holo-grid-card {
             background-color: #050508;
-            background-image: 
-                linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+            background-image:
+                linear-gradient(rgba(0, 255, 255, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.06) 1px, transparent 1px);
             background-size: 20px 20px;
-            border: 1px solid rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.15);
             position: relative;
-            transition: 0.4s;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
+
         .holo-grid-card:hover {
             border-color: var(--neon-green);
-            background-size: 22px 22px; /* Subtle zoom effect */
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            background-size: 22px 22px;
+            box-shadow: 0 0 25px rgba(10, 255, 10, 0.25), 0 12px 35px rgba(0, 0, 0, 0.5);
+            transform: translateY(-3px);
+            background-color: #080810;
         }
 
         /* --- ABOUT SECTION --- */
@@ -736,10 +1059,19 @@
             grid-template-columns: 1fr;
             gap: 40px;
         }
-        @media(min-width: 768px) { .about-grid { grid-template-columns: 2fr 1fr; } }
 
-        .about-text p { margin-bottom: 1.5rem; font-size: 1.1rem; color: #ddd; }
-        
+        @media(min-width: 768px) {
+            .about-grid {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+
+        .about-text p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            color: #ddd;
+        }
+
         /* REPLACED WITH Variant B: Glass-Neon Panel style application */
         .stat-card {
             /* Inherits from glass-neon-panel via HTML class, specific overrides here */
@@ -751,26 +1083,29 @@
             justify-content: center;
             text-align: center;
         }
-        .stat-num { 
-            font-family: var(--font-display); 
-            font-size: 2.5rem; 
+
+        .stat-num {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
             color: var(--neon-pink);
-            text-shadow: 0 0 10px rgba(255,0,255,0.5);
+            text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
         }
-        .stat-label { 
-            font-family: var(--font-tech); 
-            font-size: 0.9rem; 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
+
+        .stat-label {
+            font-family: var(--font-tech);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             color: var(--neon-cyan);
         }
 
         /* --- EXPERIENCE --- */
         .timeline {
-            border-left: 2px solid rgba(255,255,255,0.1);
+            border-left: 2px solid rgba(255, 255, 255, 0.1);
             margin-left: 20px;
             padding-left: 30px;
         }
+
         .timeline-item {
             position: relative;
             margin-bottom: 50px;
@@ -781,15 +1116,18 @@
             border-radius: 0 10px 10px 0;
             transition: 0.3s;
         }
+
         .timeline-item:hover {
             border-left-color: var(--neon-cyan);
             box-shadow: 0 0 20px rgba(188, 19, 254, 0.1);
             transform: translateX(5px);
         }
+
         .timeline-item::before {
             content: '';
             position: absolute;
-            left: -44px; /* Adjusted for padding */
+            left: -44px;
+            /* Adjusted for padding */
             top: 25px;
             width: 14px;
             height: 14px;
@@ -799,23 +1137,43 @@
             border-radius: 50%;
             z-index: 2;
         }
-        .role { 
-            font-family: var(--font-display); 
-            font-size: 1.4rem; 
-            color: #fff; 
-            text-shadow: 0 0 5px rgba(255,255,255,0.3);
+
+        .role {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            color: #fff;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
         }
-        .company { 
-            font-family: var(--font-tech); 
-            color: var(--neon-pink); 
-            font-size: 1.1rem; 
-            margin-bottom: 10px; 
-            display: block; 
-            text-shadow: 0 0 5px rgba(255,0,255,0.3);
+
+        .company {
+            font-family: var(--font-tech);
+            color: var(--neon-pink);
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            display: block;
+            text-shadow: 0 0 5px rgba(255, 0, 255, 0.3);
         }
-        .date { font-family: var(--font-mono); font-size: 0.8rem; color: #888; margin-bottom: 15px; display: block; }
-        .timeline-item ul { margin-left: 15px; }
-        .timeline-item li { margin-bottom: 5px; color: #ccc; list-style-type: none; position: relative; padding-left: 15px; }
+
+        .date {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .timeline-item ul {
+            margin-left: 15px;
+        }
+
+        .timeline-item li {
+            margin-bottom: 5px;
+            color: #ccc;
+            list-style-type: none;
+            position: relative;
+            padding-left: 15px;
+        }
+
         .timeline-item li::before {
             content: '>';
             position: absolute;
@@ -830,38 +1188,51 @@
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
         }
+
         /* Variant A: Neon Frame Card applied via class, specific refinements */
         .skill-category {
             padding: 25px;
         }
+
         /* Overriding default gradient top border from old css */
-        .skill-category::before { display: none; } 
-        
-        .skill-title { 
-            color: var(--neon-cyan); 
-            margin-bottom: 15px; 
-            font-family: var(--font-tech); 
-            text-transform: uppercase; 
+        .skill-category::before {
+            display: none;
+        }
+
+        .skill-title {
+            color: var(--neon-cyan);
+            margin-bottom: 15px;
+            font-family: var(--font-tech);
+            text-transform: uppercase;
             font-size: 1.2rem;
-            border-bottom: 1px solid rgba(0,255,255,0.2);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
             padding-bottom: 10px;
         }
-        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
         .tag {
             font-family: var(--font-mono);
             font-size: 0.8rem;
-            padding: 6px 12px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #aaa;
-            transition: 0.3s;
+            padding: 8px 14px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #bbb;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%);
+            cursor: default;
         }
-        .tag:hover { 
-            border-color: var(--neon-pink); 
-            color: #fff; 
-            box-shadow: 0 0 10px var(--neon-pink); 
-            background: rgba(255, 0, 255, 0.1);
+
+        .tag:hover {
+            border-color: var(--neon-pink);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.4), 0 0 5px var(--neon-pink);
+            background: rgba(255, 0, 255, 0.15);
+            transform: translateY(-2px) scale(1.05);
         }
 
         /* --- PROJECTS --- */
@@ -870,6 +1241,7 @@
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
         }
+
         /* Variant D: Holo Grid Card applied via class */
         .project-card {
             padding: 25px;
@@ -877,58 +1249,88 @@
             transition: 0.3s;
             overflow: hidden;
             cursor: pointer;
-            height: 240px; /* collapsed height */
+            height: 240px;
+            /* collapsed height */
             display: flex;
             flex-direction: column;
         }
+
         .project-card.expanded {
             height: auto;
             border-color: var(--neon-green);
-            box-shadow: 0 0 30px rgba(10,255,10, 0.2);
+            box-shadow: 0 0 30px rgba(10, 255, 10, 0.2);
             background-color: #080810;
         }
-        
-        .p-title { 
-            font-family: var(--font-display); 
-            color: #fff; 
-            font-size: 1.4rem; 
-            margin-bottom: 5px; 
+
+        .p-title {
+            font-family: var(--font-display);
+            color: #fff;
+            font-size: 1.4rem;
+            margin-bottom: 5px;
             text-shadow: 2px 2px 0px #000;
         }
-        .p-role { 
-            font-family: var(--font-mono); 
-            color: var(--neon-cyan); 
-            font-size: 0.8rem; 
-            margin-bottom: 15px; 
+
+        .p-role {
+            font-family: var(--font-mono);
+            color: var(--neon-cyan);
+            font-size: 0.8rem;
+            margin-bottom: 15px;
             letter-spacing: 1px;
         }
-        .p-desc { color: #ccc; font-size: 1rem; margin-bottom: 15px; flex-grow: 1; }
-        .p-hidden { 
-            display: none; 
-            opacity: 0; 
-            transition: opacity 0.5s; 
-            border-top: 1px dashed rgba(255,255,255,0.2); 
-            padding-top: 15px; 
-            margin-top: 15px; 
+
+        .p-desc {
+            color: #ccc;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            flex-grow: 1;
         }
-        .project-card.expanded .p-hidden { display: block; opacity: 1; }
-        
+
+        .p-hidden {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s;
+            border-top: 1px dashed rgba(255, 255, 255, 0.2);
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+
+        .project-card.expanded .p-hidden {
+            display: block;
+            opacity: 1;
+        }
+
         .expand-hint {
             position: absolute;
-            bottom: 15px; right: 15px;
+            bottom: 15px;
+            right: 15px;
             font-family: var(--font-mono);
             font-size: 0.7rem;
             color: var(--neon-pink);
             animation: blink 2s infinite;
         }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .project-card.expanded .expand-hint { display: none; }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .project-card.expanded .expand-hint {
+            display: none;
+        }
 
         /* --- TERMINAL --- */
         #terminal-section {
             background: radial-gradient(circle at center, #111, #050505);
             position: relative;
         }
+
         .terminal-window {
             background: rgba(5, 5, 5, 0.95);
             border: 1px solid #333;
@@ -940,18 +1342,21 @@
             font-family: var(--font-mono);
             position: relative;
         }
+
         .terminal-window::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent 0px,
-                rgba(0, 255, 0, 0.03) 1px,
-                transparent 2px
-            );
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg,
+                    transparent 0px,
+                    rgba(0, 255, 0, 0.03) 1px,
+                    transparent 2px);
             pointer-events: none;
         }
+
         .terminal-header {
             background: #151515;
             padding: 10px 15px;
@@ -959,10 +1364,36 @@
             gap: 8px;
             border-bottom: 1px solid #333;
         }
-        .dot { width: 12px; height: 12px; border-radius: 50%; box-shadow: 0 0 5px currentColor; }
-        .red { background: #ff5f56; color: #ff5f56; } .yellow { background: #ffbd2e; color: #ffbd2e; } .green { background: #27c93f; color: #27c93f; }
-        .terminal-title { margin-left: auto; margin-right: auto; color: #666; font-size: 0.8rem; }
-        
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            box-shadow: 0 0 5px currentColor;
+        }
+
+        .red {
+            background: #ff5f56;
+            color: #ff5f56;
+        }
+
+        .yellow {
+            background: #ffbd2e;
+            color: #ffbd2e;
+        }
+
+        .green {
+            background: #27c93f;
+            color: #27c93f;
+        }
+
+        .terminal-title {
+            margin-left: auto;
+            margin-right: auto;
+            color: #666;
+            font-size: 0.8rem;
+        }
+
         .terminal-body {
             padding: 20px;
             height: 400px;
@@ -971,15 +1402,27 @@
             text-shadow: 0 0 4px rgba(51, 255, 0, 0.6);
             font-size: 0.9rem;
         }
-        .output-line { margin-bottom: 5px; white-space: pre-wrap; }
-        .input-line { display: flex; }
-        .prompt { color: var(--neon-pink); margin-right: 10px; }
-        .cmd-input { 
-            background: transparent; 
-            border: none; 
-            color: #33ff00; 
-            font-family: var(--font-mono); 
-            flex-grow: 1; 
+
+        .output-line {
+            margin-bottom: 5px;
+            white-space: pre-wrap;
+        }
+
+        .input-line {
+            display: flex;
+        }
+
+        .prompt {
+            color: var(--neon-pink);
+            margin-right: 10px;
+        }
+
+        .cmd-input {
+            background: transparent;
+            border: none;
+            color: #33ff00;
+            font-family: var(--font-mono);
+            flex-grow: 1;
             outline: none;
             text-shadow: 0 0 2px #33ff00;
         }
@@ -988,48 +1431,90 @@
         footer {
             text-align: center;
             padding: 50px 0;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
+
         .social-links {
             display: flex;
             justify-content: center;
             gap: 40px;
             margin-top: 20px;
         }
+
         .social-links a {
             font-size: 2rem;
             color: #888;
             transition: 0.3s;
         }
-        .social-links a:hover { 
-            color: var(--neon-cyan); 
-            text-shadow: 0 0 15px var(--neon-cyan); 
+
+        .social-links a:hover {
+            color: var(--neon-cyan);
+            text-shadow: 0 0 15px var(--neon-cyan);
             transform: scale(1.1);
         }
 
         /* --- ANIMATIONS --- */
         @keyframes glitchReveal {
-            0% { opacity: 0; transform: translateX(-10px); clip-path: polygon(0 0, 100% 0, 100% 10%, 0 10%); }
-            20% { opacity: 1; transform: translateX(10px); clip-path: polygon(0 0, 100% 0, 100% 80%, 0 80%); }
-            40% { transform: translateX(-5px); clip-path: polygon(0 20%, 100% 20%, 100% 100%, 0 100%); }
-            60% { transform: translateX(5px); }
-            100% { opacity: 1; transform: translateX(0); clip-path: none; }
+            0% {
+                opacity: 0;
+                transform: translateX(-10px);
+                clip-path: polygon(0 0, 100% 0, 100% 10%, 0 10%);
+            }
+
+            20% {
+                opacity: 1;
+                transform: translateX(10px);
+                clip-path: polygon(0 0, 100% 0, 100% 80%, 0 80%);
+            }
+
+            40% {
+                transform: translateX(-5px);
+                clip-path: polygon(0 20%, 100% 20%, 100% 100%, 0 100%);
+            }
+
+            60% {
+                transform: translateX(5px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+                clip-path: none;
+            }
         }
+
         @keyframes slideUp {
-            to { opacity: 1; transform: translateY(0); }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
+
         @keyframes fadeIn {
-            to { opacity: 1; }
+            to {
+                opacity: 1;
+            }
         }
 
         /* RESPONSIVE */
         @media(max-width: 768px) {
-            .blade-cover { display: none; } /* Disable heavy blade anim on mobile for perf */
-            .main-title { font-size: 2.5rem; }
-            .car-container { width: 250px; bottom: 15%; }
+            .blade-cover {
+                display: none;
+            }
+
+            /* Disable heavy blade anim on mobile for perf */
+            .main-title {
+                font-size: 2.5rem;
+            }
+
+            .car-container {
+                width: 250px;
+                bottom: 15%;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <!-- SVG SYMBOLS DEFINITION (Hidden) -->
@@ -1041,48 +1526,52 @@
                 <stop offset="100%" stop-color="#000" />
             </linearGradient>
             <filter id="palm-glow">
-                <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                <feGaussianBlur stdDeviation="2" result="coloredBlur" />
                 <feMerge>
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
+                    <feMergeNode in="coloredBlur" />
+                    <feMergeNode in="SourceGraphic" />
                 </feMerge>
             </filter>
             <symbol id="palm-icon" viewBox="0 0 200 300">
-                 <!-- Trunk (Segmented) -->
-                 <path d="M95,300 L105,300 L100,50 Z" fill="url(#palm-trunk-grad)" stroke="none"/>
-                 <g stroke="#bc13fe" stroke-width="1" fill="none" opacity="0.5">
-                     <path d="M96,280 L104,280" /><path d="M96.5,260 L103.5,260" />
-                     <path d="M97,240 L103,240" /><path d="M97.5,220 L102.5,220" />
-                     <path d="M98,200 L102,200" /><path d="M98.5,180 L101.5,180" />
-                     <path d="M99,160 L101,160" /><path d="M99.5,140 L100.5,140" />
-                 </g>
-                 
-                 <!-- Leaves (Sharp, Angular, Cyan/Magenta Edges) -->
-                 <g filter="url(#palm-glow)">
-                     <!-- Left Set -->
-                     <path d="M100,50 Q60,20 40,80" fill="none" stroke="#00ffff" stroke-width="2" />
-                     <path d="M100,50 Q60,20 40,80 L50,85 L100,55 Z" fill="#000" opacity="0.8"/>
- 
-                     <path d="M100,50 Q50,0 20,30" fill="none" stroke="#ff00ff" stroke-width="2" />
-                     <path d="M100,50 Q50,0 20,30 L28,38 L100,55 Z" fill="#000" opacity="0.8"/>
-                     
-                     <path d="M100,50 Q70,-20 30,0" fill="none" stroke="#00ffff" stroke-width="2" />
-                     <path d="M100,50 Q70,-20 30,0 L40,10 L100,55 Z" fill="#000" opacity="0.8"/>
- 
-                     <!-- Right Set -->
-                     <path d="M100,50 Q140,20 160,80" fill="none" stroke="#ff00ff" stroke-width="2" />
-                     <path d="M100,50 Q140,20 160,80 L150,85 L100,55 Z" fill="#000" opacity="0.8"/>
- 
-                     <path d="M100,50 Q150,0 180,30" fill="none" stroke="#00ffff" stroke-width="2" />
-                     <path d="M100,50 Q150,0 180,30 L172,38 L100,55 Z" fill="#000" opacity="0.8"/>
- 
-                     <path d="M100,50 Q130,-20 170,0" fill="none" stroke="#ff00ff" stroke-width="2" />
-                     <path d="M100,50 Q130,-20 170,0 L160,10 L100,55 Z" fill="#000" opacity="0.8"/>
-                     
-                     <!-- Top -->
-                     <path d="M100,50 Q100,-30 80,-10" fill="none" stroke="#00ffff" stroke-width="2" />
-                     <path d="M100,50 Q100,-30 120,-10" fill="none" stroke="#ff00ff" stroke-width="2" />
-                 </g>
+                <!-- Trunk (Segmented) -->
+                <path d="M95,300 L105,300 L100,50 Z" fill="url(#palm-trunk-grad)" stroke="none" />
+                <g stroke="#bc13fe" stroke-width="1" fill="none" opacity="0.5">
+                    <path d="M96,280 L104,280" />
+                    <path d="M96.5,260 L103.5,260" />
+                    <path d="M97,240 L103,240" />
+                    <path d="M97.5,220 L102.5,220" />
+                    <path d="M98,200 L102,200" />
+                    <path d="M98.5,180 L101.5,180" />
+                    <path d="M99,160 L101,160" />
+                    <path d="M99.5,140 L100.5,140" />
+                </g>
+
+                <!-- Leaves (Sharp, Angular, Cyan/Magenta Edges) -->
+                <g filter="url(#palm-glow)">
+                    <!-- Left Set -->
+                    <path d="M100,50 Q60,20 40,80" fill="none" stroke="#00ffff" stroke-width="2" />
+                    <path d="M100,50 Q60,20 40,80 L50,85 L100,55 Z" fill="#000" opacity="0.8" />
+
+                    <path d="M100,50 Q50,0 20,30" fill="none" stroke="#ff00ff" stroke-width="2" />
+                    <path d="M100,50 Q50,0 20,30 L28,38 L100,55 Z" fill="#000" opacity="0.8" />
+
+                    <path d="M100,50 Q70,-20 30,0" fill="none" stroke="#00ffff" stroke-width="2" />
+                    <path d="M100,50 Q70,-20 30,0 L40,10 L100,55 Z" fill="#000" opacity="0.8" />
+
+                    <!-- Right Set -->
+                    <path d="M100,50 Q140,20 160,80" fill="none" stroke="#ff00ff" stroke-width="2" />
+                    <path d="M100,50 Q140,20 160,80 L150,85 L100,55 Z" fill="#000" opacity="0.8" />
+
+                    <path d="M100,50 Q150,0 180,30" fill="none" stroke="#00ffff" stroke-width="2" />
+                    <path d="M100,50 Q150,0 180,30 L172,38 L100,55 Z" fill="#000" opacity="0.8" />
+
+                    <path d="M100,50 Q130,-20 170,0" fill="none" stroke="#ff00ff" stroke-width="2" />
+                    <path d="M100,50 Q130,-20 170,0 L160,10 L100,55 Z" fill="#000" opacity="0.8" />
+
+                    <!-- Top -->
+                    <path d="M100,50 Q100,-30 80,-10" fill="none" stroke="#00ffff" stroke-width="2" />
+                    <path d="M100,50 Q100,-30 120,-10" fill="none" stroke="#ff00ff" stroke-width="2" />
+                </g>
             </symbol>
         </defs>
     </svg>
@@ -1106,7 +1595,7 @@
         <div class="retro-sun"></div>
         <div class="cityscape"></div>
         <div class="horizon-glow"></div>
-        
+
         <!-- UPGRADED TRON STATION -->
         <div class="tron-station" id="tron-station">
             <!-- Beam Container -->
@@ -1145,10 +1634,12 @@
                 <!-- Base Platform Rings (Perspective Flattened) -->
                 <g transform="translate(100, 130) scale(1, 0.25)">
                     <!-- Outer Ring -->
-                    <circle cx="0" cy="0" r="80" fill="none" stroke="#00ffff" stroke-width="2" opacity="0.3" class="st-ring-pulse" />
+                    <circle cx="0" cy="0" r="80" fill="none" stroke="#00ffff" stroke-width="2" opacity="0.3"
+                        class="st-ring-pulse" />
                     <circle cx="0" cy="0" r="70" fill="none" stroke="#ff00ff" stroke-width="1" opacity="0.2" />
                     <!-- Mid Ring -->
-                    <circle cx="0" cy="0" r="50" fill="rgba(0, 255, 255, 0.1)" stroke="#00ffff" stroke-width="4" opacity="0.5" class="st-ring-pulse" style="animation-delay: 1s;"/>
+                    <circle cx="0" cy="0" r="50" fill="rgba(0, 255, 255, 0.1)" stroke="#00ffff" stroke-width="4"
+                        opacity="0.5" class="st-ring-pulse" style="animation-delay: 1s;" />
                     <!-- Inner Core Base -->
                     <circle cx="0" cy="0" r="20" fill="#000" stroke="#00ffff" stroke-width="2" filter="url(#glow-s)" />
                 </g>
@@ -1156,10 +1647,12 @@
                 <!-- Main Gateway Structure -->
                 <g transform="translate(100, 130)" filter="url(#glow-s)">
                     <!-- Left Pylon -->
-                    <path d="M-60,0 Q-50,-80 -20,-100 L-10,-100 Q-30,-80 -40,0 Z" fill="url(#metal-grad)" stroke="#00ffff" stroke-width="1" opacity="0.9" />
+                    <path d="M-60,0 Q-50,-80 -20,-100 L-10,-100 Q-30,-80 -40,0 Z" fill="url(#metal-grad)"
+                        stroke="#00ffff" stroke-width="1" opacity="0.9" />
                     <!-- Right Pylon -->
-                    <path d="M60,0 Q50,-80 20,-100 L10,-100 Q30,-80 40,0 Z" fill="url(#metal-grad)" stroke="#00ffff" stroke-width="1" opacity="0.9" />
-                    
+                    <path d="M60,0 Q50,-80 20,-100 L10,-100 Q30,-80 40,0 Z" fill="url(#metal-grad)" stroke="#00ffff"
+                        stroke-width="1" opacity="0.9" />
+
                     <!-- Connecting Arcs / Energy Veins -->
                     <path d="M-20,-100 Q0,-90 20,-100" fill="none" stroke="#ff00ff" stroke-width="2" opacity="0.8" />
                     <path d="M-45,-20 L-20,-20" fill="none" stroke="#00ffff" stroke-width="1" opacity="0.5" />
@@ -1180,59 +1673,73 @@
         </div>
 
         <div class="grid-floor"></div>
-        
+
         <!-- DEDICATED ROAD -->
         <div class="road"></div>
-        
-        <!-- DYNAMIC MOVING PALM SYSTEM (Added) -->
+
+        <!-- DYNAMIC MOVING PALM SYSTEM (Reduced & Synced) -->
         <div class="palm-system">
-            <!-- Left Side Palms -->
+            <!-- Left Side Palms (5 total) -->
             <div class="moving-palm move-left d1">
-                <svg class="palm-svg"><use href="#palm-icon"/></svg>
+                <svg class="palm-svg">
+                    <use href="#palm-icon" />
+                </svg>
             </div>
             <div class="moving-palm move-left d2">
-                <svg class="palm-svg"><use href="#palm-icon"/></svg>
+                <svg class="palm-svg">
+                    <use href="#palm-icon" />
+                </svg>
             </div>
             <div class="moving-palm move-left d3">
-                <svg class="palm-svg"><use href="#palm-icon"/></svg>
+                <svg class="palm-svg">
+                    <use href="#palm-icon" />
+                </svg>
             </div>
             <div class="moving-palm move-left d4">
-                <svg class="palm-svg"><use href="#palm-icon"/></svg>
+                <svg class="palm-svg">
+                    <use href="#palm-icon" />
+                </svg>
             </div>
             <div class="moving-palm move-left d5">
-                <svg class="palm-svg"><use href="#palm-icon"/></svg>
-            </div>
-            <div class="moving-palm move-left d6">
-                <svg class="palm-svg"><use href="#palm-icon"/></svg>
+                <svg class="palm-svg">
+                    <use href="#palm-icon" />
+                </svg>
             </div>
 
-            <!-- Right Side Palms (Flipped) -->
+            <!-- Right Side Palms (5 total, flipped) -->
             <div class="moving-palm move-right d1">
-                <svg class="palm-svg" style="transform: scaleX(-1);"><use href="#palm-icon"/></svg>
+                <svg class="palm-svg" style="transform: scaleX(-1);">
+                    <use href="#palm-icon" />
+                </svg>
             </div>
             <div class="moving-palm move-right d2">
-                <svg class="palm-svg" style="transform: scaleX(-1);"><use href="#palm-icon"/></svg>
+                <svg class="palm-svg" style="transform: scaleX(-1);">
+                    <use href="#palm-icon" />
+                </svg>
             </div>
             <div class="moving-palm move-right d3">
-                <svg class="palm-svg" style="transform: scaleX(-1);"><use href="#palm-icon"/></svg>
+                <svg class="palm-svg" style="transform: scaleX(-1);">
+                    <use href="#palm-icon" />
+                </svg>
             </div>
             <div class="moving-palm move-right d4">
-                <svg class="palm-svg" style="transform: scaleX(-1);"><use href="#palm-icon"/></svg>
+                <svg class="palm-svg" style="transform: scaleX(-1);">
+                    <use href="#palm-icon" />
+                </svg>
             </div>
             <div class="moving-palm move-right d5">
-                <svg class="palm-svg" style="transform: scaleX(-1);"><use href="#palm-icon"/></svg>
-            </div>
-            <div class="moving-palm move-right d6">
-                <svg class="palm-svg" style="transform: scaleX(-1);"><use href="#palm-icon"/></svg>
+                <svg class="palm-svg" style="transform: scaleX(-1);">
+                    <use href="#palm-icon" />
+                </svg>
             </div>
         </div>
 
-        
+
         <div class="hero-content">
             <div class="kicker">GEN AI · LLMs · AGENTS · SYSTEMS</div>
             <h1 class="main-title">ELYAS MOSHIRPANAHI</h1>
             <p class="subtitle">SENIOR GENERATIVE AI ENGINEER</p>
-            
+
             <div class="cta-group">
                 <a href="#projects" class="btn primary">View Projects</a>
                 <a href="#terminal-section" class="btn">Open Terminal</a>
@@ -1246,112 +1753,123 @@
                 <defs>
                     <!-- CHROME HORIZON REFLECTION (Key to Synthwave Look) -->
                     <linearGradient id="chrome-body" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#050510"/>       <!-- Sky reflection (dark) -->
-                        <stop offset="48%" stop-color="#101025"/>      <!-- Horizon line darker -->
-                        <stop offset="50%" stop-color="#00ffff"/>      <!-- THE HORIZON LINE (Neon Cyan) -->
-                        <stop offset="52%" stop-color="#ff00ff"/>      <!-- Sunset bleed (Magenta) -->
-                        <stop offset="55%" stop-color="#222"/>         <!-- Ground reflection top -->
-                        <stop offset="100%" stop-color="#050505"/>     <!-- Ground reflection bottom -->
+                        <stop offset="0%" stop-color="#050510" /> <!-- Sky reflection (dark) -->
+                        <stop offset="48%" stop-color="#101025" /> <!-- Horizon line darker -->
+                        <stop offset="50%" stop-color="#00ffff" /> <!-- THE HORIZON LINE (Neon Cyan) -->
+                        <stop offset="52%" stop-color="#ff00ff" /> <!-- Sunset bleed (Magenta) -->
+                        <stop offset="55%" stop-color="#222" /> <!-- Ground reflection top -->
+                        <stop offset="100%" stop-color="#050505" /> <!-- Ground reflection bottom -->
                     </linearGradient>
-                    
+
                     <!-- Neon Glow Filters -->
                     <filter id="glow-cyan-intense" x="-50%" y="-50%" width="200%" height="200%">
-                        <feGaussianBlur stdDeviation="4" result="blur"/>
-                        <feFlood flood-color="#00ffff" result="color"/>
-                        <feComposite in="color" in2="blur" operator="in" result="glow"/>
+                        <feGaussianBlur stdDeviation="4" result="blur" />
+                        <feFlood flood-color="#00ffff" result="color" />
+                        <feComposite in="color" in2="blur" operator="in" result="glow" />
                         <feMerge>
-                            <feMergeNode in="glow"/>
-                            <feMergeNode in="glow"/> <!-- Double intensity -->
-                            <feMergeNode in="SourceGraphic"/>
+                            <feMergeNode in="glow" />
+                            <feMergeNode in="glow" /> <!-- Double intensity -->
+                            <feMergeNode in="SourceGraphic" />
                         </feMerge>
                     </filter>
-                    
+
                     <filter id="glow-magenta-soft" x="-50%" y="-50%" width="200%" height="200%">
-                        <feGaussianBlur stdDeviation="6" result="blur"/>
+                        <feGaussianBlur stdDeviation="6" result="blur" />
                         <feMerge>
-                            <feMergeNode in="blur"/>
-                            <feMergeNode in="SourceGraphic"/>
+                            <feMergeNode in="blur" />
+                            <feMergeNode in="SourceGraphic" />
                         </feMerge>
                     </filter>
 
                     <!-- Taillight Grid Pattern -->
                     <pattern id="tail-grid" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
-                        <rect x="0" y="0" width="7" height="7" fill="#ff0055" stroke="none"/>
-                        <rect x="7" y="0" width="1" height="8" fill="#300"/>
-                        <rect x="0" y="7" width="8" height="1" fill="#300"/>
+                        <rect x="0" y="0" width="7" height="7" fill="#ff0055" stroke="none" />
+                        <rect x="7" y="0" width="1" height="8" fill="#300" />
+                        <rect x="0" y="7" width="8" height="1" fill="#300" />
                     </pattern>
                 </defs>
-                
+
                 <!-- GROUND SHADOW -->
-                <ellipse cx="300" cy="265" rx="260" ry="15" fill="black" opacity="0.8" filter="url(#glow-magenta-soft)"/>
+                <ellipse cx="300" cy="265" rx="260" ry="15" fill="black" opacity="0.8"
+                    filter="url(#glow-magenta-soft)" />
 
                 <!-- TIRES (Ultra Wide Cyberpunk Slicks) -->
                 <!-- Left -->
-                <path d="M60,180 L160,180 L160,270 L60,270 Z" fill="#111"/>
-                <path d="M60,180 L80,180 L80,270 L60,270 Z" fill="#000" opacity="0.5"/> <!-- Side wall -->
+                <path d="M60,180 L160,180 L160,270 L60,270 Z" fill="#111" />
+                <path d="M60,180 L80,180 L80,270 L60,270 Z" fill="#000" opacity="0.5" /> <!-- Side wall -->
                 <!-- Tread marks -->
-                <path d="M90,180 L90,270 M110,180 L110,270 M130,180 L130,270 M150,180 L150,270" stroke="#1a1a1a" stroke-width="3"/>
-                
+                <path d="M90,180 L90,270 M110,180 L110,270 M130,180 L130,270 M150,180 L150,270" stroke="#1a1a1a"
+                    stroke-width="3" />
+
                 <!-- Right -->
-                <path d="M440,180 L540,180 L540,270 L440,270 Z" fill="#111"/>
-                <path d="M520,180 L540,180 L540,270 L520,270 Z" fill="#000" opacity="0.5"/>
-                <path d="M450,180 L450,270 M470,180 L470,270 M490,180 L490,270 M510,180 L510,270" stroke="#1a1a1a" stroke-width="3"/>
+                <path d="M440,180 L540,180 L540,270 L440,270 Z" fill="#111" />
+                <path d="M520,180 L540,180 L540,270 L520,270 Z" fill="#000" opacity="0.5" />
+                <path d="M450,180 L450,270 M470,180 L470,270 M490,180 L490,270 M510,180 L510,270" stroke="#1a1a1a"
+                    stroke-width="3" />
 
                 <!-- MAIN BODY SHELL (Chassis) -->
-                <path d="M90,215 L510,215 L490,140 L110,140 Z" fill="url(#chrome-body)"/>
-                
+                <path d="M90,215 L510,215 L490,140 L110,140 Z" fill="url(#chrome-body)" />
+
                 <!-- REAR BUMPER (Matte Black Carbon) -->
-                <path d="M90,215 L510,215 L510,255 L90,255 Z" fill="#080808"/>
+                <path d="M90,215 L510,215 L510,255 L90,255 Z" fill="#080808" />
                 <!-- Diffuser fins -->
-                <path d="M150,255 L150,240 M250,255 L250,240 M350,255 L350,240 M450,255 L450,240" stroke="#222" stroke-width="2"/>
+                <path d="M150,255 L150,240 M250,255 L250,240 M350,255 L350,240 M450,255 L450,240" stroke="#222"
+                    stroke-width="2" />
 
                 <!-- LICENSE PLATE (Glowing) -->
-                <rect x="260" y="225" width="80" height="22" fill="#000" stroke="#333"/>
-                <rect x="262" y="227" width="76" height="18" fill="#001111"/>
-                <text x="300" y="241" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="14" fill="#00ffff" filter="url(#glow-cyan-intense)" letter-spacing="2">NEON-88</text>
+                <rect x="260" y="225" width="80" height="22" fill="#000" stroke="#333" />
+                <rect x="262" y="227" width="76" height="18" fill="#001111" />
+                <text x="300" y="241" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="14"
+                    fill="#00ffff" filter="url(#glow-cyan-intense)" letter-spacing="2">NEON-88</text>
 
                 <!-- REAR WINDOW LOUVERS (The Iconic Slats) -->
                 <!-- Base darkness -->
-                <path d="M150,140 L450,140 L410,55 L190,55 Z" fill="rgba(0,0,0,0.9)"/>
+                <path d="M150,140 L450,140 L410,55 L190,55 Z" fill="rgba(0,0,0,0.9)" />
                 <!-- Slats with Chrome Highlights -->
                 <g stroke="url(#chrome-body)" stroke-width="3" opacity="0.8">
-                    <line x1="160" y1="125" x2="440" y2="125"/>
-                    <line x1="170" y1="108" x2="430" y2="108"/>
-                    <line x1="180" y1="91" x2="420" y2="91"/>
-                    <line x1="190" y1="74" x2="410" y2="74"/>
+                    <line x1="160" y1="125" x2="440" y2="125" />
+                    <line x1="170" y1="108" x2="430" y2="108" />
+                    <line x1="180" y1="91" x2="420" y2="91" />
+                    <line x1="190" y1="74" x2="410" y2="74" />
                 </g>
-                
+
                 <!-- ROOF -->
-                <path d="M210,55 L390,55 L370,35 L230,35 Z" fill="#1a1a1a" stroke="#333"/>
+                <path d="M210,55 L390,55 L370,35 L230,35 Z" fill="#1a1a1a" stroke="#333" />
 
                 <!-- TAILLIGHTS (Grid + Glow) -->
                 <!-- Left -->
-                <rect x="100" y="185" width="130" height="25" fill="url(#tail-grid)" filter="url(#glow-magenta-soft)"/>
+                <rect x="100" y="185" width="130" height="25" fill="url(#tail-grid)" filter="url(#glow-magenta-soft)" />
                 <!-- Right -->
-                <rect x="370" y="185" width="130" height="25" fill="url(#tail-grid)" filter="url(#glow-magenta-soft)"/>
-                
+                <rect x="370" y="185" width="130" height="25" fill="url(#tail-grid)" filter="url(#glow-magenta-soft)" />
+
                 <!-- Center Panel (Blacked out) -->
-                <rect x="230" y="185" width="140" height="25" fill="#000"/>
-                <text x="300" y="202" text-anchor="middle" font-family="sans-serif" font-size="10" letter-spacing="4" fill="#fff" opacity="0.6">DMC-12</text>
+                <rect x="230" y="185" width="140" height="25" fill="#000" />
+                <text x="300" y="202" text-anchor="middle" font-family="sans-serif" font-size="10" letter-spacing="4"
+                    fill="#fff" opacity="0.6">DMC-12</text>
 
                 <!-- CYBERNETIC UPGRADES (Neon Piping) -->
                 <!-- Roof Rails -->
-                <path d="M120,140 Q100,90 130,55" stroke="#00ffff" stroke-width="3" fill="none" filter="url(#glow-cyan-intense)" opacity="0.9"/>
-                <path d="M480,140 Q500,90 470,55" stroke="#00ffff" stroke-width="3" fill="none" filter="url(#glow-cyan-intense)" opacity="0.9"/>
-                
+                <path d="M120,140 Q100,90 130,55" stroke="#00ffff" stroke-width="3" fill="none"
+                    filter="url(#glow-cyan-intense)" opacity="0.9" />
+                <path d="M480,140 Q500,90 470,55" stroke="#00ffff" stroke-width="3" fill="none"
+                    filter="url(#glow-cyan-intense)" opacity="0.9" />
+
                 <!-- Side Vent Glows -->
-                <rect x="80" y="160" width="10" height="40" fill="#ff00ff" filter="url(#glow-magenta-soft)" opacity="0.6"/>
-                <rect x="510" y="160" width="10" height="40" fill="#ff00ff" filter="url(#glow-magenta-soft)" opacity="0.6"/>
+                <rect x="80" y="160" width="10" height="40" fill="#ff00ff" filter="url(#glow-magenta-soft)"
+                    opacity="0.6" />
+                <rect x="510" y="160" width="10" height="40" fill="#ff00ff" filter="url(#glow-magenta-soft)"
+                    opacity="0.6" />
 
                 <!-- EXHAUST PORTS (Ion Drive) -->
-                <circle cx="130" cy="235" r="14" fill="#111" stroke="#333"/>
-                <circle cx="130" cy="235" r="8" fill="#00ffff" filter="url(#glow-cyan-intense)"/>
-                
-                <circle cx="470" cy="235" r="14" fill="#111" stroke="#333"/>
-                <circle cx="470" cy="235" r="8" fill="#00ffff" filter="url(#glow-cyan-intense)"/>
+                <circle cx="130" cy="235" r="14" fill="#111" stroke="#333" />
+                <circle cx="130" cy="235" r="8" fill="#00ffff" filter="url(#glow-cyan-intense)" />
+
+                <circle cx="470" cy="235" r="14" fill="#111" stroke="#333" />
+                <circle cx="470" cy="235" r="8" fill="#00ffff" filter="url(#glow-cyan-intense)" />
 
                 <!-- UNDERGLOW (Ground Reflection) -->
-                <line x1="60" y1="265" x2="540" y2="265" stroke="#ff00ff" stroke-width="6" filter="url(#glow-magenta-soft)" opacity="0.8"/>
+                <line x1="60" y1="265" x2="540" y2="265" stroke="#ff00ff" stroke-width="6"
+                    filter="url(#glow-magenta-soft)" opacity="0.8" />
 
             </svg>
             <div class="car-reflection"></div>
@@ -1364,8 +1882,13 @@
             <h2 class="section-title">System Status</h2>
             <div class="about-grid">
                 <div class="about-text">
-                    <p>I am a Senior Generative AI Engineer specializing in Large Language Models, Autonomous Agents, and Production Machine Learning Systems. With a deep background in full-stack engineering and algorithmic optimization, I bridge the gap between research-grade AI and scalable, real-world applications.</p>
-                    <p>My core focus is architecting robust RAG pipelines, optimizing inference infrastructure, and deploying agentic workflows that solve complex reasoning tasks. I don't just train models; I build the ecosystems they live in.</p>
+                    <p>I am a Senior Generative AI Engineer specializing in Large Language Models, Autonomous Agents,
+                        and Production Machine Learning Systems. With a deep background in full-stack engineering and
+                        algorithmic optimization, I bridge the gap between research-grade AI and scalable, real-world
+                        applications.</p>
+                    <p>My core focus is architecting robust RAG pipelines, optimizing inference infrastructure, and
+                        deploying agentic workflows that solve complex reasoning tasks. I don't just train models; I
+                        build the ecosystems they live in.</p>
                 </div>
                 <div class="stats">
                     <div class="stat-card glass-neon-panel">
@@ -1390,7 +1913,7 @@
         <div class="container">
             <h2 class="section-title">Experience Log</h2>
             <div class="timeline">
-                
+
                 <div class="timeline-item vaporwave-block">
                     <h3 class="role">Machine Learning Engineer</h3>
                     <span class="company">Tech / Stealth Startup</span>
@@ -1398,7 +1921,8 @@
                     <ul>
                         <li>Architecting Generative AI solutions using PyTorch, LangChain, and Vector Databases.</li>
                         <li>Deployed LLaMA-based agents for automated reasoning and data extraction tasks.</li>
-                        <li>Optimized inference latency by 40% through model quantization and ONNX runtime integration.</li>
+                        <li>Optimized inference latency by 40% through model quantization and ONNX runtime integration.
+                        </li>
                         <li>Built end-to-end MLOps pipelines ensuring reproducibility and continuous evaluation.</li>
                     </ul>
                 </div>
@@ -1408,9 +1932,11 @@
                     <span class="company">YIWU Dar Trading Co.</span>
                     <span class="date">2021 – 2023</span>
                     <ul>
-                        <li>Engineered a high-scale VPN platform ("SecureNet") serving thousands of concurrent users.</li>
+                        <li>Engineered a high-scale VPN platform ("SecureNet") serving thousands of concurrent users.
+                        </li>
                         <li>Designed a robust MVC architecture in Laravel/PHP increasing system stability by 85%.</li>
-                        <li>Automated server management with Python & Bash cronjobs, reducing maintenance time by 3x.</li>
+                        <li>Automated server management with Python & Bash cronjobs, reducing maintenance time by 3x.
+                        </li>
                         <li>Led a cross-functional team to deliver features that drove 20% sales growth.</li>
                     </ul>
                 </div>
@@ -1435,7 +1961,7 @@
         <div class="container">
             <h2 class="section-title">Tech Stack</h2>
             <div class="skills-grid">
-                
+
                 <div class="skill-category neon-frame-card">
                     <h4 class="skill-title">Generative AI & LLMs</h4>
                     <div class="skill-tags">
@@ -1485,16 +2011,20 @@
         <div class="container">
             <h2 class="section-title">Mission Archives</h2>
             <div class="projects-grid">
-                
+
                 <!-- Project 1 -->
                 <div class="project-card holo-grid-card" onclick="toggleCard(this)">
                     <h3 class="p-title">Market Sentinel (AAIC Winner)</h3>
                     <div class="p-role">Algorithmic Trading Agent</div>
-                    <p class="p-desc">An LSTM-based time-series forecasting system that identified top performing stocks with high precision.</p>
+                    <p class="p-desc">An LSTM-based time-series forecasting system that identified top performing stocks
+                        with high precision.</p>
                     <div class="p-hidden">
-                        <p><strong>Challenge:</strong> Filtering noise from volatile market data across 300+ tickers.</p>
-                        <p><strong>Solution:</strong> Built a custom recurrent neural network (RNN/LSTM) pipeline for smart filtering and trend analysis.</p>
-                        <p><strong>Outcome:</strong> 1st Place in Max Profit category; delivered 20% portfolio increase.</p>
+                        <p><strong>Challenge:</strong> Filtering noise from volatile market data across 300+ tickers.
+                        </p>
+                        <p><strong>Solution:</strong> Built a custom recurrent neural network (RNN/LSTM) pipeline for
+                            smart filtering and trend analysis.</p>
+                        <p><strong>Outcome:</strong> 1st Place in Max Profit category; delivered 20% portfolio increase.
+                        </p>
                     </div>
                     <div class="expand-hint">[ CLICK TO EXPAND ]</div>
                 </div>
@@ -1503,10 +2033,13 @@
                 <div class="project-card holo-grid-card" onclick="toggleCard(this)">
                     <h3 class="p-title">FaceCup Vision</h3>
                     <div class="p-role">Computer Vision System</div>
-                    <p class="p-desc">Advanced facial recognition and verification system developed for the Amirkabir AI Competition.</p>
+                    <p class="p-desc">Advanced facial recognition and verification system developed for the Amirkabir AI
+                        Competition.</p>
                     <div class="p-hidden">
-                        <p><strong>Challenge:</strong> Handling occlusion and lighting variance in real-time streams.</p>
-                        <p><strong>Solution:</strong> Implemented CNN architectures optimized for edge cases and low-latency inference.</p>
+                        <p><strong>Challenge:</strong> Handling occlusion and lighting variance in real-time streams.
+                        </p>
+                        <p><strong>Solution:</strong> Implemented CNN architectures optimized for edge cases and
+                            low-latency inference.</p>
                         <p><strong>Outcome:</strong> High accuracy benchmarks in controlled and wild datasets.</p>
                     </div>
                     <div class="expand-hint">[ CLICK TO EXPAND ]</div>
@@ -1516,10 +2049,12 @@
                 <div class="project-card holo-grid-card" onclick="toggleCard(this)">
                     <h3 class="p-title">SecureNet Infrastructure</h3>
                     <div class="p-role">High-Scale VPN Platform</div>
-                    <p class="p-desc">A distributed network privacy solution handling thousands of concurrent connections.</p>
+                    <p class="p-desc">A distributed network privacy solution handling thousands of concurrent
+                        connections.</p>
                     <div class="p-hidden">
                         <p><strong>Challenge:</strong> Managing user sessions and server load balancing at scale.</p>
-                        <p><strong>Solution:</strong> Developed a custom MVC management panel with automated Python/Bash cronjobs for server rotation.</p>
+                        <p><strong>Solution:</strong> Developed a custom MVC management panel with automated Python/Bash
+                            cronjobs for server rotation.</p>
                         <p><strong>Outcome:</strong> 85% increase in stability and 20% sales growth.</p>
                     </div>
                     <div class="expand-hint">[ CLICK TO EXPAND ]</div>
@@ -1532,7 +2067,8 @@
                     <p class="p-desc">Prototype specific-domain Q&A bot utilizing retrieval augmented generation.</p>
                     <div class="p-hidden">
                         <p><strong>Stack:</strong> LangChain, Pinecone, OpenAI, Streamlit.</p>
-                        <p><strong>Feature:</strong> Ingests technical documentation and provides cited, accurate answers with minimal hallucination.</p>
+                        <p><strong>Feature:</strong> Ingests technical documentation and provides cited, accurate
+                            answers with minimal hallucination.</p>
                     </div>
                     <div class="expand-hint">[ CLICK TO EXPAND ]</div>
                 </div>
@@ -1570,11 +2106,14 @@
         <div class="container">
             <h2 class="section-title">Initialize Uplink</h2>
             <div class="social-links">
-                <a href="https://linkedin.com/in/elyasmoshirpanahi" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                <a href="https://github.com/elyasmoshirpanahi" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                <a href="https://linkedin.com/in/elyasmoshirpanahi" target="_blank" title="LinkedIn"><i
+                        class="fab fa-linkedin"></i></a>
+                <a href="https://github.com/elyasmoshirpanahi" target="_blank" title="GitHub"><i
+                        class="fab fa-github"></i></a>
                 <a href="mailto:contact@elyas.dev" title="Email"><i class="fas fa-envelope"></i></a>
             </div>
-            <p style="margin-top: 30px; color: #555; font-size: 0.8rem;">&copy; 2025 Elyas Moshirpanahi. System Safe.</p>
+            <p style="margin-top: 30px; color: #555; font-size: 0.8rem;">&copy; 2025 Elyas Moshirpanahi. System Safe.
+            </p>
         </div>
     </footer>
 
@@ -1585,7 +2124,7 @@
             constructor() {
                 this.ctx = null;
                 // Default state: assume we WANT sound, but need a gesture
-                this.enabled = true; 
+                this.enabled = true;
                 this.initialized = false;
             }
 
@@ -1620,7 +2159,7 @@
                     gain.connect(this.ctx.destination);
                     osc.start();
                     osc.stop(this.ctx.currentTime + duration);
-                } catch(e) { console.log("Audio error", e); }
+                } catch (e) { console.log("Audio error", e); }
             }
 
             playHover() { this.playTone(800, 'sine', 0.05, 0.05); }
@@ -1641,11 +2180,11 @@
         toggleBtn.addEventListener('click', (e) => {
             e.stopPropagation(); // Don't double init
             if (!soundSys.initialized) soundSys.init();
-            
+
             const isOn = soundSys.toggle();
             toggleBtn.textContent = isOn ? "Sound: ON" : "Sound: OFF";
             toggleBtn.classList.toggle('muted', !isOn);
-            if(isOn) soundSys.playClick();
+            if (isOn) soundSys.playClick();
         });
 
         // Attach sound to interactive elements
@@ -1656,45 +2195,98 @@
 
         // --- BLADE ANIMATION ON LOAD ---
         window.onload = () => {
+            // Ensure page starts at the top
+            window.scrollTo(0, 0);
+
             setTimeout(() => {
                 document.body.classList.add('loaded');
             }, 500);
-            
+
             // Start Beam Randomizer
             scheduleBeam();
         };
 
-        // --- BEAM RANDOMIZER ---
+        // --- BEAM SCHEDULER (Fires exactly twice per 60 seconds) ---
         function scheduleBeam() {
-            const min = 12000; // 12s
-            const max = 18000; // 18s
-            const delay = Math.floor(Math.random() * (max - min + 1)) + min;
-            
+            // Fire beam every 30 seconds (twice per minute)
             setTimeout(() => {
                 triggerBeam();
-                scheduleBeam(); // Re-schedule
-            }, delay);
+                scheduleBeam(); // Re-schedule for next beam
+            }, 30000); // 30 seconds
         }
+
+        // Laser beam audio files
+        const laserSounds = [
+            'sounds/pulse_sound_try1-89547.mp3',
+            'sounds/science-fiction-effect-011-305477.mp3',
+            'sounds/science-fiction-effect-015-305473.mp3',
+            'sounds/science-fiction-effect-019-305479.mp3',
+            'sounds/science-fiction-effect-020-305484.mp3'
+        ];
+
+        let currentBeamAudio = null;
 
         function triggerBeam() {
             const beamContainer = document.getElementById('beam-container');
             const station = document.getElementById('tron-station');
-            
+
             // Add classes to trigger CSS animations
             beamContainer.classList.add('beam-active');
             station.classList.add('station-active');
-            
-            // Play sound effect if enabled (Low rumble then high pitch)
-            if(soundSys && soundSys.enabled) {
-                soundSys.playTone(150, 'sawtooth', 0.5, 0.05);
-                setTimeout(() => soundSys.playTone(800, 'square', 1.0, 0.05), 400);
-            }
 
-            // Remove classes after animation completes (3s matches CSS)
-            setTimeout(() => {
-                beamContainer.classList.remove('beam-active');
-                station.classList.remove('station-active');
-            }, 3000);
+            // Play laser sound effect
+            if (soundSys && soundSys.enabled) {
+                // Randomly select a laser sound
+                const randomSound = laserSounds[Math.floor(Math.random() * laserSounds.length)];
+
+                // Create and play audio
+                currentBeamAudio = new Audio(randomSound);
+                currentBeamAudio.volume = 0.6; // Adjust volume as needed
+
+                // Play the audio and get its duration
+                currentBeamAudio.play().then(() => {
+                    const audioDuration = currentBeamAudio.duration; // In seconds
+                    const audioDurationMs = audioDuration * 1000; // In milliseconds
+
+                    // Dynamically set animation duration to match audio length
+                    // Create or update dynamic style element
+                    let dynamicStyle = document.getElementById('dynamic-beam-style');
+                    if (!dynamicStyle) {
+                        dynamicStyle = document.createElement('style');
+                        dynamicStyle.id = 'dynamic-beam-style';
+                        document.head.appendChild(dynamicStyle);
+                    }
+
+                    // Set animation duration to exact audio length
+                    dynamicStyle.textContent = `
+                        .beam-active .beam-core {
+                            animation: beamFireSequence ${audioDuration}s ease-out forwards !important;
+                        }
+                        .station-active .st-core-pulse {
+                            animation: coreOverload ${audioDuration}s ease-out forwards !important;
+                        }
+                    `;
+
+                    // Remove classes after audio completes (matches audio length EXACTLY)
+                    setTimeout(() => {
+                        beamContainer.classList.remove('beam-active');
+                        station.classList.remove('station-active');
+                    }, audioDurationMs);
+                }).catch(err => {
+                    console.log("Audio playback failed:", err);
+                    // Fallback to default timing if audio fails
+                    setTimeout(() => {
+                        beamContainer.classList.remove('beam-active');
+                        station.classList.remove('station-active');
+                    }, 3000);
+                });
+            } else {
+                // No sound enabled, use default timing
+                setTimeout(() => {
+                    beamContainer.classList.remove('beam-active');
+                    station.classList.remove('station-active');
+                }, 3000);
+            }
         }
 
 
@@ -1746,15 +2338,15 @@
             ]
         };
 
-        input.addEventListener('keydown', function(e) {
+        input.addEventListener('keydown', function (e) {
             if (this.value.length > 0 && e.key !== 'Enter') {
-                 soundSys.playType();
+                soundSys.playType();
             }
 
             if (e.key === 'Enter') {
                 soundSys.playClick();
                 const cmd = this.value.trim().toLowerCase();
-                
+
                 // Add old input line to history
                 const historyLine = document.createElement('div');
                 historyLine.className = 'output-line';
@@ -1795,4 +2387,5 @@
 
     </script>
 </body>
+
 </html>
