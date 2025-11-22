@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Retro Sunset + Grid + Terminal Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg-dark: #03000a;
+      --neon-cyan: #00fff7;
+      --neon-pink: #ff2eae;
+      --neon-purple: #a64ac9;
+      --sun-yellow: #ffde7d;
+      --sun-orange: #ff9a76;
+      --terminal-bg: #050508;
+      --terminal-text: #e0ffe0;
+      --terminal-accent: #39ff14;
+      --font-main: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Roboto", "Helvetica Neue", Arial, sans-serif;
+      --font-mono: "Fira Code", Menlo, Monaco, Consolas, "Courier New", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at 20% 0%, #15002e 0, #03000a 55%, #000 100%);
+      color: #f5f5ff;
+      font-family: var(--font-main);
+      overflow-x: hidden;
+    }
+
+    /* =========================
+       HERO / SUNSET / GRID
+    ========================== */
+
+    .hero {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .hero-background {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    /* Retro sun with stripes (mask) */
+    .sun {
+      position: absolute;
+      top: 8%;
+      left: 50%;
+      width: 42vmin;
+      height: 42vmin;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      background: linear-gradient(
+        to bottom,
+        var(--sun-yellow) 0%,
+        var(--sun-orange) 25%,
+        #ff6fb5 50%,
+        var(--neon-purple) 75%,
+        #32004a 100%
+      );
+      box-shadow:
+        0 0 40px rgba(255, 140, 200, 0.8),
+        0 0 80px rgba(255, 80, 180, 0.6);
+      -webkit-mask-image: repeating-linear-gradient(
+        to bottom,
+        transparent 0 4px,
+        black 4px 8px
+      );
+      mask-image: repeating-linear-gradient(
+        to bottom,
+        transparent 0 4px,
+        black 4px 8px
+      );
+      animation:
+        sunFloat 14s ease-in-out infinite alternate,
+        sunGlow 7s ease-in-out infinite alternate;
+    }
+
+    @keyframes sunFloat {
+      0% { transform: translate(-50%, -4px); }
+      100% { transform: translate(-50%, 8px); }
+    }
+
+    @keyframes sunGlow {
+      0% {
+        box-shadow:
+          0 0 30px rgba(255, 160, 220, 0.8),
+          0 0 60px rgba(255, 120, 200, 0.5);
+      }
+      100% {
+        box-shadow:
+          0 0 60px rgba(255, 200, 240, 1),
+          0 0 110px rgba(255, 140, 220, 0.7);
+      }
+    }
+
+    /* Perspective synthwave grid */
+    .grid {
+      position: absolute;
+      bottom: -6vh;
+      left: 50%;
+      width: 220%;
+      height: 60vh;
+      transform: translateX(-50%) perspective(620px) rotateX(68deg);
+      transform-origin: center top;
+      background-image:
+        linear-gradient(
+          to top,
+          rgba(0, 255, 247, 0.5) 2px,
+          rgba(0, 0, 0, 0) 2px
+        ),
+        linear-gradient(
+          to right,
+          rgba(0, 255, 247, 0.5) 2px,
+          rgba(0, 0, 0, 0) 2px
+        );
+      background-size: 100% 7vh, 7vh 100%;
+      opacity: 0.9;
+      animation: gridDrift 18s linear infinite;
+    }
+
+    @keyframes gridDrift {
+      0% { background-position: 0 0, 0 0; }
+      100% { background-position: 0 40vh, -40vh 0; }
+    }
+
+    /* Soft fog layers */
+    .fog {
+      position: absolute;
+      width: 200%;
+      height: 80%;
+      left: -50%;
+      background: radial-gradient(
+        circle at 50% 50%,
+        rgba(255, 255, 255, 0.11) 0,
+        transparent 55%
+      );
+      opacity: 0.35;
+      mix-blend-mode: screen;
+      filter: blur(20px);
+      pointer-events: none;
+    }
+
+    .fog-1 {
+      bottom: 10%;
+      animation: fogDrift 40s linear infinite;
+    }
+
+    .fog-2 {
+      bottom: 0;
+      animation: fogDriftReverse 60s linear infinite;
+    }
+
+    @keyframes fogDrift {
+      0% { transform: translateX(-10%); }
+      100% { transform: translateX(10%); }
+    }
+
+    @keyframes fogDriftReverse {
+      0% { transform: translateX(10%); }
+      100% { transform: translateX(-10%); }
+    }
+
+    /* Hero content (in front of background) */
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 720px;
+    }
+
+    .hero-kicker {
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero-title {
+      font-size: clamp(2.4rem, 4vw, 3.6rem);
+      line-height: 1.05;
+      margin-bottom: 0.5rem;
+      text-shadow:
+        0 0 14px rgba(0, 255, 247, 0.9),
+        0 0 30px rgba(255, 46, 174, 0.7);
+      animation: glitchText 3.5s infinite;
+    }
+
+    .hero-subtitle {
+      font-size: 1.05rem;
+      opacity: 0.85;
+      margin-bottom: 1.6rem;
+    }
+
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.9rem;
+    }
+
+    .btn {
+      position: relative;
+      padding: 0.7rem 1.4rem;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 255, 247, 0.8);
+      color: #eaffff;
+      background: radial-gradient(
+        circle at 0 0,
+        rgba(0, 255, 247, 0.4) 0,
+        transparent 55%
+      );
+      backdrop-filter: blur(14px);
+      text-decoration: none;
+      font-size: 0.88rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      overflow: hidden;
+      transition:
+        border-color 180ms ease,
+        box-shadow 180ms ease,
+        transform 120ms ease;
+    }
+
+    .btn::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        120deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.5) 50%,
+        transparent 100%
+      );
+      transform: translateX(-120%);
+      opacity: 0.0;
+      pointer-events: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      border-color: var(--neon-pink);
+      box-shadow:
+        0 0 12px rgba(0, 255, 247, 0.7),
+        0 0 26px rgba(255, 46, 174, 0.5);
+    }
+
+    .btn:hover::after {
+      animation: sheen 850ms ease-out;
+      opacity: 1;
+    }
+
+    .btn--primary {
+      background: linear-gradient(
+        120deg,
+        rgba(0, 255, 247, 0.2),
+        rgba(255, 46, 174, 0.28)
+      );
+    }
+
+    @keyframes sheen {
+      0% { transform: translateX(-120%); }
+      100% { transform: translateX(120%); }
+    }
+
+    @keyframes glitchText {
+      0%, 100% {
+        text-shadow:
+          0.03em 0 0 rgba(0, 255, 247, 0.8),
+          -0.03em 0 0 rgba(255, 46, 174, 0.8);
+        transform: translateX(0);
+      }
+      50% {
+        text-shadow:
+          0.03em 0 0 rgba(255, 46, 174, 0.8),
+          -0.03em 0 0 rgba(0, 255, 247, 0.8);
+        transform: translateX(0.8px);
+      }
+    }
+
+    /* =========================
+       TERMINAL SECTION
+    ========================== */
+
+    .terminal-section {
+      padding: 3rem 1.5rem 4rem;
+      display: flex;
+      justify-content: center;
+      background: radial-gradient(circle at 80% 0%, #24004d 0, #03000a 40%, #000 100%);
+    }
+
+    .terminal-window {
+      width: 100%;
+      max-width: 760px;
+      border-radius: 0.8rem;
+      overflow: hidden;
+      box-shadow:
+        0 0 16px rgba(0, 0, 0, 0.7),
+        0 0 40px rgba(57, 255, 20, 0.25);
+      border: 1px solid rgba(57, 255, 20, 0.35);
+      background-color: #020204;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-header {
+      display: flex;
+      align-items: center;
+      padding: 0.45rem 0.75rem;
+      background: linear-gradient(
+        to right,
+        #08080a,
+        #151520,
+        #050508
+      );
+      border-bottom: 1px solid rgba(57, 255, 20, 0.4);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: rgba(224, 255, 224, 0.7);
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      margin-right: 0.35rem;
+    }
+
+    .dot.red { background: #ff5f57; }
+    .dot.amber { background: #febc2e; }
+    .dot.green { background: #28c840; }
+
+    .terminal-title {
+      margin-left: 0.3rem;
+      opacity: 0.9;
+    }
+
+    .terminal-body {
+      padding: 0.9rem 0.9rem 0.3rem;
+      background-color: var(--terminal-bg);
+      color: var(--terminal-text);
+      min-height: 220px;
+      max-height: 360px;
+      overflow-y: auto;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+
+    .terminal-line {
+      white-space: pre-wrap;
+      margin-bottom: 0.2rem;
+    }
+
+    .terminal-line--input {
+      color: var(--terminal-accent);
+    }
+
+    .terminal-input-row {
+      display: flex;
+      align-items: center;
+      padding: 0.4rem 0.9rem 0.75rem;
+      background-color: var(--terminal-bg);
+      border-top: 1px solid rgba(57, 255, 20, 0.3);
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+    }
+
+    .terminal-prompt {
+      color: var(--terminal-accent);
+      margin-right: 0.4rem;
+      user-select: none;
+    }
+
+    .terminal-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--terminal-text);
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      caret-color: var(--terminal-accent);
+    }
+
+    .terminal-input::placeholder {
+      color: rgba(224, 255, 224, 0.25);
+    }
+
+    /* Scrollbar tweaks (optional) */
+    .terminal-body::-webkit-scrollbar {
+      width: 6px;
+    }
+    .terminal-body::-webkit-scrollbar-thumb {
+      background-color: rgba(57, 255, 20, 0.4);
+      border-radius: 999px;
+    }
+
+    @media (max-width: 640px) {
+      .hero {
+        padding: 1.4rem;
+      }
+      .hero-subtitle {
+        font-size: 0.98rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- HERO + SUNSET + GRID -->
+  <section class="hero" id="top">
+    <div class="hero-background">
+      <div class="sun"></div>
+      <div class="grid"></div>
+      <div class="fog fog-1"></div>
+      <div class="fog fog-2"></div>
+    </div>
+    <div class="hero-content">
+      <p class="hero-kicker">GEN AI · LLMs · AGENTS · SYSTEMS</p>
+      <h1 class="hero-title">Elyas Moshirpanahi</h1>
+      <p class="hero-subtitle">
+        Senior Generative AI Engineer designing and deploying autonomous,
+        production-grade intelligence systems.
+      </p>
+      <div class="hero-buttons">
+        <a href="#terminal" class="btn btn--primary">Open Terminal</a>
+        <a href="#projects" class="btn">View Projects</a>
+        <a href="https://www.linkedin.com/in/elyasmoshirpanahi" target="_blank" class="btn">
+          LinkedIn
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TERMINAL EASTER EGG (FUNCTIONAL) -->
+  <section class="terminal-section" id="terminal">
+    <div class="terminal-window">
+      <div class="terminal-header">
+        <div class="dot red"></div>
+        <div class="dot amber"></div>
+        <div class="dot green"></div>
+        <span class="terminal-title">elyas@genai: ~/portfolio/terminal</span>
+      </div>
+      <div class="terminal-body" id="terminal-output">
+        <div class="terminal-line">
+          Synthwave shell v0.1 — type <span style="color: var(--terminal-accent)">help</span> to list commands.
+        </div>
+      </div>
+      <div class="terminal-input-row">
+        <span class="terminal-prompt">&gt;</span>
+        <input
+          type="text"
+          id="terminal-input"
+          class="terminal-input"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="type a command, e.g. help"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Dummy anchor target for "View Projects" button -->
+  <div id="projects"></div>
+
+  <script>
+    // =============================
+    // TERMINAL LOGIC (TYPEABLE)
+    // =============================
+
+    (function () {
+      const outputEl = document.getElementById("terminal-output");
+      const inputEl = document.getElementById("terminal-input");
+
+      const commands = {
+        help: () => [
+          "Available commands:",
+          "  help            - show this help",
+          "  clear           - clear the terminal",
+          "  list_experience - summary of roles",
+          "  list_projects   - highlight key projects",
+          "  show_llm_stack  - GenAI / LLM tooling snapshot"
+        ],
+
+        clear: () => {
+          outputEl.innerHTML = "";
+          return [];
+        },
+
+        list_experience: () => [
+          "Experience (condensed):",
+          "- Senior Generative AI Engineer — architecting LLM and agentic systems end-to-end.",
+          "- Building production-grade pipelines: data, training, evals, deployment, monitoring.",
+          "- Driving strategy for GenAI integrations across products and teams."
+        ],
+
+        list_projects: () => [
+          "Selected projects (sample):",
+          "- Autonomous Agent Framework: multi-tool, multi-step reasoning engine wired into product workflows.",
+          "- LLM Retrieval System: hybrid RAG with observability, evaluation harness, and guardrail stack.",
+          "- GenAI Developer Toolkit: internal CLI and SDK for rapid experiment -> production path."
+        ],
+
+        show_llm_stack: () => [
+          "LLM / GenAI stack (representative):",
+          "- LLMs: GPT-family, open-source models (LLaMA-style, Mistral-style), fine-tuned task-specific models.",
+          "- Infra: Python, Node, containerized microservices, GPU orchestration, async serving.",
+          "- MLOps: experiment tracking, eval harness, canary rollouts, telemetry, safety checks."
+        ]
+      };
+
+      function appendLine(text, cssClass) {
+        if (!text && text !== "") return;
+        const line = document.createElement("div");
+        line.className = "terminal-line" + (cssClass ? " " + cssClass : "");
+        line.textContent = text;
+        outputEl.appendChild(line);
+        outputEl.scrollTop = outputEl.scrollHeight;
+      }
+
+      function runCommand(rawInput) {
+        const input = rawInput.trim();
+        if (input === "") {
+          appendLine("> ", "terminal-line--input");
+          return;
+        }
+
+        appendLine("> " + input, "terminal-line--input");
+
+        const [cmd] = input.split(/\s+/);
+        const handler = commands[cmd];
+
+        if (!handler) {
+          appendLine("Unknown command: " + cmd);
+          appendLine('Type "help" to see available commands.');
+          return;
+        }
+
+        const result = handler();
+        if (Array.isArray(result)) {
+          result.forEach(line => appendLine(line));
+        }
+      }
+
+      // Handle Enter key
+      inputEl.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          const value = inputEl.value;
+          runCommand(value);
+          inputEl.value = "";
+        }
+      });
+
+      // Focus terminal input when the section is clicked
+      document.querySelector(".terminal-window").addEventListener("click", () => {
+        inputEl.focus();
+      });
+
+      // Auto-focus shortly after load for desktop
+      window.addEventListener("load", () => {
+        setTimeout(() => {
+          inputEl.focus();
+        }, 300);
+      });
+    })();
+  </script>
+</body>
+</html>

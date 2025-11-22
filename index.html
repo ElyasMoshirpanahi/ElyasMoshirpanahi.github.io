@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Elyas Moshirpanahi | Senior Generative AI Engineer</title>
+    <link rel="icon" type="image/gif" href="favicon.gif">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;800&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
@@ -37,6 +38,51 @@
 
         a { text-decoration: none; color: inherit; transition: 0.3s; }
         ul { list-style: none; }
+
+        /* --- BACKGROUND EFFECTS --- */
+        .retro-fog {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(188, 19, 254, 0.05), transparent 80%);
+            z-index: -1;
+            pointer-events: none;
+            animation: pulseFog 8s infinite alternate;
+        }
+        @keyframes pulseFog {
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 0.6; transform: scale(1.1); }
+        }
+        .vhs-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent 0px,
+                rgba(0, 255, 255, 0.03) 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 998;
+            opacity: 0.3;
+            animation: vhsScan 10s linear infinite;
+        }
+        @keyframes vhsScan {
+            from { background-position: 0 0; }
+            to { background-position: 0 100vh; }
+        }
+        .rain-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAIklEQVQIW2NkQAKrVq36zwjjgzhhYWGMYAEYB8RmROaABADeOQ8CXl/xfgAAAABJRU5ErkJggg==');
+            opacity: 0.05;
+            z-index: 997;
+            animation: rainFall 0.5s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes rainFall {
+            from { background-position: 0 0; }
+            to { background-position: 20px 40px; }
+        }
 
         /* --- SCROLLBAR --- */
         ::-webkit-scrollbar { width: 8px; }
@@ -92,15 +138,17 @@
             top: 20px;
             right: 20px;
             z-index: 10000;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.8);
             border: 1px solid var(--neon-cyan);
             color: var(--neon-cyan);
-            padding: 10px;
+            padding: 8px 15px;
             cursor: pointer;
             font-family: var(--font-mono);
             text-transform: uppercase;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
             transition: 0.3s;
+            border-radius: 2px;
         }
         #sound-toggle:hover {
             background: var(--neon-cyan);
@@ -146,11 +194,11 @@
         /* RETRO SUN */
         .retro-sun {
             position: absolute;
-            top: 10%;
+            top: 12%;
             left: 50%;
             transform: translateX(-50%);
-            width: 450px;
-            height: 450px;
+            width: 400px; /* Slightly smaller to make content pop */
+            height: 400px;
             border-radius: 50%;
             background: var(--sun-gradient);
             box-shadow: 0 0 80px rgba(255, 0, 255, 0.5);
@@ -262,37 +310,183 @@
             to { background-position: 0 100px; }
         }
         
-        /* RETRO PALMS STYLING */
-        .retro-palm-container {
+        /* --- DYNAMIC PALM SYSTEM (DRIVING ILLUSION) --- */
+        .palm-system {
             position: absolute;
-            bottom: 10%; /* Grounded on the grid */
-            width: 250px; /* Large, prominent */
-            height: 500px;
-            z-index: 5; /* Behind the car, in front of city */
+            top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
-            opacity: 0;
-            animation: palmRise 2s ease-out 0.5s forwards;
+            overflow: hidden;
+            z-index: 16; /* Above grid, behind car/text */
         }
-        .left-palm {
-            left: 5%;
+        
+        .moving-palm {
+            position: absolute;
+            width: 200px; /* Base size before scale */
+            height: 320px;
+            /* Origin at bottom center for correct scaling from ground */
             transform-origin: bottom center;
-            transform: skewX(-5deg);
+            will-change: transform, opacity, bottom, left, right;
         }
-        .right-palm {
-            right: 5%;
-            transform-origin: bottom center;
-            transform: skewX(5deg);
-        }
+
         .palm-svg {
             width: 100%;
             height: 100%;
-            filter: drop-shadow(0 0 10px rgba(188, 19, 254, 0.5));
+            filter: drop-shadow(0 0 8px rgba(188, 19, 254, 0.6));
         }
-        
-        @keyframes palmRise {
-            from { opacity: 0; transform: translateY(100px) scale(0.9); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+
+        /* 
+           DRIVING ANIMATION LOGIC:
+           To create the illusion of driving FORWARD:
+           1. Palms spawn at the Horizon (vanishing point).
+           2. Move Outward (Left/Right) and Downward (Y) as they get "closer".
+           3. Scale Up significantly (perspective).
+        */
+
+        /* Left Side: Spawns center-left, moves to bottom-left corner */
+        @keyframes driveLeft {
+            0% {
+                bottom: 30%;
+                left: 49%; /* Horizon center-left */
+                transform: scale(0.05);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1; /* Fade in quickly */
+            }
+            100% {
+                bottom: -15%;
+                left: 0%; /* Far left edge */
+                transform: scale(2.5); /* Huge close up */
+                opacity: 1;
+            }
         }
+
+        /* Right Side: Spawns center-right, moves to bottom-right corner */
+        @keyframes driveRight {
+            0% {
+                bottom: 30%;
+                left: 51%; /* Horizon center-right */
+                transform: scale(0.05);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            100% {
+                bottom: -15%;
+                left: 85%; /* Far right edge */
+                transform: scale(2.5);
+                opacity: 1;
+            }
+        }
+
+        .move-left { animation: driveLeft 3.5s linear infinite; }
+        .move-right { animation: driveRight 3.5s linear infinite; }
+
+        /* Staggered delays for continuous flow */
+        .d1 { animation-delay: 0s; }
+        .d2 { animation-delay: 0.58s; }
+        .d3 { animation-delay: 1.16s; }
+        .d4 { animation-delay: 1.74s; }
+        .d5 { animation-delay: 2.32s; }
+        .d6 { animation-delay: 2.90s; }
+
+
+        /* --- UPGRADED TRON STATION --- */
+        .tron-station {
+            position: absolute;
+            bottom: 30%; /* Horizon Level - Must match palm spawn Y */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 120px;
+            z-index: 4;
+            perspective: 400px;
+            pointer-events: none;
+        }
+
+        .station-svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        /* Animated Glows */
+        .st-ring-pulse {
+            transform-origin: center;
+            animation: ringPulse 4s ease-in-out infinite;
+        }
+        .st-core-pulse {
+            animation: coreGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes ringPulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); stroke-width: 1; }
+            50% { opacity: 1; transform: scale(1.05); stroke-width: 2; }
+        }
+        @keyframes coreGlow {
+            from { fill: #00ffff; filter: drop-shadow(0 0 5px #00ffff); }
+            to { fill: #ffffff; filter: drop-shadow(0 0 15px #00ffff); }
+        }
+
+        /* BEAM CONTAINER & ANIMATION */
+        .beam-container {
+            position: absolute;
+            bottom: 35px; /* Aligned with station core top */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 100vh; /* Tall enough to go off screen */
+            pointer-events: none;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end; /* Grow from bottom */
+            z-index: 1; /* Behind station front structure */
+        }
+
+        .beam-core {
+            width: 100%;
+            height: 0%; /* Starts hidden */
+            background: linear-gradient(to right, rgba(255,255,255,0.8) 20%, #fff 50%, rgba(255,255,255,0.8) 80%);
+            box-shadow: 
+                0 0 10px var(--neon-cyan), 
+                0 0 30px var(--neon-blue), 
+                0 0 60px var(--neon-blue);
+            border-radius: 4px 4px 0 0;
+            opacity: 0;
+        }
+
+        /* Active Beam Class - Toggled via JS */
+        .beam-active .beam-core {
+            animation: beamFireSequence 3s ease-out forwards;
+        }
+
+        /* Enhanced Beam Sequence */
+        @keyframes beamFireSequence {
+            0% { height: 0%; opacity: 0; width: 2px; }
+            /* Charge */
+            10% { height: 5%; opacity: 1; width: 4px; box-shadow: 0 0 20px #fff; } 
+            /* BLAST */
+            15% { height: 120%; opacity: 1; width: 12px; box-shadow: 0 0 50px var(--neon-cyan), 0 0 80px var(--neon-blue); }
+            /* Flicker & Stabilize */
+            20% { width: 10px; opacity: 0.9; }
+            25% { width: 12px; opacity: 1; }
+            30% { width: 8px; opacity: 0.8; }
+            /* Fade Out */
+            60% { height: 120%; opacity: 0; width: 1px; }
+            100% { height: 0%; opacity: 0; }
+        }
+
+        /* Station Reaction during Beam */
+        .station-active .st-core-pulse {
+            animation: coreOverload 3s ease-out forwards;
+        }
+        @keyframes coreOverload {
+            0% { fill: #fff; filter: drop-shadow(0 0 10px #fff); }
+            10% { fill: #fff; filter: drop-shadow(0 0 50px #00ffff); transform: scale(1.2); }
+            100% { fill: #00ffff; filter: drop-shadow(0 0 5px #00ffff); transform: scale(1); }
+        }
+
 
         /* ENHANCED GRID & HORIZON */
         .horizon-glow {
@@ -308,13 +502,13 @@
         }
 
 
-        /* CONTENT LAYER */
+        /* --- POLISHED CONTENT LAYER --- */
         .hero-content {
             position: absolute;
-            top: 10%;
+            top: 13%; /* Adjusted for better centering */
             width: 100%;
             text-align: center;
-            z-index: 20; /* Above car slightly if needed, but car is bottom */
+            z-index: 20; 
             padding: 0 20px;
         }
         
@@ -322,8 +516,8 @@
             font-family: var(--font-tech);
             color: var(--neon-cyan);
             letter-spacing: 6px;
-            font-size: 1.2rem;
-            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            margin-bottom: 0.8rem;
             text-shadow: 0 0 10px var(--neon-cyan);
             opacity: 0;
             animation: fadeIn 1s ease 1.5s forwards;
@@ -331,14 +525,14 @@
 
         .main-title {
             font-family: var(--font-display);
-            font-size: clamp(4rem, 10vw, 7rem);
+            font-size: clamp(3.5rem, 9vw, 6.5rem); /* Slightly tighter clamp */
             font-weight: 900;
-            line-height: 1;
+            line-height: 1.1;
             color: #fff;
             text-shadow: 
-                5px 5px 0px var(--neon-purple),
+                4px 4px 0px var(--neon-purple),
                 -2px -2px 0px var(--neon-cyan);
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem; /* Closer to subtitle */
             position: relative;
             display: inline-block;
             opacity: 0;
@@ -347,15 +541,16 @@
         
         .subtitle {
             font-family: var(--font-main);
-            font-size: clamp(1.5rem, 5vw, 2rem);
-            color: #fff;
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            color: #e0e0e0;
             text-shadow: 0 0 10px rgba(0,0,0,0.8);
-            max-width: 800px;
+            max-width: 700px;
             margin: 0 auto 2.5rem auto;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.5);
             backdrop-filter: blur(4px);
-            padding: 5px 15px;
-            border: 1px solid rgba(255,255,255,0.1);
+            padding: 6px 20px;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 50px; /* Pill shape for modern look */
             opacity: 0;
             animation: slideUp 1s ease 2s forwards;
         }
@@ -363,16 +558,16 @@
         .cta-group {
             display: flex;
             justify-content: center;
-            gap: 1rem;
+            gap: 1.5rem; /* Cleaner separation */
             flex-wrap: wrap;
             opacity: 0;
             animation: slideUp 1s ease 2.2s forwards;
         }
 
         .btn {
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.7);
             border: 2px solid var(--neon-cyan);
-            padding: 14px 30px;
+            padding: 12px 32px;
             color: #fff;
             font-family: var(--font-tech);
             font-weight: 700;
@@ -382,18 +577,19 @@
             position: relative;
             overflow: hidden;
             cursor: pointer;
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.15);
             transition: all 0.3s ease;
+            font-size: 0.9rem;
         }
         .btn:hover {
             background: var(--neon-cyan);
             color: #000;
-            box-shadow: 0 0 40px var(--neon-cyan);
-            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 0 30px var(--neon-cyan);
+            transform: translateY(-2px);
         }
         .btn.primary {
             border-color: var(--neon-pink);
-            box-shadow: 0 0 15px rgba(255, 0, 255, 0.2);
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.2);
         }
         .btn.primary:hover {
             background: var(--neon-pink);
@@ -454,6 +650,86 @@
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
         
+        /* --- RETRO CONTAINER VARIANTS --- */
+        
+        /* Variant A: Neon Frame Card */
+        .neon-frame-card {
+            background: rgba(5, 5, 8, 0.9);
+            border: 1px solid var(--neon-cyan);
+            box-shadow: 0 0 5px rgba(0, 255, 255, 0.2), inset 0 0 20px rgba(0, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .neon-frame-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+            transition: 0.5s;
+        }
+        .neon-frame-card:hover {
+            box-shadow: 0 0 15px var(--neon-cyan), inset 0 0 30px rgba(0, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        .neon-frame-card:hover::before { left: 100%; }
+
+        /* Variant B: Glass-Neon Panel */
+        .glass-neon-panel {
+            background: rgba(20, 20, 35, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 0, 255, 0.3);
+            border-radius: 4px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            transition: 0.3s;
+        }
+        .glass-neon-panel:hover {
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.2);
+        }
+
+        /* Variant C: Vaporwave Gradient Block */
+        .vaporwave-block {
+            background: linear-gradient(135deg, rgba(40, 10, 60, 0.8), rgba(10, 5, 20, 0.95));
+            border-left: 4px solid var(--neon-purple);
+            padding: 20px;
+            position: relative;
+            transition: 0.3s;
+        }
+        .vaporwave-block::after {
+            content: '';
+            position: absolute;
+            bottom: 0; right: 0;
+            width: 30px; height: 30px;
+            background: linear-gradient(-45deg, var(--neon-purple) 1px, transparent 1px);
+            background-size: 4px 4px;
+            opacity: 0.5;
+        }
+        .vaporwave-block:hover {
+            transform: translateX(5px);
+            border-left-color: var(--neon-pink);
+            box-shadow: -5px 0 15px rgba(188, 19, 254, 0.2);
+        }
+
+        /* Variant D: Holographic Grid Card */
+        .holo-grid-card {
+            background-color: #050508;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            border: 1px solid rgba(0, 255, 255, 0.1);
+            position: relative;
+            transition: 0.4s;
+        }
+        .holo-grid-card:hover {
+            border-color: var(--neon-green);
+            background-size: 22px 22px; /* Subtle zoom effect */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+        }
+
         /* --- ABOUT SECTION --- */
         .about-grid {
             display: grid;
@@ -463,16 +739,31 @@
         @media(min-width: 768px) { .about-grid { grid-template-columns: 2fr 1fr; } }
 
         .about-text p { margin-bottom: 1.5rem; font-size: 1.1rem; color: #ddd; }
+        
+        /* REPLACED WITH Variant B: Glass-Neon Panel style application */
         .stat-card {
-            background: rgba(255,255,255,0.03);
-            border-left: 3px solid var(--neon-purple);
+            /* Inherits from glass-neon-panel via HTML class, specific overrides here */
             padding: 20px;
             margin-bottom: 15px;
-            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
         }
-        .stat-card:hover { background: rgba(255,255,255,0.08); transform: translateX(5px); box-shadow: 0 0 15px rgba(188,19,254,0.2); }
-        .stat-num { font-family: var(--font-display); font-size: 2rem; color: var(--neon-pink); }
-        .stat-label { font-family: var(--font-tech); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+        .stat-num { 
+            font-family: var(--font-display); 
+            font-size: 2.5rem; 
+            color: var(--neon-pink);
+            text-shadow: 0 0 10px rgba(255,0,255,0.5);
+        }
+        .stat-label { 
+            font-family: var(--font-tech); 
+            font-size: 0.9rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            color: var(--neon-cyan);
+        }
 
         /* --- EXPERIENCE --- */
         .timeline {
@@ -483,24 +774,55 @@
         .timeline-item {
             position: relative;
             margin-bottom: 50px;
+            /* Applied Vaporwave Block style via HTML, but refined here */
+            background: linear-gradient(135deg, rgba(40, 10, 60, 0.6), rgba(10, 5, 20, 0.8));
+            border-left: 3px solid var(--neon-purple);
+            padding: 25px;
+            border-radius: 0 10px 10px 0;
+            transition: 0.3s;
+        }
+        .timeline-item:hover {
+            border-left-color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(188, 19, 254, 0.1);
+            transform: translateX(5px);
         }
         .timeline-item::before {
             content: '';
             position: absolute;
-            left: -37px;
-            top: 5px;
-            width: 12px;
-            height: 12px;
+            left: -44px; /* Adjusted for padding */
+            top: 25px;
+            width: 14px;
+            height: 14px;
             background: var(--bg-dark);
             border: 2px solid var(--neon-cyan);
             box-shadow: 0 0 10px var(--neon-cyan);
             border-radius: 50%;
+            z-index: 2;
         }
-        .role { font-family: var(--font-display); font-size: 1.3rem; color: #fff; }
-        .company { font-family: var(--font-tech); color: var(--neon-pink); font-size: 1.1rem; margin-bottom: 10px; display: block; }
+        .role { 
+            font-family: var(--font-display); 
+            font-size: 1.4rem; 
+            color: #fff; 
+            text-shadow: 0 0 5px rgba(255,255,255,0.3);
+        }
+        .company { 
+            font-family: var(--font-tech); 
+            color: var(--neon-pink); 
+            font-size: 1.1rem; 
+            margin-bottom: 10px; 
+            display: block; 
+            text-shadow: 0 0 5px rgba(255,0,255,0.3);
+        }
         .date { font-family: var(--font-mono); font-size: 0.8rem; color: #888; margin-bottom: 15px; display: block; }
         .timeline-item ul { margin-left: 15px; }
-        .timeline-item li { margin-bottom: 5px; color: #ccc; list-style-type: square; }
+        .timeline-item li { margin-bottom: 5px; color: #ccc; list-style-type: none; position: relative; padding-left: 15px; }
+        .timeline-item li::before {
+            content: '>';
+            position: absolute;
+            left: 0;
+            color: var(--neon-cyan);
+            font-family: var(--font-mono);
+        }
 
         /* --- SKILLS --- */
         .skills-grid {
@@ -508,31 +830,39 @@
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
         }
+        /* Variant A: Neon Frame Card applied via class, specific refinements */
         .skill-category {
-            background: rgba(5, 5, 8, 0.8);
-            border: 1px solid rgba(255,255,255,0.1);
             padding: 25px;
-            position: relative;
-            overflow: hidden;
         }
-        .skill-category::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(90deg, var(--neon-cyan), transparent);
+        /* Overriding default gradient top border from old css */
+        .skill-category::before { display: none; } 
+        
+        .skill-title { 
+            color: var(--neon-cyan); 
+            margin-bottom: 15px; 
+            font-family: var(--font-tech); 
+            text-transform: uppercase; 
+            font-size: 1.2rem;
+            border-bottom: 1px solid rgba(0,255,255,0.2);
+            padding-bottom: 10px;
         }
-        .skill-title { color: var(--neon-cyan); margin-bottom: 15px; font-family: var(--font-tech); text-transform: uppercase; }
         .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; }
         .tag {
             font-family: var(--font-mono);
             font-size: 0.8rem;
-            padding: 5px 10px;
+            padding: 6px 12px;
             background: rgba(255,255,255,0.05);
-            border: 1px solid transparent;
+            border: 1px solid rgba(255,255,255,0.1);
             color: #aaa;
             transition: 0.3s;
+            clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%);
         }
-        .tag:hover { border-color: var(--neon-pink); color: #fff; box-shadow: 0 0 5px var(--neon-pink); }
+        .tag:hover { 
+            border-color: var(--neon-pink); 
+            color: #fff; 
+            box-shadow: 0 0 10px var(--neon-pink); 
+            background: rgba(255, 0, 255, 0.1);
+        }
 
         /* --- PROJECTS --- */
         .projects-grid {
@@ -540,27 +870,47 @@
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
         }
+        /* Variant D: Holo Grid Card applied via class */
         .project-card {
-            background: linear-gradient(145deg, rgba(20,20,30,0.9), rgba(10,10,15,0.95));
-            border: 1px solid rgba(255,255,255,0.1);
             padding: 25px;
             position: relative;
             transition: 0.3s;
             overflow: hidden;
             cursor: pointer;
-            height: 220px; /* collapsed height */
+            height: 240px; /* collapsed height */
+            display: flex;
+            flex-direction: column;
         }
         .project-card.expanded {
             height: auto;
             border-color: var(--neon-green);
-            box-shadow: 0 0 20px rgba(10,255,10, 0.1);
+            box-shadow: 0 0 30px rgba(10,255,10, 0.2);
+            background-color: #080810;
         }
-        .project-card:hover { transform: translateY(-5px); border-color: var(--neon-purple); }
         
-        .p-title { font-family: var(--font-display); color: #fff; font-size: 1.2rem; margin-bottom: 5px; }
-        .p-role { font-family: var(--font-mono); color: var(--neon-pink); font-size: 0.8rem; margin-bottom: 15px; }
-        .p-desc { color: #ccc; font-size: 0.95rem; margin-bottom: 15px; }
-        .p-hidden { display: none; opacity: 0; transition: opacity 0.5s; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; margin-top: 15px; }
+        .p-title { 
+            font-family: var(--font-display); 
+            color: #fff; 
+            font-size: 1.4rem; 
+            margin-bottom: 5px; 
+            text-shadow: 2px 2px 0px #000;
+        }
+        .p-role { 
+            font-family: var(--font-mono); 
+            color: var(--neon-cyan); 
+            font-size: 0.8rem; 
+            margin-bottom: 15px; 
+            letter-spacing: 1px;
+        }
+        .p-desc { color: #ccc; font-size: 1rem; margin-bottom: 15px; flex-grow: 1; }
+        .p-hidden { 
+            display: none; 
+            opacity: 0; 
+            transition: opacity 0.5s; 
+            border-top: 1px dashed rgba(255,255,255,0.2); 
+            padding-top: 15px; 
+            margin-top: 15px; 
+        }
         .project-card.expanded .p-hidden { display: block; opacity: 1; }
         
         .expand-hint {
@@ -568,41 +918,57 @@
             bottom: 15px; right: 15px;
             font-family: var(--font-mono);
             font-size: 0.7rem;
-            color: #666;
+            color: var(--neon-pink);
+            animation: blink 2s infinite;
         }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         .project-card.expanded .expand-hint { display: none; }
 
         /* --- TERMINAL --- */
         #terminal-section {
-            background: radial-gradient(circle at center, #111, #000);
+            background: radial-gradient(circle at center, #111, #050505);
+            position: relative;
         }
         .terminal-window {
-            background: #050505;
+            background: rgba(5, 5, 5, 0.95);
             border: 1px solid #333;
             border-radius: 5px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.1);
             max-width: 800px;
             margin: 0 auto;
             overflow: hidden;
             font-family: var(--font-mono);
+            position: relative;
+        }
+        .terminal-window::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent 0px,
+                rgba(0, 255, 0, 0.03) 1px,
+                transparent 2px
+            );
+            pointer-events: none;
         }
         .terminal-header {
-            background: #1a1a1a;
+            background: #151515;
             padding: 10px 15px;
             display: flex;
             gap: 8px;
             border-bottom: 1px solid #333;
         }
-        .dot { width: 12px; height: 12px; border-radius: 50%; }
-        .red { background: #ff5f56; } .yellow { background: #ffbd2e; } .green { background: #27c93f; }
-        .terminal-title { margin-left: auto; margin-right: auto; color: #888; font-size: 0.8rem; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; box-shadow: 0 0 5px currentColor; }
+        .red { background: #ff5f56; color: #ff5f56; } .yellow { background: #ffbd2e; color: #ffbd2e; } .green { background: #27c93f; color: #27c93f; }
+        .terminal-title { margin-left: auto; margin-right: auto; color: #666; font-size: 0.8rem; }
         
         .terminal-body {
             padding: 20px;
             height: 400px;
             overflow-y: auto;
             color: #33ff00;
-            text-shadow: 0 0 2px #33ff00;
+            text-shadow: 0 0 4px rgba(51, 255, 0, 0.6);
             font-size: 0.9rem;
         }
         .output-line { margin-bottom: 5px; white-space: pre-wrap; }
@@ -666,12 +1032,72 @@
 </head>
 <body>
 
+    <!-- SVG SYMBOLS DEFINITION (Hidden) -->
+    <svg style="display: none;">
+        <defs>
+            <linearGradient id="palm-trunk-grad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#000" />
+                <stop offset="50%" stop-color="#1a0b2e" />
+                <stop offset="100%" stop-color="#000" />
+            </linearGradient>
+            <filter id="palm-glow">
+                <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+            </filter>
+            <symbol id="palm-icon" viewBox="0 0 200 300">
+                 <!-- Trunk (Segmented) -->
+                 <path d="M95,300 L105,300 L100,50 Z" fill="url(#palm-trunk-grad)" stroke="none"/>
+                 <g stroke="#bc13fe" stroke-width="1" fill="none" opacity="0.5">
+                     <path d="M96,280 L104,280" /><path d="M96.5,260 L103.5,260" />
+                     <path d="M97,240 L103,240" /><path d="M97.5,220 L102.5,220" />
+                     <path d="M98,200 L102,200" /><path d="M98.5,180 L101.5,180" />
+                     <path d="M99,160 L101,160" /><path d="M99.5,140 L100.5,140" />
+                 </g>
+                 
+                 <!-- Leaves (Sharp, Angular, Cyan/Magenta Edges) -->
+                 <g filter="url(#palm-glow)">
+                     <!-- Left Set -->
+                     <path d="M100,50 Q60,20 40,80" fill="none" stroke="#00ffff" stroke-width="2" />
+                     <path d="M100,50 Q60,20 40,80 L50,85 L100,55 Z" fill="#000" opacity="0.8"/>
+ 
+                     <path d="M100,50 Q50,0 20,30" fill="none" stroke="#ff00ff" stroke-width="2" />
+                     <path d="M100,50 Q50,0 20,30 L28,38 L100,55 Z" fill="#000" opacity="0.8"/>
+                     
+                     <path d="M100,50 Q70,-20 30,0" fill="none" stroke="#00ffff" stroke-width="2" />
+                     <path d="M100,50 Q70,-20 30,0 L40,10 L100,55 Z" fill="#000" opacity="0.8"/>
+ 
+                     <!-- Right Set -->
+                     <path d="M100,50 Q140,20 160,80" fill="none" stroke="#ff00ff" stroke-width="2" />
+                     <path d="M100,50 Q140,20 160,80 L150,85 L100,55 Z" fill="#000" opacity="0.8"/>
+ 
+                     <path d="M100,50 Q150,0 180,30" fill="none" stroke="#00ffff" stroke-width="2" />
+                     <path d="M100,50 Q150,0 180,30 L172,38 L100,55 Z" fill="#000" opacity="0.8"/>
+ 
+                     <path d="M100,50 Q130,-20 170,0" fill="none" stroke="#ff00ff" stroke-width="2" />
+                     <path d="M100,50 Q130,-20 170,0 L160,10 L100,55 Z" fill="#000" opacity="0.8"/>
+                     
+                     <!-- Top -->
+                     <path d="M100,50 Q100,-30 80,-10" fill="none" stroke="#00ffff" stroke-width="2" />
+                     <path d="M100,50 Q100,-30 120,-10" fill="none" stroke="#ff00ff" stroke-width="2" />
+                 </g>
+            </symbol>
+        </defs>
+    </svg>
+
     <!-- SOUND TOGGLE -->
     <button id="sound-toggle">Sound: ON</button>
 
     <!-- OPENING BLADES -->
     <div class="blade-cover blade-left"></div>
     <div class="blade-cover blade-right"></div>
+
+    <!-- RETRO BACKGROUND EFFECTS -->
+    <div class="retro-fog"></div>
+    <div class="vhs-overlay"></div>
+    <div class="rain-overlay"></div>
 
     <!-- HERO SECTION -->
     <header id="hero">
@@ -680,107 +1106,125 @@
         <div class="retro-sun"></div>
         <div class="cityscape"></div>
         <div class="horizon-glow"></div>
+        
+        <!-- UPGRADED TRON STATION -->
+        <div class="tron-station" id="tron-station">
+            <!-- Beam Container -->
+            <div class="beam-container" id="beam-container">
+                <div class="beam-core"></div>
+            </div>
+
+            <!-- High Detail SVG Structure -->
+            <svg class="station-svg" viewBox="0 0 200 150" preserveAspectRatio="xMidYBottom">
+                <defs>
+                    <linearGradient id="metal-grad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#0a101a" />
+                        <stop offset="50%" stop-color="#203040" />
+                        <stop offset="100%" stop-color="#050810" />
+                    </linearGradient>
+                    <linearGradient id="cyan-grad" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#00ffff" />
+                        <stop offset="100%" stop-color="#0055ff" />
+                    </linearGradient>
+                    <filter id="glow-s" height="300%" width="300%" x="-100%" y="-100%">
+                        <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+                        <feMerge>
+                            <feMergeNode in="coloredBlur" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+                    <filter id="glow-m" height="300%" width="300%" x="-100%" y="-100%">
+                        <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+                        <feMerge>
+                            <feMergeNode in="coloredBlur" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+                </defs>
+
+                <!-- Base Platform Rings (Perspective Flattened) -->
+                <g transform="translate(100, 130) scale(1, 0.25)">
+                    <!-- Outer Ring -->
+                    <circle cx="0" cy="0" r="80" fill="none" stroke="#00ffff" stroke-width="2" opacity="0.3" class="st-ring-pulse" />
+                    <circle cx="0" cy="0" r="70" fill="none" stroke="#ff00ff" stroke-width="1" opacity="0.2" />
+                    <!-- Mid Ring -->
+                    <circle cx="0" cy="0" r="50" fill="rgba(0, 255, 255, 0.1)" stroke="#00ffff" stroke-width="4" opacity="0.5" class="st-ring-pulse" style="animation-delay: 1s;"/>
+                    <!-- Inner Core Base -->
+                    <circle cx="0" cy="0" r="20" fill="#000" stroke="#00ffff" stroke-width="2" filter="url(#glow-s)" />
+                </g>
+
+                <!-- Main Gateway Structure -->
+                <g transform="translate(100, 130)" filter="url(#glow-s)">
+                    <!-- Left Pylon -->
+                    <path d="M-60,0 Q-50,-80 -20,-100 L-10,-100 Q-30,-80 -40,0 Z" fill="url(#metal-grad)" stroke="#00ffff" stroke-width="1" opacity="0.9" />
+                    <!-- Right Pylon -->
+                    <path d="M60,0 Q50,-80 20,-100 L10,-100 Q30,-80 40,0 Z" fill="url(#metal-grad)" stroke="#00ffff" stroke-width="1" opacity="0.9" />
+                    
+                    <!-- Connecting Arcs / Energy Veins -->
+                    <path d="M-20,-100 Q0,-90 20,-100" fill="none" stroke="#ff00ff" stroke-width="2" opacity="0.8" />
+                    <path d="M-45,-20 L-20,-20" fill="none" stroke="#00ffff" stroke-width="1" opacity="0.5" />
+                    <path d="M45,-20 L20,-20" fill="none" stroke="#00ffff" stroke-width="1" opacity="0.5" />
+                </g>
+
+                <!-- Central Core (Reactor) -->
+                <g transform="translate(100, 125)">
+                    <rect x="-10" y="-30" width="20" height="30" fill="#001122" stroke="none" />
+                    <ellipse cx="0" cy="0" rx="10" ry="3" fill="#00ffff" opacity="0.5" />
+                    <!-- Glowing Heart -->
+                    <circle cx="0" cy="-15" r="6" fill="#00ffff" class="st-core-pulse" />
+                    <!-- Side Vents -->
+                    <rect x="-14" y="-25" width="4" height="20" fill="#00ffff" opacity="0.3" />
+                    <rect x="10" y="-25" width="4" height="20" fill="#00ffff" opacity="0.3" />
+                </g>
+            </svg>
+        </div>
+
         <div class="grid-floor"></div>
         
         <!-- DEDICATED ROAD -->
         <div class="road"></div>
         
-        <!-- RETROWAVE PALMS (Fixed framing) -->
-        <div class="retro-palm-container left-palm">
-            <svg class="palm-svg" viewBox="0 0 200 300" preserveAspectRatio="xMidYMax meet">
-                <defs>
-                    <linearGradient id="palm-trunk-grad" x1="0" y1="0" x2="1" y2="0">
-                        <stop offset="0%" stop-color="#000" />
-                        <stop offset="50%" stop-color="#1a0b2e" />
-                        <stop offset="100%" stop-color="#000" />
-                    </linearGradient>
-                    <filter id="palm-glow">
-                        <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-                        <feMerge>
-                            <feMergeNode in="coloredBlur"/>
-                            <feMergeNode in="SourceGraphic"/>
-                        </feMerge>
-                    </filter>
-                </defs>
-                <!-- Trunk (Segmented) -->
-                <path d="M95,300 L105,300 L100,50 Z" fill="url(#palm-trunk-grad)" stroke="none"/>
-                <g stroke="#bc13fe" stroke-width="1" fill="none" opacity="0.5">
-                    <path d="M96,280 L104,280" /><path d="M96.5,260 L103.5,260" />
-                    <path d="M97,240 L103,240" /><path d="M97.5,220 L102.5,220" />
-                    <path d="M98,200 L102,200" /><path d="M98.5,180 L101.5,180" />
-                    <path d="M99,160 L101,160" /><path d="M99.5,140 L100.5,140" />
-                </g>
-                
-                <!-- Leaves (Sharp, Angular, Cyan/Magenta Edges) -->
-                <g filter="url(#palm-glow)">
-                    <!-- Left Set -->
-                    <path d="M100,50 Q60,20 40,80" fill="none" stroke="#00ffff" stroke-width="2" />
-                    <path d="M100,50 Q60,20 40,80 L50,85 L100,55 Z" fill="#000" opacity="0.8"/>
+        <!-- DYNAMIC MOVING PALM SYSTEM (Added) -->
+        <div class="palm-system">
+            <!-- Left Side Palms -->
+            <div class="moving-palm move-left d1">
+                <svg class="palm-svg"><use href="#palm-icon"/></svg>
+            </div>
+            <div class="moving-palm move-left d2">
+                <svg class="palm-svg"><use href="#palm-icon"/></svg>
+            </div>
+            <div class="moving-palm move-left d3">
+                <svg class="palm-svg"><use href="#palm-icon"/></svg>
+            </div>
+            <div class="moving-palm move-left d4">
+                <svg class="palm-svg"><use href="#palm-icon"/></svg>
+            </div>
+            <div class="moving-palm move-left d5">
+                <svg class="palm-svg"><use href="#palm-icon"/></svg>
+            </div>
+            <div class="moving-palm move-left d6">
+                <svg class="palm-svg"><use href="#palm-icon"/></svg>
+            </div>
 
-                    <path d="M100,50 Q50,0 20,30" fill="none" stroke="#ff00ff" stroke-width="2" />
-                    <path d="M100,50 Q50,0 20,30 L28,38 L100,55 Z" fill="#000" opacity="0.8"/>
-                    
-                    <path d="M100,50 Q70,-20 30,0" fill="none" stroke="#00ffff" stroke-width="2" />
-                    <path d="M100,50 Q70,-20 30,0 L40,10 L100,55 Z" fill="#000" opacity="0.8"/>
-
-                    <!-- Right Set -->
-                    <path d="M100,50 Q140,20 160,80" fill="none" stroke="#ff00ff" stroke-width="2" />
-                    <path d="M100,50 Q140,20 160,80 L150,85 L100,55 Z" fill="#000" opacity="0.8"/>
-
-                    <path d="M100,50 Q150,0 180,30" fill="none" stroke="#00ffff" stroke-width="2" />
-                    <path d="M100,50 Q150,0 180,30 L172,38 L100,55 Z" fill="#000" opacity="0.8"/>
-
-                    <path d="M100,50 Q130,-20 170,0" fill="none" stroke="#ff00ff" stroke-width="2" />
-                    <path d="M100,50 Q130,-20 170,0 L160,10 L100,55 Z" fill="#000" opacity="0.8"/>
-                    
-                    <!-- Top -->
-                    <path d="M100,50 Q100,-30 80,-10" fill="none" stroke="#00ffff" stroke-width="2" />
-                    <path d="M100,50 Q100,-30 120,-10" fill="none" stroke="#ff00ff" stroke-width="2" />
-                </g>
-            </svg>
-        </div>
-
-        <div class="retro-palm-container right-palm">
-            <svg class="palm-svg" viewBox="0 0 200 300" preserveAspectRatio="xMidYMax meet" style="transform: scaleX(-1);">
-                <use href="#palm-trunk-grad" />
-                <use href="#palm-glow" />
-                <!-- Re-using paths via the SVG content above, just flipped -->
-                <!-- Trunk (Segmented) -->
-                <path d="M95,300 L105,300 L100,50 Z" fill="url(#palm-trunk-grad)" stroke="none"/>
-                <g stroke="#bc13fe" stroke-width="1" fill="none" opacity="0.5">
-                    <path d="M96,280 L104,280" /><path d="M96.5,260 L103.5,260" />
-                    <path d="M97,240 L103,240" /><path d="M97.5,220 L102.5,220" />
-                    <path d="M98,200 L102,200" /><path d="M98.5,180 L101.5,180" />
-                    <path d="M99,160 L101,160" /><path d="M99.5,140 L100.5,140" />
-                </g>
-                
-                <!-- Leaves (Sharp, Angular, Cyan/Magenta Edges) -->
-                <g filter="url(#palm-glow)">
-                    <!-- Left Set -->
-                    <path d="M100,50 Q60,20 40,80" fill="none" stroke="#00ffff" stroke-width="2" />
-                    <path d="M100,50 Q60,20 40,80 L50,85 L100,55 Z" fill="#000" opacity="0.8"/>
-
-                    <path d="M100,50 Q50,0 20,30" fill="none" stroke="#ff00ff" stroke-width="2" />
-                    <path d="M100,50 Q50,0 20,30 L28,38 L100,55 Z" fill="#000" opacity="0.8"/>
-                    
-                    <path d="M100,50 Q70,-20 30,0" fill="none" stroke="#00ffff" stroke-width="2" />
-                    <path d="M100,50 Q70,-20 30,0 L40,10 L100,55 Z" fill="#000" opacity="0.8"/>
-
-                    <!-- Right Set -->
-                    <path d="M100,50 Q140,20 160,80" fill="none" stroke="#ff00ff" stroke-width="2" />
-                    <path d="M100,50 Q140,20 160,80 L150,85 L100,55 Z" fill="#000" opacity="0.8"/>
-
-                    <path d="M100,50 Q150,0 180,30" fill="none" stroke="#00ffff" stroke-width="2" />
-                    <path d="M100,50 Q150,0 180,30 L172,38 L100,55 Z" fill="#000" opacity="0.8"/>
-
-                    <path d="M100,50 Q130,-20 170,0" fill="none" stroke="#ff00ff" stroke-width="2" />
-                    <path d="M100,50 Q130,-20 170,0 L160,10 L100,55 Z" fill="#000" opacity="0.8"/>
-                    
-                    <!-- Top -->
-                    <path d="M100,50 Q100,-30 80,-10" fill="none" stroke="#00ffff" stroke-width="2" />
-                    <path d="M100,50 Q100,-30 120,-10" fill="none" stroke="#ff00ff" stroke-width="2" />
-                </g>
-            </svg>
+            <!-- Right Side Palms (Flipped) -->
+            <div class="moving-palm move-right d1">
+                <svg class="palm-svg" style="transform: scaleX(-1);"><use href="#palm-icon"/></svg>
+            </div>
+            <div class="moving-palm move-right d2">
+                <svg class="palm-svg" style="transform: scaleX(-1);"><use href="#palm-icon"/></svg>
+            </div>
+            <div class="moving-palm move-right d3">
+                <svg class="palm-svg" style="transform: scaleX(-1);"><use href="#palm-icon"/></svg>
+            </div>
+            <div class="moving-palm move-right d4">
+                <svg class="palm-svg" style="transform: scaleX(-1);"><use href="#palm-icon"/></svg>
+            </div>
+            <div class="moving-palm move-right d5">
+                <svg class="palm-svg" style="transform: scaleX(-1);"><use href="#palm-icon"/></svg>
+            </div>
+            <div class="moving-palm move-right d6">
+                <svg class="palm-svg" style="transform: scaleX(-1);"><use href="#palm-icon"/></svg>
+            </div>
         </div>
 
         
@@ -924,15 +1368,15 @@
                     <p>My core focus is architecting robust RAG pipelines, optimizing inference infrastructure, and deploying agentic workflows that solve complex reasoning tasks. I don't just train models; I build the ecosystems they live in.</p>
                 </div>
                 <div class="stats">
-                    <div class="stat-card">
+                    <div class="stat-card glass-neon-panel">
                         <div class="stat-num">4+</div>
                         <div class="stat-label">Years ML/Dev Exp</div>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card glass-neon-panel">
                         <div class="stat-num">1st</div>
                         <div class="stat-label">Place AAIC Competition</div>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card glass-neon-panel">
                         <div class="stat-num">20k+</div>
                         <div class="stat-label">Users Impacted</div>
                     </div>
@@ -947,7 +1391,7 @@
             <h2 class="section-title">Experience Log</h2>
             <div class="timeline">
                 
-                <div class="timeline-item">
+                <div class="timeline-item vaporwave-block">
                     <h3 class="role">Machine Learning Engineer</h3>
                     <span class="company">Tech / Stealth Startup</span>
                     <span class="date">Feb 2023 – Present</span>
@@ -959,7 +1403,7 @@
                     </ul>
                 </div>
 
-                <div class="timeline-item">
+                <div class="timeline-item vaporwave-block">
                     <h3 class="role">Full Stack Developer & Project Manager</h3>
                     <span class="company">YIWU Dar Trading Co.</span>
                     <span class="date">2021 – 2023</span>
@@ -971,7 +1415,7 @@
                     </ul>
                 </div>
 
-                <div class="timeline-item">
+                <div class="timeline-item vaporwave-block">
                     <h3 class="role">PHP Developer & Web Designer</h3>
                     <span class="company">Nika Herb</span>
                     <span class="date">2019 – 2021</span>
@@ -992,7 +1436,7 @@
             <h2 class="section-title">Tech Stack</h2>
             <div class="skills-grid">
                 
-                <div class="skill-category">
+                <div class="skill-category neon-frame-card">
                     <h4 class="skill-title">Generative AI & LLMs</h4>
                     <div class="skill-tags">
                         <span class="tag">PyTorch</span>
@@ -1006,7 +1450,7 @@
                     </div>
                 </div>
 
-                <div class="skill-category">
+                <div class="skill-category neon-frame-card">
                     <h4 class="skill-title">Backend & Infra</h4>
                     <div class="skill-tags">
                         <span class="tag">Python</span>
@@ -1020,7 +1464,7 @@
                     </div>
                 </div>
 
-                <div class="skill-category">
+                <div class="skill-category neon-frame-card">
                     <h4 class="skill-title">Data Science & Core ML</h4>
                     <div class="skill-tags">
                         <span class="tag">NumPy / Pandas</span>
@@ -1043,7 +1487,7 @@
             <div class="projects-grid">
                 
                 <!-- Project 1 -->
-                <div class="project-card" onclick="toggleCard(this)">
+                <div class="project-card holo-grid-card" onclick="toggleCard(this)">
                     <h3 class="p-title">Market Sentinel (AAIC Winner)</h3>
                     <div class="p-role">Algorithmic Trading Agent</div>
                     <p class="p-desc">An LSTM-based time-series forecasting system that identified top performing stocks with high precision.</p>
@@ -1056,7 +1500,7 @@
                 </div>
 
                 <!-- Project 2 -->
-                <div class="project-card" onclick="toggleCard(this)">
+                <div class="project-card holo-grid-card" onclick="toggleCard(this)">
                     <h3 class="p-title">FaceCup Vision</h3>
                     <div class="p-role">Computer Vision System</div>
                     <p class="p-desc">Advanced facial recognition and verification system developed for the Amirkabir AI Competition.</p>
@@ -1069,7 +1513,7 @@
                 </div>
 
                 <!-- Project 3 -->
-                <div class="project-card" onclick="toggleCard(this)">
+                <div class="project-card holo-grid-card" onclick="toggleCard(this)">
                     <h3 class="p-title">SecureNet Infrastructure</h3>
                     <div class="p-role">High-Scale VPN Platform</div>
                     <p class="p-desc">A distributed network privacy solution handling thousands of concurrent connections.</p>
@@ -1082,7 +1526,7 @@
                 </div>
 
                 <!-- Project 4 -->
-                <div class="project-card" onclick="toggleCard(this)">
+                <div class="project-card holo-grid-card" onclick="toggleCard(this)">
                     <h3 class="p-title">RAG Knowledge Agent</h3>
                     <div class="p-role">GenAI Research</div>
                     <p class="p-desc">Prototype specific-domain Q&A bot utilizing retrieval augmented generation.</p>
@@ -1215,7 +1659,44 @@
             setTimeout(() => {
                 document.body.classList.add('loaded');
             }, 500);
+            
+            // Start Beam Randomizer
+            scheduleBeam();
         };
+
+        // --- BEAM RANDOMIZER ---
+        function scheduleBeam() {
+            const min = 12000; // 12s
+            const max = 18000; // 18s
+            const delay = Math.floor(Math.random() * (max - min + 1)) + min;
+            
+            setTimeout(() => {
+                triggerBeam();
+                scheduleBeam(); // Re-schedule
+            }, delay);
+        }
+
+        function triggerBeam() {
+            const beamContainer = document.getElementById('beam-container');
+            const station = document.getElementById('tron-station');
+            
+            // Add classes to trigger CSS animations
+            beamContainer.classList.add('beam-active');
+            station.classList.add('station-active');
+            
+            // Play sound effect if enabled (Low rumble then high pitch)
+            if(soundSys && soundSys.enabled) {
+                soundSys.playTone(150, 'sawtooth', 0.5, 0.05);
+                setTimeout(() => soundSys.playTone(800, 'square', 1.0, 0.05), 400);
+            }
+
+            // Remove classes after animation completes (3s matches CSS)
+            setTimeout(() => {
+                beamContainer.classList.remove('beam-active');
+                station.classList.remove('station-active');
+            }, 3000);
+        }
+
 
         // --- CARD EXPANSION ---
         function toggleCard(card) {
