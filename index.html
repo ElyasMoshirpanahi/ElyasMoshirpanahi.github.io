@@ -1,2391 +1,796 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elyas Moshirpanahi | Senior Generative AI Engineer</title>
-    <link rel="icon" type="image/gif" href="favicon.gif">
+    <title>Elyas Moshirpanahi | Senior GenAI Engineer</title>
+    
+    <!-- FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;800&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;600;700&family=Audiowide&family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        /* --- RESET & BASE --- */
+        /* --- VARIABLES --- */
         :root {
-            --bg-dark: #050508;
-            --bg-panel: rgba(10, 10, 20, 0.7);
+            --neon-cyan: #00f3ff;
             --neon-pink: #ff00ff;
-            --neon-cyan: #00ffff;
             --neon-purple: #bc13fe;
             --neon-blue: #0055ff;
-            --neon-green: #0aff0a;
-            --sun-gradient: linear-gradient(to bottom, #ffbd00, #ff5500, #ff00ff, #bc13fe);
-            --font-main: 'Inter', sans-serif;
+            --bg-dark: #050510;
             --font-display: 'Orbitron', sans-serif;
             --font-tech: 'Rajdhani', sans-serif;
-            --font-mono: 'Fira Code', monospace;
+            --font-retro: 'Audiowide', cursive;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            color: #ffffff;
-            font-family: var(--font-main);
-            overflow-x: hidden;
-            line-height: 1.6;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-            transition: 0.3s;
-        }
-
-        ul {
-            list-style: none;
-        }
-
-        /* --- BACKGROUND EFFECTS --- */
-        .retro-fog {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 50% 50%, rgba(188, 19, 254, 0.05), transparent 80%);
-            z-index: -1;
-            pointer-events: none;
-            animation: pulseFog 8s infinite alternate;
-        }
-
-        @keyframes pulseFog {
-            0% {
-                opacity: 0.3;
-                transform: scale(1);
-            }
-
-            100% {
-                opacity: 0.6;
-                transform: scale(1.1);
-            }
-        }
-
-        .vhs-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(0deg,
-                    transparent 0px,
-                    rgba(0, 255, 255, 0.03) 1px,
-                    transparent 2px);
-            pointer-events: none;
-            z-index: 998;
-            opacity: 0.3;
-            animation: vhsScan 10s linear infinite;
-        }
-
-        @keyframes vhsScan {
-            from {
-                background-position: 0 0;
-            }
-
-            to {
-                background-position: 0 100vh;
-            }
-        }
-
-        .rain-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAIklEQVQIW2NkQAKrVq36zwjjgzhhYWGMYAEYB8RmROaABADeOQ8CXl/xfgAAAABJRU5ErkJggg==');
-            opacity: 0.05;
-            z-index: 997;
-            animation: rainFall 0.5s linear infinite;
-            pointer-events: none;
-        }
-
-        @keyframes rainFall {
-            from {
-                background-position: 0 0;
-            }
-
-            to {
-                background-position: 20px 40px;
-            }
-        }
-
-        /* --- SCROLLBAR --- */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #000;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--neon-purple);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--neon-pink);
-        }
-
-        /* --- UTILITIES --- */
-        .neon-text-pink {
-            text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink);
-            color: #fff;
-        }
-
-        .neon-text-cyan {
-            text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
-            color: #fff;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            position: relative;
-            z-index: 10;
-        }
-
-        .section-title {
-            font-family: var(--font-display);
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            position: relative;
-            display: inline-block;
-        }
-
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 100%;
-            height: 4px;
-            background: var(--neon-cyan);
-            box-shadow: 0 0 10px var(--neon-cyan);
-            margin-top: 5px;
-            transform: skewX(-20deg);
-        }
-
-        /* --- OPENING BLADES ANIMATION --- */
-        .blade-cover {
-            position: fixed;
-            top: 0;
-            width: 51vw;
+        /* --- RESET --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: var(--bg-dark); 
+            color: white; 
+            font-family: var(--font-tech); 
+            overflow: hidden; 
             height: 100vh;
+            width: 100vw;
+        }
+
+        /* --- LAYERS --- */
+        #canvas-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
+        }
+
+        #ui-layer {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 10;
+            pointer-events: none; /* Pass clicks to canvas if needed, but mainly buttons */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* --- SCREEN EFFECTS --- */
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.15));
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 90;
+            opacity: 0.6;
+        }
+        
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.8) 100%);
+            pointer-events: none;
+            z-index: 80;
+        }
+        
+        /* --- LOADER --- */
+        #loader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: #000;
             z-index: 9999;
-            transition: transform 1.2s cubic-bezier(0.7, 0, 0.3, 1);
-            border-right: 2px solid var(--neon-cyan);
-            box-shadow: 0 0 20px var(--neon-cyan);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease;
+        }
+        
+        .loader-title {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            color: var(--neon-cyan);
+            margin-bottom: 2rem;
+            text-shadow: 0 0 20px var(--neon-cyan);
+            letter-spacing: 4px;
         }
 
-        .blade-left {
-            left: 0;
+        .start-btn {
+            background: transparent;
+            border: 2px solid var(--neon-pink);
+            color: var(--neon-pink);
+            padding: 1.5rem 4rem;
+            font-family: var(--font-display);
+            font-weight: 900;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--neon-pink), inset 0 0 10px var(--neon-pink);
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .start-btn:hover {
+            background: var(--neon-pink);
+            color: #000;
+            box-shadow: 0 0 50px var(--neon-pink);
+            transform: scale(1.05);
         }
 
-        .blade-right {
-            right: 0;
-            border-right: none;
-            border-left: 2px solid var(--neon-pink);
-            box-shadow: 0 0 20px var(--neon-pink);
+        /* --- HEADER & CONTROLS --- */
+        .top-bar {
+            pointer-events: auto;
+            display: flex;
+            justify-content: flex-end;
+            padding: 2rem;
+            gap: 1.5rem;
         }
 
-        body.loaded .blade-left {
-            transform: translateX(-100%);
-        }
-
-        body.loaded .blade-right {
-            transform: translateX(100%);
-        }
-
-        /* --- SOUND TOGGLE --- */
-        #sound-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 10000;
-            background: rgba(0, 0, 0, 0.8);
+        .toggle-btn {
+            background: rgba(0,0,0,0.6);
             border: 1px solid var(--neon-cyan);
             color: var(--neon-cyan);
-            padding: 8px 15px;
-            cursor: pointer;
-            font-family: var(--font-mono);
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 1px;
-            transition: 0.3s;
-            border-radius: 2px;
-        }
-
-        #sound-toggle:hover {
-            background: var(--neon-cyan);
-            color: #000;
-            box-shadow: 0 0 15px var(--neon-cyan);
-        }
-
-        #sound-toggle.muted {
-            border-color: #555;
-            color: #555;
-            background: transparent;
-            box-shadow: none;
-        }
-
-        /* --- HERO SECTION --- */
-        #hero {
-            height: 100vh;
-            width: 100%;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: radial-gradient(circle at center top, #1a0b2e 0%, #000000 70%);
-            perspective: 1000px;
-            /* For 3D elements */
-        }
-
-        /* SCANLINE OVERLAY */
-        .scanline-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            background: repeating-linear-gradient(to bottom,
-                    transparent 0px,
-                    transparent 2px,
-                    rgba(0, 0, 0, 0.3) 3px,
-                    rgba(0, 0, 0, 0.3) 4px);
-            z-index: 999;
-            opacity: 0.3;
-        }
-
-        /* RETRO SUN */
-        .retro-sun {
-            position: absolute;
-            top: 12%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 400px;
-            /* Slightly smaller to make content pop */
-            height: 400px;
-            border-radius: 50%;
-            background: var(--sun-gradient);
-            box-shadow: 0 0 80px rgba(255, 0, 255, 0.5);
-            z-index: 1;
-            overflow: hidden;
-        }
-
-        .retro-sun::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: transparent;
-            border-radius: 50%;
-            /* The horizontal bars that cut through the sun */
-            background: repeating-linear-gradient(to bottom,
-                    transparent 0%,
-                    transparent 60%,
-                    #050508 60%,
-                    #050508 100%);
-            background-size: 100% 40px;
-            /* Adjust for stripe density */
-            animation: sunScroll 4s linear infinite;
-        }
-
-        @keyframes sunScroll {
-            from {
-                background-position: 0 0;
-            }
-
-            to {
-                background-position: 0 40px;
-            }
-        }
-
-        /* MOUNTAINS/CITY SCAPE */
-        .cityscape {
-            position: absolute;
-            bottom: 30%;
-            /* Horizon line */
-            left: 0;
-            width: 100%;
-            height: 300px;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" preserveAspectRatio="none"><path fill="%230a0514" d="M0,300 L0,120 L100,200 L200,80 L300,180 L400,100 L500,160 L600,90 L700,190 L800,110 L900,170 L1000,100 L1000,300 Z"/></svg>');
-            background-repeat: repeat-x;
-            background-size: 1000px 100%;
-            z-index: 2;
-            opacity: 1;
-        }
-
-        .cityscape::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to top, var(--neon-purple) 0%, transparent 20%);
-            z-index: 3;
-            opacity: 0.5;
-        }
-
-        /* GRID FLOOR - ENHANCED */
-        .grid-floor {
-            position: absolute;
-            bottom: -100px;
-            left: -50%;
-            width: 200%;
-            height: 50%;
-            /* Perspective plane */
-            background:
-                linear-gradient(transparent 0%, var(--neon-pink) 2%, transparent 3%),
-                linear-gradient(90deg, transparent 0%, rgba(0, 255, 255, 0.4) 1%, transparent 2%);
-            background-size: 100% 40px, 80px 100%;
-            transform: perspective(500px) rotateX(60deg);
-            z-index: 2;
-            box-shadow: 0 0 80px rgba(255, 0, 255, 0.4) inset;
-            animation: gridMove 0.4s linear infinite;
-        }
-
-        @keyframes gridMove {
-            from {
-                background-position: 0 0;
-            }
-
-            to {
-                background-position: 0 40px;
-            }
-        }
-
-        /* ROAD */
-        .road {
-            position: absolute;
-            bottom: -100px;
-            left: 50%;
-            transform: translateX(-50%) perspective(500px) rotateX(60deg);
-            width: 300px;
-            /* Road Width */
-            height: 50%;
-            background: linear-gradient(to bottom, #000 0%, #151515 100%);
-            z-index: 3;
-            box-shadow: 0 0 50px #000;
-            border-left: 2px solid var(--neon-pink);
-            border-right: 2px solid var(--neon-pink);
-        }
-
-        /* Road Markings */
-        .road::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 10px;
-            height: 100%;
-            background: repeating-linear-gradient(to bottom,
-                    transparent 0%,
-                    transparent 40%,
-                    var(--neon-cyan) 40%,
-                    var(--neon-cyan) 80%);
-            background-size: 100% 100px;
-            animation: roadLineScroll 0.4s linear infinite;
-            box-shadow: 0 0 10px var(--neon-cyan);
-        }
-
-        @keyframes roadLineScroll {
-            from {
-                background-position: 0 0;
-            }
-
-            to {
-                background-position: 0 100px;
-            }
-        }
-
-
-        /* --- PALM TREES ALONG ROAD EDGES --- */
-        .palm-system {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            overflow: hidden;
-            z-index: 4;
-            /* Behind text, above road */
-        }
-
-        .moving-palm {
-            position: absolute;
-            width: 120px;
-            height: 200px;
-            transform-origin: bottom center;
-            will-change: transform, bottom;
-        }
-
-        .palm-svg {
-            width: 100%;
-            height: 100%;
-            filter: drop-shadow(0 0 10px rgba(188, 19, 254, 0.7));
-        }
-
-        /*
-          SYNCHRONIZED WITH ROAD STRIPES:
-          - Road stripes: 0.4s cycle, moving 100px
-          - Palm animation: 2s total (5 stripe cycles)
-          - Road width: 300px centered
-          - Left palms: just outside left border
-          - Right palms: just outside right border (FIXED SYMMETRY)
-          - Reduced to 5 palms per side for cleaner look
-        */
-
-        /* LEFT SIDE PALMS - Just outside left road border */
-        @keyframes palmLeft {
-            0% {
-                bottom: 30%;
-                /* Horizon */
-                left: calc(50% - 165px);
-                /* Just left of road */
-                transform: scale(0.08);
-                opacity: 0;
-            }
-
-            8% {
-                opacity: 1;
-            }
-
-            100% {
-                bottom: -28%;
-                /* Off screen bottom */
-                left: calc(50% - 420px);
-                /* Far left */
-                transform: scale(4.5);
-                opacity: 0.85;
-            }
-        }
-
-        /* RIGHT SIDE PALMS - Just outside right road border (FIXED) */
-        @keyframes palmRight {
-            0% {
-                bottom: 30%;
-                /* Horizon */
-                left: calc(50% + 45px);
-                /* Just right of road - ADJUSTED */
-                transform: scale(0.08);
-                opacity: 0;
-            }
-
-            8% {
-                opacity: 1;
-            }
-
-            100% {
-                bottom: -28%;
-                /* Off screen bottom */
-                left: calc(50% + 300px);
-                /* Far right - ADJUSTED */
-                transform: scale(4.5);
-                opacity: 0.85;
-            }
-        }
-
-
-        /* Synced with road stripes - 2s duration (5 stripe cycles of 0.4s each) */
-        .move-left {
-            animation: palmLeft 2s linear infinite;
-        }
-
-        .move-right {
-            animation: palmRight 2s linear infinite;
-        }
-
-        /* Reduced to 5 palms per side, synced with stripe timing */
-        .d1 {
-            animation-delay: 0s;
-        }
-
-        .d2 {
-            animation-delay: 0.4s;
-        }
-
-        /* Matches 1 stripe cycle */
-        .d3 {
-            animation-delay: 0.8s;
-        }
-
-        /* Matches 2 stripe cycles */
-        .d4 {
-            animation-delay: 1.2s;
-        }
-
-        /* Matches 3 stripe cycles */
-        .d5 {
-            animation-delay: 1.6s;
-        }
-
-        /* Matches 4 stripe cycles */
-
-
-
-        /* --- UPGRADED TRON STATION --- */
-        .tron-station {
-            position: absolute;
-            bottom: 30%;
-            /* Horizon Level - Must match palm spawn Y */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 140px;
-            height: 120px;
-            z-index: 4;
-            perspective: 400px;
-            pointer-events: none;
-        }
-
-        .station-svg {
-            width: 100%;
-            height: 100%;
-            overflow: visible;
-        }
-
-        /* Animated Glows */
-        .st-ring-pulse {
-            transform-origin: center;
-            animation: ringPulse 4s ease-in-out infinite;
-        }
-
-        .st-core-pulse {
-            animation: coreGlow 3s ease-in-out infinite alternate;
-        }
-
-        @keyframes ringPulse {
-
-            0%,
-            100% {
-                opacity: 0.6;
-                transform: scale(1);
-                stroke-width: 1;
-            }
-
-            50% {
-                opacity: 1;
-                transform: scale(1.05);
-                stroke-width: 2;
-            }
-        }
-
-        @keyframes coreGlow {
-            from {
-                fill: #00ffff;
-                filter: drop-shadow(0 0 5px #00ffff);
-            }
-
-            to {
-                fill: #ffffff;
-                filter: drop-shadow(0 0 15px #00ffff);
-            }
-        }
-
-        /* BEAM CONTAINER & ANIMATION */
-        .beam-container {
-            position: absolute;
-            bottom: 35px;
-            /* Aligned with station core top */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 10px;
-            height: 100vh;
-            /* Tall enough to go off screen */
-            pointer-events: none;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            /* Grow from bottom */
-            z-index: 1;
-            /* Behind station front structure */
-        }
-
-        .beam-core {
-            width: 100%;
-            height: 0%;
-            /* Starts hidden */
-            background: linear-gradient(to right, rgba(255, 255, 255, 0.8) 20%, #fff 50%, rgba(255, 255, 255, 0.8) 80%);
-            box-shadow:
-                0 0 10px var(--neon-cyan),
-                0 0 30px var(--neon-blue),
-                0 0 60px var(--neon-blue);
-            border-radius: 4px 4px 0 0;
-            opacity: 0;
-        }
-
-        /* Active Beam Class - Toggled via JS */
-        .beam-active .beam-core {
-            animation: beamFireSequence 3s ease-out forwards;
-        }
-
-        /* Enhanced Beam Sequence */
-        @keyframes beamFireSequence {
-            0% {
-                height: 0%;
-                opacity: 0;
-                width: 2px;
-            }
-
-            /* Charge */
-            10% {
-                height: 5%;
-                opacity: 1;
-                width: 4px;
-                box-shadow: 0 0 20px #fff;
-            }
-
-            /* BLAST */
-            15% {
-                height: 120%;
-                opacity: 1;
-                width: 12px;
-                box-shadow: 0 0 50px var(--neon-cyan), 0 0 80px var(--neon-blue);
-            }
-
-            /* Flicker & Stabilize */
-            20% {
-                width: 10px;
-                opacity: 0.9;
-            }
-
-            25% {
-                width: 12px;
-                opacity: 1;
-            }
-
-            30% {
-                width: 8px;
-                opacity: 0.8;
-            }
-
-            /* Fade Out */
-            60% {
-                height: 120%;
-                opacity: 0;
-                width: 1px;
-            }
-
-            100% {
-                height: 0%;
-                opacity: 0;
-            }
-        }
-
-        /* Station Reaction during Beam */
-        .station-active .st-core-pulse {
-            animation: coreOverload 3s ease-out forwards;
-        }
-
-        @keyframes coreOverload {
-            0% {
-                fill: #fff;
-                filter: drop-shadow(0 0 10px #fff);
-            }
-
-            10% {
-                fill: #fff;
-                filter: drop-shadow(0 0 50px #00ffff);
-                transform: scale(1.2);
-            }
-
-            100% {
-                fill: #00ffff;
-                filter: drop-shadow(0 0 5px #00ffff);
-                transform: scale(1);
-            }
-        }
-
-
-        /* ENHANCED GRID & HORIZON */
-        .horizon-glow {
-            position: absolute;
-            bottom: 30%;
-            left: 0;
-            width: 100%;
-            height: 50px;
-            background: linear-gradient(to top, var(--neon-pink), transparent);
-            z-index: 4;
-            opacity: 0.6;
-            filter: blur(20px);
-        }
-
-
-        /* --- POLISHED CONTENT LAYER --- */
-        .hero-content {
-            position: absolute;
-            top: 13%;
-            /* Adjusted for better centering */
-            width: 100%;
-            text-align: center;
-            z-index: 20;
-            padding: 0 20px;
-        }
-
-        .kicker {
-            font-family: var(--font-tech);
-            color: var(--neon-cyan);
-            letter-spacing: 6px;
-            font-size: 1rem;
-            margin-bottom: 0.8rem;
-            text-shadow: 0 0 10px var(--neon-cyan);
-            opacity: 0;
-            animation: fadeIn 1s ease 1.5s forwards;
-        }
-
-        .main-title {
+            padding: 0.5rem 1.2rem;
             font-family: var(--font-display);
-            font-size: clamp(3.5rem, 9vw, 6.5rem);
-            /* Slightly tighter clamp */
-            font-weight: 900;
-            line-height: 1.1;
-            color: #fff;
-            text-shadow:
-                4px 4px 0px var(--neon-purple),
-                -2px -2px 0px var(--neon-cyan);
-            margin-bottom: 0.5rem;
-            /* Closer to subtitle */
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            backdrop-filter: blur(5px);
+            transition: 0.3s;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+        }
+
+        .toggle-btn:hover, .toggle-btn.active {
+            background: rgba(0, 243, 255, 0.2);
+            box-shadow: 0 0 15px var(--neon-cyan);
+            text-shadow: 0 0 5px var(--neon-cyan);
+        }
+
+        /* --- HERO TEXT --- */
+        .hero-section {
+            pointer-events: none;
+            text-align: center;
+            margin-top: 5vh;
             position: relative;
-            display: inline-block;
-            opacity: 0;
-            animation: glitchReveal 0.5s ease 1.8s forwards;
+            z-index: 50;
         }
 
-        .subtitle {
-            font-family: var(--font-main);
-            font-size: clamp(1.2rem, 4vw, 1.8rem);
-            color: #e0e0e0;
-            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-            max-width: 700px;
-            margin: 0 auto 2.5rem auto;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(4px);
-            padding: 6px 20px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 50px;
-            /* Pill shape for modern look */
-            opacity: 0;
-            animation: slideUp 1s ease 2s forwards;
-        }
-
-        .cta-group {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            /* Cleaner separation */
-            flex-wrap: wrap;
-            opacity: 0;
-            animation: slideUp 1s ease 2.2s forwards;
-        }
-
-        .btn {
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid var(--neon-cyan);
-            padding: 14px 36px;
-            color: #fff;
-            font-family: var(--font-tech);
-            font-weight: 700;
+        h1 {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 2px;
-            backdrop-filter: blur(8px);
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2), 0 4px 15px rgba(0, 0, 0, 0.4);
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            font-size: 0.9rem;
-            border-radius: 2px;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(0, 255, 255, 0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .btn:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        .btn:hover {
-            background: var(--neon-cyan);
-            color: #000;
-            box-shadow: 0 0 35px var(--neon-cyan), 0 8px 25px rgba(0, 255, 255, 0.3);
-            transform: translateY(-3px);
-            border-color: var(--neon-cyan);
-        }
-
-        .btn.primary {
-            border-color: var(--neon-pink);
-            box-shadow: 0 0 15px rgba(255, 0, 255, 0.25), 0 4px 15px rgba(0, 0, 0, 0.4);
-        }
-
-        .btn.primary::before {
-            background: rgba(255, 0, 255, 0.3);
-        }
-
-        .btn.primary:hover {
-            background: var(--neon-pink);
+            line-height: 1.1;
+            margin-bottom: 0.5rem;
             color: #fff;
-            box-shadow: 0 0 45px var(--neon-pink), 0 8px 25px rgba(255, 0, 255, 0.3);
-            border-color: var(--neon-pink);
+            text-shadow: 
+                2px 2px 0px var(--neon-purple),
+                -2px -2px 0px var(--neon-cyan),
+                0 0 30px rgba(0, 243, 255, 0.5);
+            animation: glitch 3s infinite alternate;
         }
 
-        /* DELOREAN CAR (REAR VIEW - RESIZED) */
-        .car-container {
-            position: absolute;
-            bottom: 5%;
-            /* Lower on the road */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 320px;
-            /* SMALLER SIZE */
-            height: 160px;
-            z-index: 15;
-            opacity: 0;
-            animation:
-                driveIn 2s ease-out 1s forwards,
-                carBounce 0.5s ease-in-out infinite alternate;
+        h2 {
+            font-family: var(--font-retro);
+            font-size: 1.2rem;
+            color: var(--neon-pink);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 10px var(--neon-pink);
+            background: rgba(0,0,0,0.5);
+            display: inline-block;
+            padding: 0.5rem 2rem;
+            border: 1px solid rgba(255,0,255,0.3);
+            border-radius: 4px;
+            backdrop-filter: blur(4px);
         }
 
-        .car-svg {
-            width: 100%;
-            height: 100%;
-            filter: drop-shadow(0 0 25px rgba(0, 255, 255, 0.3));
+        @keyframes glitch {
+            0% { transform: skew(0deg); }
+            20% { transform: skew(-1deg); }
+            40% { transform: skew(1deg); }
+            60% { transform: skew(0deg); }
+            80% { transform: skew(-0.5deg); }
+            100% { transform: skew(0.5deg); }
         }
 
-        .car-reflection {
-            position: absolute;
-            bottom: -30px;
-            left: 0;
-            width: 100%;
-            height: 50px;
-            background: radial-gradient(ellipse at center, var(--neon-pink) 0%, transparent 70%);
-            opacity: 0.8;
-            filter: blur(15px);
-            transform: scaleY(0.5);
-            animation: reflectionFlicker 0.08s infinite alternate;
+        /* --- ACTION BUTTONS --- */
+        .nav-grid {
+            pointer-events: auto;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
         }
 
-        @keyframes driveIn {
-            0% {
-                transform: translateX(-50%) scale(0.4);
-                opacity: 0;
-                filter: blur(15px);
-                bottom: 15%;
-            }
-
-            100% {
-                transform: translateX(-50%) scale(1);
-                opacity: 1;
-                filter: blur(0);
-                bottom: 5%;
-            }
-        }
-
-        @keyframes carBounce {
-            from {
-                transform: translateX(-50%) translateY(0);
-            }
-
-            to {
-                transform: translateX(-50%) translateY(1px);
-            }
-        }
-
-        @keyframes reflectionFlicker {
-            from {
-                opacity: 0.6;
-                transform: scaleY(0.5) scaleX(0.99);
-            }
-
-            to {
-                opacity: 0.8;
-                transform: scaleY(0.5) scaleX(1.01);
-            }
-        }
-
-        /* --- SECTIONS GENERIC --- */
-        section {
-            padding: 80px 0;
+        .nav-btn {
             position: relative;
-            z-index: 10;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1rem 2.5rem;
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 700;
+            color: white;
+            background: rgba(0,0,0,0.7);
+            border: 2px solid;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+            backdrop-filter: blur(10px);
         }
 
-        /* --- RETRO CONTAINER VARIANTS --- */
+        .btn-cyan { border-color: var(--neon-cyan); color: var(--neon-cyan); }
+        .btn-pink { border-color: var(--neon-pink); color: var(--neon-pink); }
+        .btn-purple { border-color: var(--neon-purple); color: var(--neon-purple); }
 
-        /* Variant A: Neon Frame Card */
-        .neon-frame-card {
-            background: rgba(5, 5, 8, 0.95);
-            border: 1px solid var(--neon-cyan);
-            box-shadow: 0 0 8px rgba(0, 255, 255, 0.25), inset 0 0 25px rgba(0, 255, 255, 0.06), 0 4px 15px rgba(0, 0, 0, 0.3);
-            position: relative;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        .neon-frame-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
-            transition: left 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            box-shadow: 0 0 10px var(--neon-cyan);
-        }
-
-        .neon-frame-card:hover {
-            box-shadow: 0 0 20px var(--neon-cyan), inset 0 0 35px rgba(0, 255, 255, 0.12), 0 8px 25px rgba(0, 0, 0, 0.4);
-            transform: translateY(-4px);
-            border-color: rgba(0, 255, 255, 0.8);
-        }
-
-        .neon-frame-card:hover::before {
-            left: 100%;
-        }
-
-        /* Variant B: Glass-Neon Panel */
-        .glass-neon-panel {
-            background: rgba(20, 20, 35, 0.5);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 0, 255, 0.35);
-            border-radius: 6px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2), 0 0 10px rgba(255, 0, 255, 0.1);
-            position: relative;
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        .glass-neon-panel:hover {
-            border-color: var(--neon-pink);
-            box-shadow: 0 0 25px rgba(255, 0, 255, 0.3), 0 8px 35px rgba(0, 0, 0, 0.3);
-            transform: translateY(-2px) scale(1.02);
-            background: rgba(25, 20, 40, 0.6);
-        }
-
-        /* Variant C: Vaporwave Gradient Block */
-        .vaporwave-block {
-            background: linear-gradient(135deg, rgba(40, 10, 60, 0.8), rgba(10, 5, 20, 0.95));
-            border-left: 4px solid var(--neon-purple);
-            padding: 20px;
-            position: relative;
-            transition: 0.3s;
-        }
-
-        .vaporwave-block::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 30px;
-            height: 30px;
-            background: linear-gradient(-45deg, var(--neon-purple) 1px, transparent 1px);
-            background-size: 4px 4px;
-            opacity: 0.5;
-        }
-
-        .vaporwave-block:hover {
-            transform: translateX(5px);
-            border-left-color: var(--neon-pink);
-            box-shadow: -5px 0 15px rgba(188, 19, 254, 0.2);
-        }
-
-        /* Variant D: Holographic Grid Card */
-        .holo-grid-card {
-            background-color: #050508;
-            background-image:
-                linear-gradient(rgba(0, 255, 255, 0.06) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 255, 0.06) 1px, transparent 1px);
-            background-size: 20px 20px;
-            border: 1px solid rgba(0, 255, 255, 0.15);
-            position: relative;
-            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .holo-grid-card:hover {
-            border-color: var(--neon-green);
-            background-size: 22px 22px;
-            box-shadow: 0 0 25px rgba(10, 255, 10, 0.25), 0 12px 35px rgba(0, 0, 0, 0.5);
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.1);
             transform: translateY(-3px);
-            background-color: #080810;
+            box-shadow: 0 0 20px currentColor;
+            text-shadow: 0 0 8px currentColor;
         }
 
-        /* --- ABOUT SECTION --- */
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 40px;
+        .nav-btn:active { transform: scale(0.98); }
+
+        /* --- SOCIAL FOOTER --- */
+        .social-bar {
+            pointer-events: auto;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
         }
 
-        @media(min-width: 768px) {
-            .about-grid {
-                grid-template-columns: 2fr 1fr;
-            }
-        }
-
-        .about-text p {
-            margin-bottom: 1.5rem;
-            font-size: 1.1rem;
-            color: #ddd;
-        }
-
-        /* REPLACED WITH Variant B: Glass-Neon Panel style application */
-        .stat-card {
-            /* Inherits from glass-neon-panel via HTML class, specific overrides here */
-            padding: 20px;
-            margin-bottom: 15px;
+        .social-icon {
+            font-size: 1.8rem;
+            color: rgba(255,255,255,0.5);
+            transition: 0.3s;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            text-align: center;
+            text-decoration: none;
         }
+        
+        .social-icon:hover { transform: scale(1.2) translateY(-5px); color: white; }
+        
+        .soc-li:hover { color: #0077b5; text-shadow: 0 0 20px #0077b5; }
+        .soc-gh:hover { color: #ffffff; text-shadow: 0 0 20px #ffffff; }
+        .soc-em:hover { color: var(--neon-purple); text-shadow: 0 0 20px var(--neon-purple); }
+        .soc-ig:hover { color: #E1306C; text-shadow: 0 0 20px #E1306C; }
+        .soc-tg:hover { color: #0088cc; text-shadow: 0 0 20px #0088cc; }
 
-        .stat-num {
-            font-family: var(--font-display);
-            font-size: 2.5rem;
-            color: var(--neon-pink);
-            text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
-        }
-
-        .stat-label {
-            font-family: var(--font-tech);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--neon-cyan);
-        }
-
-        /* --- EXPERIENCE --- */
-        .timeline {
-            border-left: 2px solid rgba(255, 255, 255, 0.1);
-            margin-left: 20px;
-            padding-left: 30px;
-        }
-
-        .timeline-item {
-            position: relative;
-            margin-bottom: 50px;
-            /* Applied Vaporwave Block style via HTML, but refined here */
-            background: linear-gradient(135deg, rgba(40, 10, 60, 0.6), rgba(10, 5, 20, 0.8));
-            border-left: 3px solid var(--neon-purple);
-            padding: 25px;
-            border-radius: 0 10px 10px 0;
-            transition: 0.3s;
-        }
-
-        .timeline-item:hover {
-            border-left-color: var(--neon-cyan);
-            box-shadow: 0 0 20px rgba(188, 19, 254, 0.1);
-            transform: translateX(5px);
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -44px;
-            /* Adjusted for padding */
-            top: 25px;
-            width: 14px;
-            height: 14px;
-            background: var(--bg-dark);
-            border: 2px solid var(--neon-cyan);
-            box-shadow: 0 0 10px var(--neon-cyan);
-            border-radius: 50%;
-            z-index: 2;
-        }
-
-        .role {
-            font-family: var(--font-display);
-            font-size: 1.4rem;
-            color: #fff;
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-        }
-
-        .company {
-            font-family: var(--font-tech);
-            color: var(--neon-pink);
-            font-size: 1.1rem;
-            margin-bottom: 10px;
-            display: block;
-            text-shadow: 0 0 5px rgba(255, 0, 255, 0.3);
-        }
-
-        .date {
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-            color: #888;
-            margin-bottom: 15px;
-            display: block;
-        }
-
-        .timeline-item ul {
-            margin-left: 15px;
-        }
-
-        .timeline-item li {
-            margin-bottom: 5px;
-            color: #ccc;
-            list-style-type: none;
-            position: relative;
-            padding-left: 15px;
-        }
-
-        .timeline-item li::before {
-            content: '>';
-            position: absolute;
-            left: 0;
-            color: var(--neon-cyan);
-            font-family: var(--font-mono);
-        }
-
-        /* --- SKILLS --- */
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        /* Variant A: Neon Frame Card applied via class, specific refinements */
-        .skill-category {
-            padding: 25px;
-        }
-
-        /* Overriding default gradient top border from old css */
-        .skill-category::before {
-            display: none;
-        }
-
-        .skill-title {
-            color: var(--neon-cyan);
-            margin-bottom: 15px;
-            font-family: var(--font-tech);
-            text-transform: uppercase;
-            font-size: 1.2rem;
-            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
-            padding-bottom: 10px;
-        }
-
-        .skill-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .tag {
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-            padding: 8px 14px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            color: #bbb;
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%);
-            cursor: default;
-        }
-
-        .tag:hover {
-            border-color: var(--neon-pink);
-            color: #fff;
-            box-shadow: 0 0 15px rgba(255, 0, 255, 0.4), 0 0 5px var(--neon-pink);
-            background: rgba(255, 0, 255, 0.15);
-            transform: translateY(-2px) scale(1.05);
-        }
-
-        /* --- PROJECTS --- */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-
-        /* Variant D: Holo Grid Card applied via class */
-        .project-card {
-            padding: 25px;
-            position: relative;
-            transition: 0.3s;
-            overflow: hidden;
-            cursor: pointer;
-            height: 240px;
-            /* collapsed height */
-            display: flex;
-            flex-direction: column;
-        }
-
-        .project-card.expanded {
-            height: auto;
-            border-color: var(--neon-green);
-            box-shadow: 0 0 30px rgba(10, 255, 10, 0.2);
-            background-color: #080810;
-        }
-
-        .p-title {
-            font-family: var(--font-display);
-            color: #fff;
-            font-size: 1.4rem;
-            margin-bottom: 5px;
-            text-shadow: 2px 2px 0px #000;
-        }
-
-        .p-role {
-            font-family: var(--font-mono);
-            color: var(--neon-cyan);
-            font-size: 0.8rem;
-            margin-bottom: 15px;
-            letter-spacing: 1px;
-        }
-
-        .p-desc {
-            color: #ccc;
-            font-size: 1rem;
-            margin-bottom: 15px;
-            flex-grow: 1;
-        }
-
-        .p-hidden {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.5s;
-            border-top: 1px dashed rgba(255, 255, 255, 0.2);
-            padding-top: 15px;
-            margin-top: 15px;
-        }
-
-        .project-card.expanded .p-hidden {
-            display: block;
-            opacity: 1;
-        }
-
-        .expand-hint {
-            position: absolute;
-            bottom: 15px;
-            right: 15px;
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            color: var(--neon-pink);
-            animation: blink 2s infinite;
-        }
-
-        @keyframes blink {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.5;
-            }
-        }
-
-        .project-card.expanded .expand-hint {
-            display: none;
-        }
-
-        /* --- TERMINAL --- */
-        #terminal-section {
-            background: radial-gradient(circle at center, #111, #050505);
-            position: relative;
-        }
-
-        .terminal-window {
-            background: rgba(5, 5, 5, 0.95);
-            border: 1px solid #333;
-            border-radius: 5px;
-            box-shadow: 0 0 30px rgba(0, 255, 0, 0.1);
-            max-width: 800px;
-            margin: 0 auto;
-            overflow: hidden;
-            font-family: var(--font-mono);
-            position: relative;
-        }
-
-        .terminal-window::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(0deg,
-                    transparent 0px,
-                    rgba(0, 255, 0, 0.03) 1px,
-                    transparent 2px);
-            pointer-events: none;
-        }
-
-        .terminal-header {
-            background: #151515;
-            padding: 10px 15px;
-            display: flex;
-            gap: 8px;
-            border-bottom: 1px solid #333;
-        }
-
-        .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            box-shadow: 0 0 5px currentColor;
-        }
-
-        .red {
-            background: #ff5f56;
-            color: #ff5f56;
-        }
-
-        .yellow {
-            background: #ffbd2e;
-            color: #ffbd2e;
-        }
-
-        .green {
-            background: #27c93f;
-            color: #27c93f;
-        }
-
-        .terminal-title {
-            margin-left: auto;
-            margin-right: auto;
-            color: #666;
-            font-size: 0.8rem;
-        }
-
-        .terminal-body {
-            padding: 20px;
-            height: 400px;
-            overflow-y: auto;
-            color: #33ff00;
-            text-shadow: 0 0 4px rgba(51, 255, 0, 0.6);
-            font-size: 0.9rem;
-        }
-
-        .output-line {
-            margin-bottom: 5px;
-            white-space: pre-wrap;
-        }
-
-        .input-line {
-            display: flex;
-        }
-
-        .prompt {
-            color: var(--neon-pink);
-            margin-right: 10px;
-        }
-
-        .cmd-input {
-            background: transparent;
-            border: none;
-            color: #33ff00;
-            font-family: var(--font-mono);
-            flex-grow: 1;
-            outline: none;
-            text-shadow: 0 0 2px #33ff00;
-        }
-
-        /* --- FOOTER --- */
-        footer {
-            text-align: center;
-            padding: 50px 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-top: 20px;
-        }
-
-        .social-links a {
-            font-size: 2rem;
-            color: #888;
-            transition: 0.3s;
-        }
-
-        .social-links a:hover {
-            color: var(--neon-cyan);
-            text-shadow: 0 0 15px var(--neon-cyan);
-            transform: scale(1.1);
-        }
-
-        /* --- ANIMATIONS --- */
-        @keyframes glitchReveal {
-            0% {
-                opacity: 0;
-                transform: translateX(-10px);
-                clip-path: polygon(0 0, 100% 0, 100% 10%, 0 10%);
-            }
-
-            20% {
-                opacity: 1;
-                transform: translateX(10px);
-                clip-path: polygon(0 0, 100% 0, 100% 80%, 0 80%);
-            }
-
-            40% {
-                transform: translateX(-5px);
-                clip-path: polygon(0 20%, 100% 20%, 100% 100%, 0 100%);
-            }
-
-            60% {
-                transform: translateX(5px);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translateX(0);
-                clip-path: none;
-            }
-        }
-
-        @keyframes slideUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-            }
-        }
-
-        /* RESPONSIVE */
-        @media(max-width: 768px) {
-            .blade-cover {
-                display: none;
-            }
-
-            /* Disable heavy blade anim on mobile for perf */
-            .main-title {
-                font-size: 2.5rem;
-            }
-
-            .car-container {
-                width: 250px;
-                bottom: 15%;
-            }
-        }
     </style>
 </head>
-
 <body>
 
-    <!-- SVG SYMBOLS DEFINITION (Hidden) -->
-    <svg style="display: none;">
-        <defs>
-            <linearGradient id="palm-trunk-grad" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stop-color="#000" />
-                <stop offset="50%" stop-color="#1a0b2e" />
-                <stop offset="100%" stop-color="#000" />
-            </linearGradient>
-            <filter id="palm-glow">
-                <feGaussianBlur stdDeviation="2" result="coloredBlur" />
-                <feMerge>
-                    <feMergeNode in="coloredBlur" />
-                    <feMergeNode in="SourceGraphic" />
-                </feMerge>
-            </filter>
-            <symbol id="palm-icon" viewBox="0 0 200 300">
-                <!-- Trunk (Segmented) -->
-                <path d="M95,300 L105,300 L100,50 Z" fill="url(#palm-trunk-grad)" stroke="none" />
-                <g stroke="#bc13fe" stroke-width="1" fill="none" opacity="0.5">
-                    <path d="M96,280 L104,280" />
-                    <path d="M96.5,260 L103.5,260" />
-                    <path d="M97,240 L103,240" />
-                    <path d="M97.5,220 L102.5,220" />
-                    <path d="M98,200 L102,200" />
-                    <path d="M98.5,180 L101.5,180" />
-                    <path d="M99,160 L101,160" />
-                    <path d="M99.5,140 L100.5,140" />
-                </g>
+    <!-- AUDIO SYSTEM -->
+    <audio id="bg-music" loop>
+        <source src="music/RETRO1.m4a" type="audio/mp4">
+    </audio>
+    <audio id="sfx-hover">
+        <source src="sounds/pulse_sound_try1-89547.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sfx-beam">
+        <source src="sounds/science-fiction-effect-011-305473.mp3" type="audio/mpeg">
+    </audio>
 
-                <!-- Leaves (Sharp, Angular, Cyan/Magenta Edges) -->
-                <g filter="url(#palm-glow)">
-                    <!-- Left Set -->
-                    <path d="M100,50 Q60,20 40,80" fill="none" stroke="#00ffff" stroke-width="2" />
-                    <path d="M100,50 Q60,20 40,80 L50,85 L100,55 Z" fill="#000" opacity="0.8" />
+    <!-- LOADING SCREEN -->
+    <div id="loader">
+        <div class="loader-title">SYSTEM BOOT SEQUENCE</div>
+        <button class="start-btn" id="start-btn">INITIALIZE</button>
+    </div>
 
-                    <path d="M100,50 Q50,0 20,30" fill="none" stroke="#ff00ff" stroke-width="2" />
-                    <path d="M100,50 Q50,0 20,30 L28,38 L100,55 Z" fill="#000" opacity="0.8" />
+    <!-- OVERLAYS -->
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
 
-                    <path d="M100,50 Q70,-20 30,0" fill="none" stroke="#00ffff" stroke-width="2" />
-                    <path d="M100,50 Q70,-20 30,0 L40,10 L100,55 Z" fill="#000" opacity="0.8" />
+    <!-- CANVAS -->
+    <div id="canvas-container"></div>
 
-                    <!-- Right Set -->
-                    <path d="M100,50 Q140,20 160,80" fill="none" stroke="#ff00ff" stroke-width="2" />
-                    <path d="M100,50 Q140,20 160,80 L150,85 L100,55 Z" fill="#000" opacity="0.8" />
-
-                    <path d="M100,50 Q150,0 180,30" fill="none" stroke="#00ffff" stroke-width="2" />
-                    <path d="M100,50 Q150,0 180,30 L172,38 L100,55 Z" fill="#000" opacity="0.8" />
-
-                    <path d="M100,50 Q130,-20 170,0" fill="none" stroke="#ff00ff" stroke-width="2" />
-                    <path d="M100,50 Q130,-20 170,0 L160,10 L100,55 Z" fill="#000" opacity="0.8" />
-
-                    <!-- Top -->
-                    <path d="M100,50 Q100,-30 80,-10" fill="none" stroke="#00ffff" stroke-width="2" />
-                    <path d="M100,50 Q100,-30 120,-10" fill="none" stroke="#ff00ff" stroke-width="2" />
-                </g>
-            </symbol>
-        </defs>
-    </svg>
-
-    <!-- SOUND TOGGLE -->
-    <button id="sound-toggle">Sound: ON</button>
-
-    <!-- OPENING BLADES -->
-    <div class="blade-cover blade-left"></div>
-    <div class="blade-cover blade-right"></div>
-
-    <!-- RETRO BACKGROUND EFFECTS -->
-    <div class="retro-fog"></div>
-    <div class="vhs-overlay"></div>
-    <div class="rain-overlay"></div>
-
-    <!-- HERO SECTION -->
-    <header id="hero">
-        <div class="scanline-overlay"></div>
-        <div class="rain"></div>
-        <div class="retro-sun"></div>
-        <div class="cityscape"></div>
-        <div class="horizon-glow"></div>
-
-        <!-- UPGRADED TRON STATION -->
-        <div class="tron-station" id="tron-station">
-            <!-- Beam Container -->
-            <div class="beam-container" id="beam-container">
-                <div class="beam-core"></div>
-            </div>
-
-            <!-- High Detail SVG Structure -->
-            <svg class="station-svg" viewBox="0 0 200 150" preserveAspectRatio="xMidYBottom">
-                <defs>
-                    <linearGradient id="metal-grad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#0a101a" />
-                        <stop offset="50%" stop-color="#203040" />
-                        <stop offset="100%" stop-color="#050810" />
-                    </linearGradient>
-                    <linearGradient id="cyan-grad" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#00ffff" />
-                        <stop offset="100%" stop-color="#0055ff" />
-                    </linearGradient>
-                    <filter id="glow-s" height="300%" width="300%" x="-100%" y="-100%">
-                        <feGaussianBlur stdDeviation="2" result="coloredBlur" />
-                        <feMerge>
-                            <feMergeNode in="coloredBlur" />
-                            <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                    </filter>
-                    <filter id="glow-m" height="300%" width="300%" x="-100%" y="-100%">
-                        <feGaussianBlur stdDeviation="4" result="coloredBlur" />
-                        <feMerge>
-                            <feMergeNode in="coloredBlur" />
-                            <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                    </filter>
-                </defs>
-
-                <!-- Base Platform Rings (Perspective Flattened) -->
-                <g transform="translate(100, 130) scale(1, 0.25)">
-                    <!-- Outer Ring -->
-                    <circle cx="0" cy="0" r="80" fill="none" stroke="#00ffff" stroke-width="2" opacity="0.3"
-                        class="st-ring-pulse" />
-                    <circle cx="0" cy="0" r="70" fill="none" stroke="#ff00ff" stroke-width="1" opacity="0.2" />
-                    <!-- Mid Ring -->
-                    <circle cx="0" cy="0" r="50" fill="rgba(0, 255, 255, 0.1)" stroke="#00ffff" stroke-width="4"
-                        opacity="0.5" class="st-ring-pulse" style="animation-delay: 1s;" />
-                    <!-- Inner Core Base -->
-                    <circle cx="0" cy="0" r="20" fill="#000" stroke="#00ffff" stroke-width="2" filter="url(#glow-s)" />
-                </g>
-
-                <!-- Main Gateway Structure -->
-                <g transform="translate(100, 130)" filter="url(#glow-s)">
-                    <!-- Left Pylon -->
-                    <path d="M-60,0 Q-50,-80 -20,-100 L-10,-100 Q-30,-80 -40,0 Z" fill="url(#metal-grad)"
-                        stroke="#00ffff" stroke-width="1" opacity="0.9" />
-                    <!-- Right Pylon -->
-                    <path d="M60,0 Q50,-80 20,-100 L10,-100 Q30,-80 40,0 Z" fill="url(#metal-grad)" stroke="#00ffff"
-                        stroke-width="1" opacity="0.9" />
-
-                    <!-- Connecting Arcs / Energy Veins -->
-                    <path d="M-20,-100 Q0,-90 20,-100" fill="none" stroke="#ff00ff" stroke-width="2" opacity="0.8" />
-                    <path d="M-45,-20 L-20,-20" fill="none" stroke="#00ffff" stroke-width="1" opacity="0.5" />
-                    <path d="M45,-20 L20,-20" fill="none" stroke="#00ffff" stroke-width="1" opacity="0.5" />
-                </g>
-
-                <!-- Central Core (Reactor) -->
-                <g transform="translate(100, 125)">
-                    <rect x="-10" y="-30" width="20" height="30" fill="#001122" stroke="none" />
-                    <ellipse cx="0" cy="0" rx="10" ry="3" fill="#00ffff" opacity="0.5" />
-                    <!-- Glowing Heart -->
-                    <circle cx="0" cy="-15" r="6" fill="#00ffff" class="st-core-pulse" />
-                    <!-- Side Vents -->
-                    <rect x="-14" y="-25" width="4" height="20" fill="#00ffff" opacity="0.3" />
-                    <rect x="10" y="-25" width="4" height="20" fill="#00ffff" opacity="0.3" />
-                </g>
-            </svg>
+    <!-- UI LAYER -->
+    <div id="ui-layer">
+        
+        <!-- CONTROLS -->
+        <div class="top-bar">
+            <button class="toggle-btn active" id="btn-music"><i class="fas fa-music"></i> MUSIC: ON</button>
+            <button class="toggle-btn active" id="btn-sfx"><i class="fas fa-volume-up"></i> SFX: ON</button>
         </div>
 
-        <div class="grid-floor"></div>
-
-        <!-- DEDICATED ROAD -->
-        <div class="road"></div>
-
-        <!-- DYNAMIC MOVING PALM SYSTEM (Reduced & Synced) -->
-        <div class="palm-system">
-            <!-- Left Side Palms (5 total) -->
-            <div class="moving-palm move-left d1">
-                <svg class="palm-svg">
-                    <use href="#palm-icon" />
-                </svg>
-            </div>
-            <div class="moving-palm move-left d2">
-                <svg class="palm-svg">
-                    <use href="#palm-icon" />
-                </svg>
-            </div>
-            <div class="moving-palm move-left d3">
-                <svg class="palm-svg">
-                    <use href="#palm-icon" />
-                </svg>
-            </div>
-            <div class="moving-palm move-left d4">
-                <svg class="palm-svg">
-                    <use href="#palm-icon" />
-                </svg>
-            </div>
-            <div class="moving-palm move-left d5">
-                <svg class="palm-svg">
-                    <use href="#palm-icon" />
-                </svg>
-            </div>
-
-            <!-- Right Side Palms (5 total, flipped) -->
-            <div class="moving-palm move-right d1">
-                <svg class="palm-svg" style="transform: scaleX(-1);">
-                    <use href="#palm-icon" />
-                </svg>
-            </div>
-            <div class="moving-palm move-right d2">
-                <svg class="palm-svg" style="transform: scaleX(-1);">
-                    <use href="#palm-icon" />
-                </svg>
-            </div>
-            <div class="moving-palm move-right d3">
-                <svg class="palm-svg" style="transform: scaleX(-1);">
-                    <use href="#palm-icon" />
-                </svg>
-            </div>
-            <div class="moving-palm move-right d4">
-                <svg class="palm-svg" style="transform: scaleX(-1);">
-                    <use href="#palm-icon" />
-                </svg>
-            </div>
-            <div class="moving-palm move-right d5">
-                <svg class="palm-svg" style="transform: scaleX(-1);">
-                    <use href="#palm-icon" />
-                </svg>
+        <!-- HERO CONTENT -->
+        <div class="hero-section">
+            <h1>Elyas Moshirpanahi</h1>
+            <h2>Senior Generative AI Engineer</h2>
+            
+            <div class="nav-grid">
+                <a href="#" class="nav-btn btn-cyan" onmouseenter="playHover()">Portfolio</a>
+                <a href="#" class="nav-btn btn-pink" onmouseenter="playHover()">Resume</a>
+                <a href="#" class="nav-btn btn-purple" onmouseenter="playHover()">Terminal</a>
             </div>
         </div>
 
-
-        <div class="hero-content">
-            <div class="kicker">GEN AI · LLMs · AGENTS · SYSTEMS</div>
-            <h1 class="main-title">ELYAS MOSHIRPANAHI</h1>
-            <p class="subtitle">SENIOR GENERATIVE AI ENGINEER</p>
-
-            <div class="cta-group">
-                <a href="#projects" class="btn primary">View Projects</a>
-                <a href="#terminal-section" class="btn">Open Terminal</a>
-                <a href="#contact" class="btn">Connect</a>
-            </div>
+        <!-- FOOTER -->
+        <div class="social-bar">
+            <a href="https://linkedin.com" target="_blank" class="social-icon soc-li" onmouseenter="playHover()"><i class="fab fa-linkedin"></i></a>
+            <a href="https://github.com" target="_blank" class="social-icon soc-gh" onmouseenter="playHover()"><i class="fab fa-github"></i></a>
+            <a href="mailto:elyas@example.com" class="social-icon soc-em" onmouseenter="playHover()"><i class="fas fa-envelope"></i></a>
+            <a href="https://instagram.com" target="_blank" class="social-icon soc-ig" onmouseenter="playHover()"><i class="fab fa-instagram"></i></a>
+            <a href="https://telegram.org" target="_blank" class="social-icon soc-tg" onmouseenter="playHover()"><i class="fab fa-telegram"></i></a>
         </div>
+    </div>
 
-        <div class="car-container">
-            <!-- ULTRA-PREMIUM DELOREAN REAR VIEW SVG -->
-            <svg class="car-svg" viewBox="0 0 600 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <!-- CHROME HORIZON REFLECTION (Key to Synthwave Look) -->
-                    <linearGradient id="chrome-body" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#050510" /> <!-- Sky reflection (dark) -->
-                        <stop offset="48%" stop-color="#101025" /> <!-- Horizon line darker -->
-                        <stop offset="50%" stop-color="#00ffff" /> <!-- THE HORIZON LINE (Neon Cyan) -->
-                        <stop offset="52%" stop-color="#ff00ff" /> <!-- Sunset bleed (Magenta) -->
-                        <stop offset="55%" stop-color="#222" /> <!-- Ground reflection top -->
-                        <stop offset="100%" stop-color="#050505" /> <!-- Ground reflection bottom -->
-                    </linearGradient>
+    <!-- THREE.JS IMPORTS -->
+    <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
 
-                    <!-- Neon Glow Filters -->
-                    <filter id="glow-cyan-intense" x="-50%" y="-50%" width="200%" height="200%">
-                        <feGaussianBlur stdDeviation="4" result="blur" />
-                        <feFlood flood-color="#00ffff" result="color" />
-                        <feComposite in="color" in2="blur" operator="in" result="glow" />
-                        <feMerge>
-                            <feMergeNode in="glow" />
-                            <feMergeNode in="glow" /> <!-- Double intensity -->
-                            <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                    </filter>
-
-                    <filter id="glow-magenta-soft" x="-50%" y="-50%" width="200%" height="200%">
-                        <feGaussianBlur stdDeviation="6" result="blur" />
-                        <feMerge>
-                            <feMergeNode in="blur" />
-                            <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                    </filter>
-
-                    <!-- Taillight Grid Pattern -->
-                    <pattern id="tail-grid" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
-                        <rect x="0" y="0" width="7" height="7" fill="#ff0055" stroke="none" />
-                        <rect x="7" y="0" width="1" height="8" fill="#300" />
-                        <rect x="0" y="7" width="8" height="1" fill="#300" />
-                    </pattern>
-                </defs>
-
-                <!-- GROUND SHADOW -->
-                <ellipse cx="300" cy="265" rx="260" ry="15" fill="black" opacity="0.8"
-                    filter="url(#glow-magenta-soft)" />
-
-                <!-- TIRES (Ultra Wide Cyberpunk Slicks) -->
-                <!-- Left -->
-                <path d="M60,180 L160,180 L160,270 L60,270 Z" fill="#111" />
-                <path d="M60,180 L80,180 L80,270 L60,270 Z" fill="#000" opacity="0.5" /> <!-- Side wall -->
-                <!-- Tread marks -->
-                <path d="M90,180 L90,270 M110,180 L110,270 M130,180 L130,270 M150,180 L150,270" stroke="#1a1a1a"
-                    stroke-width="3" />
-
-                <!-- Right -->
-                <path d="M440,180 L540,180 L540,270 L440,270 Z" fill="#111" />
-                <path d="M520,180 L540,180 L540,270 L520,270 Z" fill="#000" opacity="0.5" />
-                <path d="M450,180 L450,270 M470,180 L470,270 M490,180 L490,270 M510,180 L510,270" stroke="#1a1a1a"
-                    stroke-width="3" />
-
-                <!-- MAIN BODY SHELL (Chassis) -->
-                <path d="M90,215 L510,215 L490,140 L110,140 Z" fill="url(#chrome-body)" />
-
-                <!-- REAR BUMPER (Matte Black Carbon) -->
-                <path d="M90,215 L510,215 L510,255 L90,255 Z" fill="#080808" />
-                <!-- Diffuser fins -->
-                <path d="M150,255 L150,240 M250,255 L250,240 M350,255 L350,240 M450,255 L450,240" stroke="#222"
-                    stroke-width="2" />
-
-                <!-- LICENSE PLATE (Glowing) -->
-                <rect x="260" y="225" width="80" height="22" fill="#000" stroke="#333" />
-                <rect x="262" y="227" width="76" height="18" fill="#001111" />
-                <text x="300" y="241" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="14"
-                    fill="#00ffff" filter="url(#glow-cyan-intense)" letter-spacing="2">NEON-88</text>
-
-                <!-- REAR WINDOW LOUVERS (The Iconic Slats) -->
-                <!-- Base darkness -->
-                <path d="M150,140 L450,140 L410,55 L190,55 Z" fill="rgba(0,0,0,0.9)" />
-                <!-- Slats with Chrome Highlights -->
-                <g stroke="url(#chrome-body)" stroke-width="3" opacity="0.8">
-                    <line x1="160" y1="125" x2="440" y2="125" />
-                    <line x1="170" y1="108" x2="430" y2="108" />
-                    <line x1="180" y1="91" x2="420" y2="91" />
-                    <line x1="190" y1="74" x2="410" y2="74" />
-                </g>
-
-                <!-- ROOF -->
-                <path d="M210,55 L390,55 L370,35 L230,35 Z" fill="#1a1a1a" stroke="#333" />
-
-                <!-- TAILLIGHTS (Grid + Glow) -->
-                <!-- Left -->
-                <rect x="100" y="185" width="130" height="25" fill="url(#tail-grid)" filter="url(#glow-magenta-soft)" />
-                <!-- Right -->
-                <rect x="370" y="185" width="130" height="25" fill="url(#tail-grid)" filter="url(#glow-magenta-soft)" />
-
-                <!-- Center Panel (Blacked out) -->
-                <rect x="230" y="185" width="140" height="25" fill="#000" />
-                <text x="300" y="202" text-anchor="middle" font-family="sans-serif" font-size="10" letter-spacing="4"
-                    fill="#fff" opacity="0.6">DMC-12</text>
-
-                <!-- CYBERNETIC UPGRADES (Neon Piping) -->
-                <!-- Roof Rails -->
-                <path d="M120,140 Q100,90 130,55" stroke="#00ffff" stroke-width="3" fill="none"
-                    filter="url(#glow-cyan-intense)" opacity="0.9" />
-                <path d="M480,140 Q500,90 470,55" stroke="#00ffff" stroke-width="3" fill="none"
-                    filter="url(#glow-cyan-intense)" opacity="0.9" />
-
-                <!-- Side Vent Glows -->
-                <rect x="80" y="160" width="10" height="40" fill="#ff00ff" filter="url(#glow-magenta-soft)"
-                    opacity="0.6" />
-                <rect x="510" y="160" width="10" height="40" fill="#ff00ff" filter="url(#glow-magenta-soft)"
-                    opacity="0.6" />
-
-                <!-- EXHAUST PORTS (Ion Drive) -->
-                <circle cx="130" cy="235" r="14" fill="#111" stroke="#333" />
-                <circle cx="130" cy="235" r="8" fill="#00ffff" filter="url(#glow-cyan-intense)" />
-
-                <circle cx="470" cy="235" r="14" fill="#111" stroke="#333" />
-                <circle cx="470" cy="235" r="8" fill="#00ffff" filter="url(#glow-cyan-intense)" />
-
-                <!-- UNDERGLOW (Ground Reflection) -->
-                <line x1="60" y1="265" x2="540" y2="265" stroke="#ff00ff" stroke-width="6"
-                    filter="url(#glow-magenta-soft)" opacity="0.8" />
-
-            </svg>
-            <div class="car-reflection"></div>
-        </div>
-    </header>
-
-    <!-- ABOUT SECTION -->
-    <section id="about">
-        <div class="container">
-            <h2 class="section-title">System Status</h2>
-            <div class="about-grid">
-                <div class="about-text">
-                    <p>I am a Senior Generative AI Engineer specializing in Large Language Models, Autonomous Agents,
-                        and Production Machine Learning Systems. With a deep background in full-stack engineering and
-                        algorithmic optimization, I bridge the gap between research-grade AI and scalable, real-world
-                        applications.</p>
-                    <p>My core focus is architecting robust RAG pipelines, optimizing inference infrastructure, and
-                        deploying agentic workflows that solve complex reasoning tasks. I don't just train models; I
-                        build the ecosystems they live in.</p>
-                </div>
-                <div class="stats">
-                    <div class="stat-card glass-neon-panel">
-                        <div class="stat-num">4+</div>
-                        <div class="stat-label">Years ML/Dev Exp</div>
-                    </div>
-                    <div class="stat-card glass-neon-panel">
-                        <div class="stat-num">1st</div>
-                        <div class="stat-label">Place AAIC Competition</div>
-                    </div>
-                    <div class="stat-card glass-neon-panel">
-                        <div class="stat-num">20k+</div>
-                        <div class="stat-label">Users Impacted</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- EXPERIENCE SECTION -->
-    <section id="experience">
-        <div class="container">
-            <h2 class="section-title">Experience Log</h2>
-            <div class="timeline">
-
-                <div class="timeline-item vaporwave-block">
-                    <h3 class="role">Machine Learning Engineer</h3>
-                    <span class="company">Tech / Stealth Startup</span>
-                    <span class="date">Feb 2023 – Present</span>
-                    <ul>
-                        <li>Architecting Generative AI solutions using PyTorch, LangChain, and Vector Databases.</li>
-                        <li>Deployed LLaMA-based agents for automated reasoning and data extraction tasks.</li>
-                        <li>Optimized inference latency by 40% through model quantization and ONNX runtime integration.
-                        </li>
-                        <li>Built end-to-end MLOps pipelines ensuring reproducibility and continuous evaluation.</li>
-                    </ul>
-                </div>
-
-                <div class="timeline-item vaporwave-block">
-                    <h3 class="role">Full Stack Developer & Project Manager</h3>
-                    <span class="company">YIWU Dar Trading Co.</span>
-                    <span class="date">2021 – 2023</span>
-                    <ul>
-                        <li>Engineered a high-scale VPN platform ("SecureNet") serving thousands of concurrent users.
-                        </li>
-                        <li>Designed a robust MVC architecture in Laravel/PHP increasing system stability by 85%.</li>
-                        <li>Automated server management with Python & Bash cronjobs, reducing maintenance time by 3x.
-                        </li>
-                        <li>Led a cross-functional team to deliver features that drove 20% sales growth.</li>
-                    </ul>
-                </div>
-
-                <div class="timeline-item vaporwave-block">
-                    <h3 class="role">PHP Developer & Web Designer</h3>
-                    <span class="company">Nika Herb</span>
-                    <span class="date">2019 – 2021</span>
-                    <ul>
-                        <li>Developed a custom e-commerce platform focusing on high-conversion UX/UI.</li>
-                        <li>Optimized database queries and caching strategies, handling high traffic spikes.</li>
-                        <li>Accelerated accumulated sales by 30% in the first week of launch.</li>
-                    </ul>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- SKILLS SECTION -->
-    <section id="skills">
-        <div class="container">
-            <h2 class="section-title">Tech Stack</h2>
-            <div class="skills-grid">
-
-                <div class="skill-category neon-frame-card">
-                    <h4 class="skill-title">Generative AI & LLMs</h4>
-                    <div class="skill-tags">
-                        <span class="tag">PyTorch</span>
-                        <span class="tag">TensorFlow</span>
-                        <span class="tag">LangChain</span>
-                        <span class="tag">HuggingFace</span>
-                        <span class="tag">LlamaIndex</span>
-                        <span class="tag">RAG</span>
-                        <span class="tag">Fine-tuning (LoRA)</span>
-                        <span class="tag">OpenAI API</span>
-                    </div>
-                </div>
-
-                <div class="skill-category neon-frame-card">
-                    <h4 class="skill-title">Backend & Infra</h4>
-                    <div class="skill-tags">
-                        <span class="tag">Python</span>
-                        <span class="tag">FastAPI</span>
-                        <span class="tag">Docker</span>
-                        <span class="tag">Kubernetes</span>
-                        <span class="tag">PHP (Laravel)</span>
-                        <span class="tag">Node.js</span>
-                        <span class="tag">Redis</span>
-                        <span class="tag">Linux/Bash</span>
-                    </div>
-                </div>
-
-                <div class="skill-category neon-frame-card">
-                    <h4 class="skill-title">Data Science & Core ML</h4>
-                    <div class="skill-tags">
-                        <span class="tag">NumPy / Pandas</span>
-                        <span class="tag">Scikit-learn</span>
-                        <span class="tag">Computer Vision (OpenCV)</span>
-                        <span class="tag">Time Series (LSTM)</span>
-                        <span class="tag">Matplotlib</span>
-                        <span class="tag">Statsmodels</span>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- PROJECTS SECTION -->
-    <section id="projects">
-        <div class="container">
-            <h2 class="section-title">Mission Archives</h2>
-            <div class="projects-grid">
-
-                <!-- Project 1 -->
-                <div class="project-card holo-grid-card" onclick="toggleCard(this)">
-                    <h3 class="p-title">Market Sentinel (AAIC Winner)</h3>
-                    <div class="p-role">Algorithmic Trading Agent</div>
-                    <p class="p-desc">An LSTM-based time-series forecasting system that identified top performing stocks
-                        with high precision.</p>
-                    <div class="p-hidden">
-                        <p><strong>Challenge:</strong> Filtering noise from volatile market data across 300+ tickers.
-                        </p>
-                        <p><strong>Solution:</strong> Built a custom recurrent neural network (RNN/LSTM) pipeline for
-                            smart filtering and trend analysis.</p>
-                        <p><strong>Outcome:</strong> 1st Place in Max Profit category; delivered 20% portfolio increase.
-                        </p>
-                    </div>
-                    <div class="expand-hint">[ CLICK TO EXPAND ]</div>
-                </div>
-
-                <!-- Project 2 -->
-                <div class="project-card holo-grid-card" onclick="toggleCard(this)">
-                    <h3 class="p-title">FaceCup Vision</h3>
-                    <div class="p-role">Computer Vision System</div>
-                    <p class="p-desc">Advanced facial recognition and verification system developed for the Amirkabir AI
-                        Competition.</p>
-                    <div class="p-hidden">
-                        <p><strong>Challenge:</strong> Handling occlusion and lighting variance in real-time streams.
-                        </p>
-                        <p><strong>Solution:</strong> Implemented CNN architectures optimized for edge cases and
-                            low-latency inference.</p>
-                        <p><strong>Outcome:</strong> High accuracy benchmarks in controlled and wild datasets.</p>
-                    </div>
-                    <div class="expand-hint">[ CLICK TO EXPAND ]</div>
-                </div>
-
-                <!-- Project 3 -->
-                <div class="project-card holo-grid-card" onclick="toggleCard(this)">
-                    <h3 class="p-title">SecureNet Infrastructure</h3>
-                    <div class="p-role">High-Scale VPN Platform</div>
-                    <p class="p-desc">A distributed network privacy solution handling thousands of concurrent
-                        connections.</p>
-                    <div class="p-hidden">
-                        <p><strong>Challenge:</strong> Managing user sessions and server load balancing at scale.</p>
-                        <p><strong>Solution:</strong> Developed a custom MVC management panel with automated Python/Bash
-                            cronjobs for server rotation.</p>
-                        <p><strong>Outcome:</strong> 85% increase in stability and 20% sales growth.</p>
-                    </div>
-                    <div class="expand-hint">[ CLICK TO EXPAND ]</div>
-                </div>
-
-                <!-- Project 4 -->
-                <div class="project-card holo-grid-card" onclick="toggleCard(this)">
-                    <h3 class="p-title">RAG Knowledge Agent</h3>
-                    <div class="p-role">GenAI Research</div>
-                    <p class="p-desc">Prototype specific-domain Q&A bot utilizing retrieval augmented generation.</p>
-                    <div class="p-hidden">
-                        <p><strong>Stack:</strong> LangChain, Pinecone, OpenAI, Streamlit.</p>
-                        <p><strong>Feature:</strong> Ingests technical documentation and provides cited, accurate
-                            answers with minimal hallucination.</p>
-                    </div>
-                    <div class="expand-hint">[ CLICK TO EXPAND ]</div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- TERMINAL SECTION -->
-    <section id="terminal-section">
-        <div class="container">
-            <h2 class="section-title">Interactive Terminal</h2>
-            <div class="terminal-window">
-                <div class="terminal-header">
-                    <div class="dot red"></div>
-                    <div class="dot yellow"></div>
-                    <div class="dot green"></div>
-                    <div class="terminal-title">elyas@genai-server:~</div>
-                </div>
-                <div class="terminal-body" id="terminal-output">
-                    <div class="output-line">Welcome to ElyasOS v2.5.5 (GNU/Linux)</div>
-                    <div class="output-line">Type 'help' to see available commands.</div>
-                    <br>
-                    <div class="input-line">
-                        <span class="prompt">elyas@genai:~$</span>
-                        <input type="text" class="cmd-input" id="cmd-input" autocomplete="off" autofocus>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer id="contact">
-        <div class="container">
-            <h2 class="section-title">Initialize Uplink</h2>
-            <div class="social-links">
-                <a href="https://linkedin.com/in/elyasmoshirpanahi" target="_blank" title="LinkedIn"><i
-                        class="fab fa-linkedin"></i></a>
-                <a href="https://github.com/elyasmoshirpanahi" target="_blank" title="GitHub"><i
-                        class="fab fa-github"></i></a>
-                <a href="mailto:contact@elyas.dev" title="Email"><i class="fas fa-envelope"></i></a>
-            </div>
-            <p style="margin-top: 30px; color: #555; font-size: 0.8rem;">&copy; 2025 Elyas Moshirpanahi. System Safe.
-            </p>
-        </div>
-    </footer>
-
-    <!-- SCRIPTS -->
+    <!-- LOGIC -->
     <script>
-        // --- SOUND SYSTEM ---
-        class SoundSystem {
-            constructor() {
-                this.ctx = null;
-                // Default state: assume we WANT sound, but need a gesture
-                this.enabled = true;
-                this.initialized = false;
+        // --- CONFIGURATION ---
+        const CONF = {
+            fov: 60,
+            speed: 40, // Much faster for Cyberpunk feel
+            colors: {
+                cyan: 0x00f3ff,
+                pink: 0xff00ff,
+                purple: 0xbc13fe,
+                blue: 0x0055ff,
+                grid: 0x220033
             }
+        };
 
-            init() {
-                if (!this.ctx) {
-                    const AudioContext = window.AudioContext || window.webkitAudioContext;
-                    this.ctx = new AudioContext();
-                }
-                this.initialized = true;
-                if (this.ctx.state === 'suspended') {
-                    this.ctx.resume();
-                }
-                // Slight startup chirp
-                this.playTone(880, 'sine', 0.1, 0.05);
-            }
+        // --- AUDIO STATE ---
+        let musicEnabled = true;
+        let sfxEnabled = true;
+        const bgMusic = document.getElementById('bg-music');
+        const sfxHover = document.getElementById('sfx-hover');
+        const sfxBeam = document.getElementById('sfx-beam');
 
-            toggle() {
-                this.enabled = !this.enabled;
-                return this.enabled;
-            }
+        // --- SCENE GLOBALS ---
+        let scene, camera, renderer, composer;
+        let road, car;
+        let cityGroup, sunMesh, beamMesh;
+        let palms = [], arches = [];
+        const clock = new THREE.Clock();
+        let time = 0;
 
-            playTone(freq, type, duration, vol = 0.1) {
-                if (!this.enabled || !this.initialized || !this.ctx) return;
-                try {
-                    const osc = this.ctx.createOscillator();
-                    const gain = this.ctx.createGain();
-                    osc.type = type;
-                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-                    gain.gain.setValueAtTime(vol, this.ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + duration);
-                    osc.connect(gain);
-                    gain.connect(this.ctx.destination);
-                    osc.start();
-                    osc.stop(this.ctx.currentTime + duration);
-                } catch (e) { console.log("Audio error", e); }
-            }
-
-            playHover() { this.playTone(800, 'sine', 0.05, 0.05); }
-            playClick() { this.playTone(300, 'square', 0.1, 0.1); }
-            playType() { this.playTone(1200, 'triangle', 0.03, 0.02); }
-        }
-
-        const soundSys = new SoundSystem();
-        const toggleBtn = document.getElementById('sound-toggle');
-
-        // --- AUTO-INIT AUDIO ON FIRST CLICK ANYWHERE ---
-        document.addEventListener('click', () => {
-            if (!soundSys.initialized) {
-                soundSys.init();
-            }
-        }, { once: true });
-
-        toggleBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // Don't double init
-            if (!soundSys.initialized) soundSys.init();
-
-            const isOn = soundSys.toggle();
-            toggleBtn.textContent = isOn ? "Sound: ON" : "Sound: OFF";
-            toggleBtn.classList.toggle('muted', !isOn);
-            if (isOn) soundSys.playClick();
-        });
-
-        // Attach sound to interactive elements
-        document.querySelectorAll('a, button, .project-card, .stat-card').forEach(el => {
-            el.addEventListener('mouseenter', () => soundSys.playHover());
-            el.addEventListener('click', () => soundSys.playClick());
-        });
-
-        // --- BLADE ANIMATION ON LOAD ---
+        // --- INIT ---
         window.onload = () => {
-            // Ensure page starts at the top
-            window.scrollTo(0, 0);
-
-            setTimeout(() => {
-                document.body.classList.add('loaded');
-            }, 500);
-
-            // Start Beam Randomizer
-            scheduleBeam();
-        };
-
-        // --- BEAM SCHEDULER (Fires exactly twice per 60 seconds) ---
-        function scheduleBeam() {
-            // Fire beam every 30 seconds (twice per minute)
-            setTimeout(() => {
-                triggerBeam();
-                scheduleBeam(); // Re-schedule for next beam
-            }, 30000); // 30 seconds
-        }
-
-        // Laser beam audio files
-        const laserSounds = [
-            'sounds/pulse_sound_try1-89547.mp3',
-            'sounds/science-fiction-effect-011-305477.mp3',
-            'sounds/science-fiction-effect-015-305473.mp3',
-            'sounds/science-fiction-effect-019-305479.mp3',
-            'sounds/science-fiction-effect-020-305484.mp3'
-        ];
-
-        let currentBeamAudio = null;
-
-        function triggerBeam() {
-            const beamContainer = document.getElementById('beam-container');
-            const station = document.getElementById('tron-station');
-
-            // Add classes to trigger CSS animations
-            beamContainer.classList.add('beam-active');
-            station.classList.add('station-active');
-
-            // Play laser sound effect
-            if (soundSys && soundSys.enabled) {
-                // Randomly select a laser sound
-                const randomSound = laserSounds[Math.floor(Math.random() * laserSounds.length)];
-
-                // Create and play audio
-                currentBeamAudio = new Audio(randomSound);
-                currentBeamAudio.volume = 0.6; // Adjust volume as needed
-
-                // Play the audio and get its duration
-                currentBeamAudio.play().then(() => {
-                    const audioDuration = currentBeamAudio.duration; // In seconds
-                    const audioDurationMs = audioDuration * 1000; // In milliseconds
-
-                    // Dynamically set animation duration to match audio length
-                    // Create or update dynamic style element
-                    let dynamicStyle = document.getElementById('dynamic-beam-style');
-                    if (!dynamicStyle) {
-                        dynamicStyle = document.createElement('style');
-                        dynamicStyle.id = 'dynamic-beam-style';
-                        document.head.appendChild(dynamicStyle);
-                    }
-
-                    // Set animation duration to exact audio length
-                    dynamicStyle.textContent = `
-                        .beam-active .beam-core {
-                            animation: beamFireSequence ${audioDuration}s ease-out forwards !important;
-                        }
-                        .station-active .st-core-pulse {
-                            animation: coreOverload ${audioDuration}s ease-out forwards !important;
-                        }
-                    `;
-
-                    // Remove classes after audio completes (matches audio length EXACTLY)
-                    setTimeout(() => {
-                        beamContainer.classList.remove('beam-active');
-                        station.classList.remove('station-active');
-                    }, audioDurationMs);
-                }).catch(err => {
-                    console.log("Audio playback failed:", err);
-                    // Fallback to default timing if audio fails
-                    setTimeout(() => {
-                        beamContainer.classList.remove('beam-active');
-                        station.classList.remove('station-active');
-                    }, 3000);
-                });
-            } else {
-                // No sound enabled, use default timing
-                setTimeout(() => {
-                    beamContainer.classList.remove('beam-active');
-                    station.classList.remove('station-active');
-                }, 3000);
-            }
-        }
-
-
-        // --- CARD EXPANSION ---
-        function toggleCard(card) {
-            card.classList.toggle('expanded');
-        }
-
-        // --- TERMINAL LOGIC ---
-        const input = document.getElementById('cmd-input');
-        const outputContainer = document.getElementById('terminal-output');
-        const inputLine = document.querySelector('.input-line');
-
-        const commands = {
-            'help': [
-                "Available commands:",
-                "- about: Display summary info",
-                "- list_experience: Show work history",
-                "- list_projects: Show key projects",
-                "- show_stack: List technical skills",
-                "- contact: Show contact details",
-                "- clear: Clear terminal"
-            ],
-            'about': [
-                "Elyas Moshirpanahi",
-                "Senior Generative AI Engineer.",
-                "Specializing in LLMs, Autonomous Agents, and Scalable Systems.",
-                "Based in: Global / Remote"
-            ],
-            'list_experience': [
-                "1. Machine Learning Engineer (2023-Present)",
-                "2. Full Stack Dev & PM @ YIWU Dar (2021-2023)",
-                "3. PHP Developer @ Nika Herb (2019-2021)"
-            ],
-            'list_projects': [
-                "* Market Sentinel (AAIC Winner) - LSTM Trading Bot",
-                "* FaceCup Vision - Identity Verification",
-                "* SecureNet VPN - High-Scale Infra",
-                "* RAG Knowledge Agent - Doc QA System"
-            ],
-            'show_stack': [
-                "LANGUAGES: Python, PHP, JavaScript, C++, Kotlin",
-                "AI/ML: PyTorch, TensorFlow, LangChain, LlamaIndex",
-                "INFRA: Docker, Kubernetes, Linux, AWS"
-            ],
-            'contact': [
-                "LinkedIn: linkedin.com/in/elyasmoshirpanahi",
-                "Email: contact@elyas.dev"
-            ]
-        };
-
-        input.addEventListener('keydown', function (e) {
-            if (this.value.length > 0 && e.key !== 'Enter') {
-                soundSys.playType();
-            }
-
-            if (e.key === 'Enter') {
-                soundSys.playClick();
-                const cmd = this.value.trim().toLowerCase();
-
-                // Add old input line to history
-                const historyLine = document.createElement('div');
-                historyLine.className = 'output-line';
-                historyLine.innerHTML = `<span style="color:#ff00ff; margin-right:10px;">elyas@genai:~$</span> ${this.value}`;
-                outputContainer.insertBefore(historyLine, inputLine);
-
-                // Process command
-                if (cmd === 'clear') {
-                    // Remove all output lines except the input line
-                    const lines = outputContainer.querySelectorAll('.output-line');
-                    lines.forEach(line => line.remove());
-                } else if (commands[cmd]) {
-                    commands[cmd].forEach(text => {
-                        const responseLine = document.createElement('div');
-                        responseLine.className = 'output-line';
-                        responseLine.style.color = '#ccc';
-                        responseLine.textContent = text;
-                        outputContainer.insertBefore(responseLine, inputLine);
-                    });
-                } else if (cmd !== '') {
-                    const errorLine = document.createElement('div');
-                    errorLine.className = 'output-line';
-                    errorLine.style.color = '#ff5f56';
-                    errorLine.textContent = `Command not found: ${cmd}. Type 'help' for list.`;
-                    outputContainer.insertBefore(errorLine, inputLine);
+            const btn = document.getElementById('start-btn');
+            btn.addEventListener('click', () => {
+                document.getElementById('loader').style.opacity = 0;
+                setTimeout(() => document.getElementById('loader').remove(), 1000);
+                if(musicEnabled) {
+                    bgMusic.volume = 0.4;
+                    bgMusic.play().catch(console.error);
                 }
+                initThree();
+            });
+        };
 
-                // Reset input and scroll
-                this.value = '';
-                outputContainer.scrollTop = outputContainer.scrollHeight;
+        function initThree() {
+            const container = document.getElementById('canvas-container');
+
+            // 1. Scene & Camera
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x050510, 0.005); // Thick cyber fog
+            scene.background = new THREE.Color(0x050510);
+
+            camera = new THREE.PerspectiveCamera(CONF.fov, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 3.5, 12);
+            camera.lookAt(0, 1, -50);
+
+            // 2. Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.toneMapping = THREE.ReinhardToneMapping;
+            container.appendChild(renderer.domElement);
+
+            // 3. Post Processing (BLOOM IS KEY)
+            const renderPass = new THREE.RenderPass(scene, camera);
+            const bloomPass = new THREE.UnrealBloomPass(
+                new THREE.Vector2(window.innerWidth, window.innerHeight), 
+                1.5, 0.4, 0.85
+            );
+            bloomPass.threshold = 0;
+            bloomPass.strength = 1.6; // High bloom for neon
+            bloomPass.radius = 0.4;
+
+            composer = new THREE.EffectComposer(renderer);
+            composer.addPass(renderPass);
+            composer.addPass(bloomPass);
+
+            // 4. Build World
+            createLights();
+            createSun();
+            createCity();
+            createRoad();
+            createCar();
+            createTronStation();
+            
+            // Populate Palms & Arches
+            for(let i=0; i<20; i++) spawnPalm(-i*15);
+            for(let i=0; i<10; i++) spawnArch(-i*30 - 10);
+
+            // 5. Events
+            window.addEventListener('resize', onResize);
+            
+            // 6. Loop
+            animate();
+        }
+
+        function createLights() {
+            const ambient = new THREE.AmbientLight(0xffffff, 0.1);
+            scene.add(ambient);
+            
+            const p1 = new THREE.PointLight(CONF.colors.pink, 1.5, 60);
+            p1.position.set(-10, 5, 0);
+            scene.add(p1);
+
+            const p2 = new THREE.PointLight(CONF.colors.cyan, 1.5, 60);
+            p2.position.set(10, 5, 0);
+            scene.add(p2);
+        }
+
+        // --- OBJECTS ---
+
+        function createSun() {
+            // Retro Sun Shader
+            const geometry = new THREE.CircleGeometry(50, 64);
+            const material = new THREE.ShaderMaterial({
+                uniforms: {
+                    color1: { value: new THREE.Color(0xff00cc) }, // Magenta
+                    color2: { value: new THREE.Color(0xffaa00) }, // Yellow/Orange
+                    uTime: { value: 0 }
+                },
+                vertexShader: `
+                    varying vec2 vUv;
+                    void main() {
+                        vUv = uv;
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    varying vec2 vUv;
+                    uniform vec3 color1;
+                    uniform vec3 color2;
+                    uniform float uTime;
+                    void main() {
+                        vec3 grad = mix(color2, color1, vUv.y);
+                        // Stripes
+                        float stripe = fract((vUv.y - uTime * 0.05) * 20.0);
+                        float gap = step(0.2, stripe); // 0.2 is gap size
+                        if(vUv.y < 0.6) {
+                            if(gap < 0.5) discard;
+                        }
+                        gl_FragColor = vec4(grad, 1.0);
+                    }
+                `,
+                transparent: true
+            });
+            sunMesh = new THREE.Mesh(geometry, material);
+            sunMesh.position.set(0, 20, -200);
+            scene.add(sunMesh);
+        }
+
+        function createCity() {
+            // Cyberpunk Skyline
+            cityGroup = new THREE.Group();
+            
+            const boxGeo = new THREE.BoxGeometry(1, 1, 1);
+            const boxMat = new THREE.MeshBasicMaterial({ color: 0x000000 }); // Silhouette mostly
+            const neonMat = new THREE.MeshBasicMaterial({ color: CONF.colors.cyan });
+            const winMat = new THREE.MeshBasicMaterial({ color: CONF.colors.pink });
+
+            // Create 100 buildings
+            for(let i=0; i<100; i++) {
+                const h = 20 + Math.random() * 60;
+                const w = 5 + Math.random() * 10;
+                const d = 5 + Math.random() * 10;
+                const x = (Math.random() - 0.5) * 400;
+                const z = -200 - Math.random() * 100;
+
+                const b = new THREE.Mesh(boxGeo, boxMat);
+                b.position.set(x, h/2, z);
+                b.scale.set(w, h, d);
+                cityGroup.add(b);
+
+                // Add random neon strips
+                if(Math.random() > 0.5) {
+                    const strip = new THREE.Mesh(boxGeo, neonMat);
+                    strip.position.set(x, h * Math.random(), z + d/2 + 0.1);
+                    strip.scale.set(w * 0.8, 0.5, 0.1);
+                    cityGroup.add(strip);
+                }
+                
+                // Add window lights
+                if(Math.random() > 0.3) {
+                    const win = new THREE.Mesh(boxGeo, winMat);
+                    win.position.set(x + (Math.random()-0.5)*w, h * Math.random(), z + d/2 + 0.15);
+                    win.scale.set(1, 1, 0.1);
+                    cityGroup.add(win);
+                }
             }
+            scene.add(cityGroup);
+        }
+
+        function createRoad() {
+            // 1. Grid Road
+            const geometry = new THREE.PlaneGeometry(80, 400, 40, 100);
+            geometry.rotateX(-Math.PI / 2);
+
+            const material = new THREE.ShaderMaterial({
+                uniforms: {
+                    uColor: { value: new THREE.Color(CONF.colors.purple) },
+                    uTime: { value: 0 }
+                },
+                vertexShader: `
+                    varying vec2 vUv;
+                    void main() {
+                        vUv = uv;
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    varying vec2 vUv;
+                    uniform vec3 uColor;
+                    uniform float uTime;
+                    void main() {
+                        // Moving grid
+                        float y = fract(vUv.y * 40.0 + uTime * 8.0);
+                        float lineY = step(0.85, y); // Horizontal lines
+                        
+                        float lineX = step(0.97, fract(vUv.x * 20.0)); // Vertical lines
+                        
+                        float glow = max(lineY, lineX);
+                        
+                        // Fade edges
+                        float alpha = (1.0 - abs(vUv.x - 0.5) * 2.0);
+                        alpha = pow(alpha, 2.0);
+
+                        gl_FragColor = vec4(uColor, glow * alpha);
+                    }
+                `,
+                transparent: true,
+                side: THREE.DoubleSide
+            });
+            
+            road = new THREE.Mesh(geometry, material);
+            road.position.z = -100;
+            scene.add(road);
+
+            // 2. Wet Asphalt Reflector
+            const reflectGeo = new THREE.PlaneGeometry(80, 400);
+            reflectGeo.rotateX(-Math.PI/2);
+            const reflectMat = new THREE.MeshStandardMaterial({
+                color: 0x000000,
+                roughness: 0.1,
+                metalness: 0.8
+            });
+            const reflector = new THREE.Mesh(reflectGeo, reflectMat);
+            reflector.position.set(0, -0.1, -100);
+            scene.add(reflector);
+        }
+
+        function createCar() {
+            const carGrp = new THREE.Group();
+            
+            // Refined DeLorean Shape
+            const mBody = new THREE.MeshStandardMaterial({ color: 0x888888, metalness: 0.9, roughness: 0.2 });
+            const mBlack = new THREE.MeshBasicMaterial({ color: 0x000000 });
+            const mGlowC = new THREE.MeshBasicMaterial({ color: CONF.colors.cyan });
+            const mGlowP = new THREE.MeshBasicMaterial({ color: CONF.colors.pink });
+
+            // Main Body (Wedge)
+            const chassis = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.5, 5), mBody);
+            chassis.position.y = 0.5;
+            carGrp.add(chassis);
+
+            // Roof
+            const roof = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.45, 2.5), mBlack);
+            roof.position.set(0, 0.95, -0.2);
+            carGrp.add(roof);
+            
+            // Louvers (Rear window slats)
+            for(let i=0; i<6; i++) {
+                const slat = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.05, 0.2), mBody);
+                slat.position.set(0, 1.0 - i*0.05, 1.2 + i*0.2);
+                slat.rotation.x = -0.2;
+                carGrp.add(slat);
+            }
+
+            // Wheels
+            const wGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.35, 24);
+            wGeo.rotateZ(Math.PI/2);
+            [[-1.2, 1.6], [1.2, 1.6], [-1.2, -1.6], [1.2, -1.6]].forEach(pos => {
+                const w = new THREE.Mesh(wGeo, mBlack);
+                w.position.set(pos[0], 0.4, pos[1]);
+                carGrp.add(w);
+                // Hubcap glow
+                const h = new THREE.Mesh(new THREE.CircleGeometry(0.25, 16), mGlowC);
+                h.rotation.y = pos[0] > 0 ? Math.PI/2 : -Math.PI/2;
+                h.position.set(pos[0] > 0 ? pos[0]+0.18 : pos[0]-0.18, 0.4, pos[1]);
+                carGrp.add(h);
+            });
+
+            // Lights
+            const tail = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.1, 0.1), mGlowP);
+            tail.position.set(0, 0.65, 2.5);
+            carGrp.add(tail);
+
+            const head = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.08, 0.1), mGlowC);
+            head.position.set(0, 0.5, -2.5);
+            carGrp.add(head);
+
+            // Underglow
+            const ug = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 4.8), new THREE.MeshBasicMaterial({ color: CONF.colors.cyan, side: THREE.DoubleSide }));
+            ug.rotation.x = -Math.PI/2;
+            ug.position.y = 0.1;
+            carGrp.add(ug);
+
+            car = carGrp;
+            scene.add(car);
+        }
+
+        function createTronStation() {
+            const station = new THREE.Group();
+            
+            // Base Ring
+            const ring = new THREE.Mesh(
+                new THREE.TorusGeometry(15, 0.5, 16, 64),
+                new THREE.MeshBasicMaterial({ color: CONF.colors.cyan })
+            );
+            ring.rotation.x = Math.PI/2;
+            station.add(ring);
+
+            // Pylons
+            const pylonGeo = new THREE.BoxGeometry(2, 40, 2);
+            const pMat = new THREE.MeshBasicMaterial({ color: 0x111111 });
+            const p1 = new THREE.Mesh(pylonGeo, pMat); p1.position.x = -15;
+            const p2 = new THREE.Mesh(pylonGeo, pMat); p2.position.x = 15;
+            station.add(p1); station.add(p2);
+
+            // Beam Mesh (Hidden default)
+            beamMesh = new THREE.Mesh(
+                new THREE.CylinderGeometry(1, 1, 300, 16),
+                new THREE.MeshBasicMaterial({ color: 0x88ffff, transparent: true, opacity: 0.8 })
+            );
+            beamMesh.position.y = 150;
+            beamMesh.visible = false;
+            station.add(beamMesh);
+
+            station.position.set(0, 0, -150);
+            scene.add(station);
+        }
+
+        // --- PROCEDURAL SPAWNERS ---
+        function spawnPalm(z) {
+            const grp = new THREE.Group();
+            // Trunk
+            const t = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.2, 0.5, 8, 7),
+                new THREE.MeshBasicMaterial({ color: CONF.colors.pink })
+            );
+            t.position.y = 4;
+            grp.add(t);
+            // Leaves (Fuller)
+            const lMat = new THREE.MeshBasicMaterial({ color: CONF.colors.cyan, side: THREE.DoubleSide });
+            const lGeo = new THREE.PlaneGeometry(2, 6);
+            for(let i=0; i<8; i++) {
+                const l = new THREE.Mesh(lGeo, lMat);
+                l.position.y = 8;
+                l.rotation.y = (i/8) * Math.PI * 2;
+                l.rotation.z = Math.PI/3; // Arch down
+                grp.add(l);
+            }
+            
+            // Left & Right
+            const left = grp.clone(); left.position.set(-25, 0, z);
+            const right = grp.clone(); right.position.set(25, 0, z);
+            
+            scene.add(left); palms.push(left);
+            scene.add(right); palms.push(right);
+        }
+
+        function spawnArch(z) {
+            const arch = new THREE.Mesh(
+                new THREE.TorusGeometry(20, 0.3, 8, 32, Math.PI),
+                new THREE.MeshBasicMaterial({ color: CONF.colors.purple })
+            );
+            arch.position.set(0, 0, z);
+            scene.add(arch);
+            arches.push(arch);
+        }
+
+        // --- ANIMATION ---
+        function animate() {
+            requestAnimationFrame(animate);
+            const dt = clock.getDelta();
+            time += dt;
+
+            // 1. Uniforms
+            if(road) road.material.uniforms.uTime.value = time;
+            if(sunMesh) sunMesh.material.uniforms.uTime.value = time;
+
+            // 2. Scroll World
+            const move = CONF.speed * dt;
+            
+            palms.forEach(p => {
+                p.position.z += move;
+                if(p.position.z > 20) p.position.z = -280;
+            });
+            arches.forEach(a => {
+                a.position.z += move;
+                if(a.position.z > 20) a.position.z = -280;
+            });
+
+            // 3. Car Shake
+            if(car) {
+                car.position.y = 0.5 + Math.sin(time * 30) * 0.01;
+                car.rotation.z = Math.sin(time * 5) * 0.01;
+            }
+
+            // 4. TRON Beam Event (Every 30s)
+            const cycle = time % 30;
+            if(cycle > 28) {
+                if(!beamMesh.visible) {
+                    beamMesh.visible = true;
+                    if(sfxEnabled) {
+                        sfxBeam.currentTime = 0; 
+                        sfxBeam.volume = 0.6;
+                        sfxBeam.play().catch(()=>{});
+                    }
+                }
+                const s = Math.sin((cycle-28)*Math.PI) * 4 + 1;
+                beamMesh.scale.set(s, 1, s);
+            } else {
+                beamMesh.visible = false;
+            }
+
+            composer.render();
+        }
+
+        function onResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            composer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // --- UI INTERACTION ---
+        window.playHover = () => {
+            if(sfxEnabled) {
+                sfxHover.currentTime = 0;
+                sfxHover.volume = 0.2;
+                sfxHover.play().catch(()=>{});
+            }
+        };
+
+        // Toggles
+        document.getElementById('btn-music').addEventListener('click', function() {
+            musicEnabled = !musicEnabled;
+            this.classList.toggle('active');
+            this.innerHTML = musicEnabled ? '<i class="fas fa-music"></i> MUSIC: ON' : '<i class="fas fa-music"></i> MUSIC: OFF';
+            if(musicEnabled) bgMusic.play(); else bgMusic.pause();
         });
 
-        // Focus terminal on click
-        document.querySelector('.terminal-window').addEventListener('click', () => {
-            input.focus();
+        document.getElementById('btn-sfx').addEventListener('click', function() {
+            sfxEnabled = !sfxEnabled;
+            this.classList.toggle('active');
+            this.innerHTML = sfxEnabled ? '<i class="fas fa-volume-up"></i> SFX: ON' : '<i class="fas fa-volume-up"></i> SFX: OFF';
         });
 
     </script>
 </body>
-
 </html>
