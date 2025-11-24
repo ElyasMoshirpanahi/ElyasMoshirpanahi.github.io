@@ -875,42 +875,59 @@
         }
 
         function createSynthwaveTerrain() {
-            // "Radio wave hills" on the sides - Super dynamic & colorful
-            const geometry = new THREE.PlaneGeometry(500, 800, 80, 80);
+            // "Pyramid Sound Waves" - Flat base with sharp pink peaks
+            const geometry = new THREE.PlaneGeometry(500, 800, 100, 100);
             geometry.rotateX(-Math.PI / 2);
-            geometry.translate(0, -8, -200); // Slightly lower to create a valley feel
+            geometry.translate(0, -2, -200);
 
             const material = new THREE.ShaderMaterial({
                 uniforms: {
-                    uColor1: { value: new THREE.Color(CONF.colors.purple) },
-                    uColor2: { value: new THREE.Color(CONF.colors.pink) },
-                    uTime: { value: 0 }
+                    uColor1: { value: new THREE.Color(0xff00ff) }, // Hot Pink
+                    uColor2: { value: new THREE.Color(0xff1493) }, // Deep Pink
+                    uTime: { value: 0 },
+                    // Controls
+                    uHeight: { value: 2.0 },
+                    uGridWidth: { value: 0.05 },
+                    uGridOpacity: { value: 0.8 },
+                    uTotalOpacity: { value: 0.7 }
                 },
                 vertexShader: `
                     varying vec2 vUv;
                     varying float vElev;
                     uniform float uTime;
+                    uniform float uHeight;
+
                     void main() {
                         vUv = uv;
                         vec3 pos = position;
                         
-                        // Create valley: flat in center (road), steep rise on sides
                         float dist = abs(pos.x);
-                        float rise = 0.0;
-                        float roadZone = 20.0;
+                        float roadWidth = 10.0;
                         
-                        if(dist > roadZone) {
-                            // Exponential rise
-                            rise = pow(dist - roadZone, 1.5) * 0.15;
+                        // Coordinate for "blocks" (Pyramids)
+                        float cell = 20.0;
+                        vec2 gridPos = pos.xz / cell;
+                        vec2 id = floor(gridPos);
+                        vec2 local = fract(gridPos) - 0.5; 
+                        
+                        float elevation = 0.0;
+                        
+                        if(dist > roadWidth) {
+                            float pyr = 1.0 - 2.0 * max(abs(local.x), abs(local.y));
+                            pyr = max(0.0, pyr); 
                             
-                            // Dynamic pulsing waves
-                            float wave = sin(pos.z * 0.08 + uTime * 2.0) * 3.0;
-                            float wave2 = cos(pos.x * 0.1 + uTime) * 2.0;
-                            rise += wave + wave2;
+                            // Animate height ("Sound Wave" effect)
+                            float wave = sin(id.y * 0.5 - uTime * 4.0) * 0.5 + 0.5; 
+                            float eq = sin(id.x * 2.0) * 0.5 + 0.5;
+                            
+                            // Use uniform height
+                            float h = wave * (eq + 0.5) * uHeight;
+                            
+                            elevation = pyr * h;
                         }
                         
-                        pos.y += rise;
-                        vElev = rise;
+                        pos.y += elevation;
+                        vElev = elevation;
                         
                         gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
                     }
@@ -920,34 +937,128 @@
                     varying float vElev;
                     uniform vec3 uColor1;
                     uniform vec3 uColor2;
-                    uniform float uTime;
+                    uniform float uGridWidth;
+                    uniform float uGridOpacity;
+                    uniform float uTotalOpacity;
+                    
                     void main() {
-                        // Dynamic Grid
-                        float gridZ = step(0.96, fract(vUv.y * 60.0 + uTime * 0.8));
-                        float gridX = step(0.96, fract(vUv.x * 40.0));
-                        float grid = max(gridX, gridZ);
+                        vec2 gridUV = vec2(vUv.x * 25.0, vUv.y * 40.0);
+                        vec2 gridFract = fract(gridUV);
                         
-                        // Mix colors based on elevation
-                        vec3 baseColor = mix(uColor1, uColor2, clamp(vElev * 0.05, 0.0, 1.0));
+                        float w = uGridWidth; 
+                        float gx = step(1.0 - w, gridFract.x) + step(gridFract.x, w);
+                        float gy = step(1.0 - w, gridFract.y) + step(gridFract.y, w);
+                        float grid = min(1.0, gx + gy); 
                         
-                        // Road fade out
-                        float distCenter = abs(vUv.x - 0.5);
-                        float alpha = smoothstep(0.04, 0.1, distCenter); 
+                        vec3 dark = vec3(0.05, 0.0, 0.1);
+                        vec3 peak = uColor1 * 0.4; 
                         
-                        vec3 finalColor = baseColor * grid;
+                        float hParams = clamp(vElev / 1.5, 0.0, 1.0); 
+                        vec3 surface = mix(dark, peak, hParams * 0.4); 
                         
-                        // Add some glow in the valleys
-                        finalColor += uColor1 * 0.1 * alpha;
+                        vec3 line = uColor1 * 0.6; 
+                        
+                        vec3 finalColor = mix(surface, line, grid * uGridOpacity); 
+                        
+                        finalColor += peak * hParams * 0.1; 
 
-                        gl_FragColor = vec4(finalColor, alpha * 0.9);
+                        gl_FragColor = vec4(finalColor, uTotalOpacity); 
                     }
                 `,
-                transparent: true,
                 side: THREE.DoubleSide
             });
             
             terrain = new THREE.Mesh(geometry, material);
             scene.add(terrain);
+            
+            // Initialize UI
+            createInterface();
+        }
+
+        function createInterface() {
+            // Style
+            const css = `
+                .controls {
+                    position: fixed; top: 100px; right: 20px;
+                    background: rgba(0,0,0,0.85); border: 1px solid #00f3ff;
+                    padding: 20px; color: #fff; font-family: var(--font-tech);
+                    z-index: 1000; width: 250px;
+                    box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+                    backdrop-filter: blur(5px);
+                }
+                .control-group { margin-bottom: 15px; }
+                .control-group label { display: block; margin-bottom: 5px; color: #ff00ff; font-size: 0.8rem; letter-spacing: 1px;}
+                input[type=range] { width: 100%; cursor: pointer; accent-color: #00f3ff; }
+            `;
+            const style = document.createElement('style');
+            style.textContent = css;
+            document.head.appendChild(style);
+
+            // Container
+            const div = document.createElement('div');
+            div.className = 'controls';
+            div.style.display = 'none'; // Initially hidden
+            div.innerHTML = `
+                <h3 style="margin-bottom:15px; border-bottom:1px solid #00f3ff; padding-bottom:5px; color:#00f3ff;">GRID SYNC</h3>
+                <div class="control-group">
+                    <label>AMPLITUDE (HEIGHT)</label>
+                    <input type="range" min="0" max="10" step="0.1" value="2.0" id="inp-height">
+                </div>
+                <div class="control-group">
+                    <label>GRID THICKNESS</label>
+                    <input type="range" min="0.001" max="0.1" step="0.001" value="0.05" id="inp-width">
+                </div>
+                <div class="control-group">
+                    <label>GRID INTENSITY</label>
+                    <input type="range" min="0" max="2" step="0.1" value="0.8" id="inp-g-op">
+                </div>
+                <div class="control-group">
+                    <label>TERRAIN OPACITY</label>
+                    <input type="range" min="0" max="1" step="0.05" value="0.7" id="inp-t-op">
+                </div>
+                <button id="close-controls" style="margin-top:10px; background:none; border:1px solid #ff00ff; color:#ff00ff; padding:5px 15px; cursor:pointer; font-family:inherit; transition:0.3s;">CLOSE</button>
+            `;
+            document.body.appendChild(div);
+
+            // Toggle Button
+            const toggle = document.createElement('button');
+            toggle.innerHTML = '<i class="fas fa-sliders-h"></i> GRID CONFIG';
+            toggle.style.cssText = 'position:fixed; top:90px; right:30px; z-index:999; background:rgba(0,0,0,0.6); border:1px solid #00f3ff; color:#00f3ff; padding:8px 15px; cursor:pointer; font-family:var(--font-tech); transition:0.3s; font-weight:bold; letter-spacing:1px; backdrop-filter:blur(4px);';
+            toggle.onmouseover = () => toggle.style.background = 'rgba(0, 243, 255, 0.2)';
+            toggle.onmouseout = () => toggle.style.background = 'rgba(0,0,0,0.6)';
+            document.body.appendChild(toggle);
+
+            toggle.onclick = () => {
+                const d = document.querySelector('.controls');
+                d.style.display = d.style.display === 'none' ? 'block' : 'none';
+                playHover();
+            };
+            
+            document.getElementById('close-controls').onclick = () => {
+                 document.querySelector('.controls').style.display = 'none';
+                 playHover();
+            };
+            document.getElementById('close-controls').onmouseover = function() {
+                this.style.boxShadow = "0 0 10px #ff00ff";
+            };
+            document.getElementById('close-controls').onmouseout = function() {
+                this.style.boxShadow = "none";
+            };
+
+            // Bindings
+            const updateUniform = (id, uniform) => {
+                const el = document.getElementById(id);
+                el.addEventListener('input', (e) => {
+                    if(terrain && terrain.material.uniforms[uniform]) {
+                        terrain.material.uniforms[uniform].value = parseFloat(e.target.value);
+                    }
+                });
+            };
+
+            updateUniform('inp-height', 'uHeight');
+            updateUniform('inp-width', 'uGridWidth');
+            updateUniform('inp-g-op', 'uGridOpacity');
+            updateUniform('inp-t-op', 'uTotalOpacity');
         }
 
         function createReflectiveRoad() {
@@ -1102,44 +1213,123 @@
         }
 
         function createPalms() {
-            // Wireframe Neon Palms
-            const trunkGeo = new THREE.CylinderGeometry(0.2, 0.5, 12, 5);
+            // Clear existing if any
+            palms.forEach(p => scene.remove(p));
+            palms = [];
+
+            const numPalms = 12;
+            const spacing = 50; // Total range 600, matches animation loop (-580 to 20)
+
+            for(let i=0; i<numPalms; i++) {
+                // Generate a unique procedural palm model for this row
+                const palmModel = generateProceduralPalm(i);
+                
+                // Left Side
+                const left = palmModel.clone();
+                left.position.set(-25, -2, -i * spacing);
+                left.rotation.y = Math.PI / 4; 
+                scene.add(left);
+                palms.push(left);
+
+                // Right Side (Mirrored)
+                const right = palmModel.clone();
+                right.position.set(25, -2, -i * spacing);
+                right.rotation.y = -Math.PI / 4;
+                right.scale.x = -1; // Mirror geometry
+                scene.add(right);
+                palms.push(right);
+            }
+        }
+
+        function generateProceduralPalm(seed) {
+            const group = new THREE.Group();
+            
+            // Deterministic RNG based on seed
+            const rng = () => {
+                seed = (seed * 9301 + 49297) % 233280;
+                return seed / 233280;
+            };
+
+            // --- TRUNK GENERATION ---
+            // Segmented, curved trunk style
+            const height = 14 + rng() * 6; // 14-20 height
+            const segments = 10;
             const trunkMat = new THREE.MeshBasicMaterial({ color: CONF.colors.purple, wireframe: true });
             
-            const leafGeo = new THREE.PlaneGeometry(3, 8);
-            const leafMat = new THREE.MeshBasicMaterial({ color: CONF.colors.cyan, side: THREE.DoubleSide, wireframe: false, transparent: true, opacity: 0.8 });
-
-            // Bend leaves
-            const pos = leafGeo.attributes.position;
-            for(let i=0; i<pos.count; i++) {
-                const y = pos.getY(i);
-                pos.setZ(i, pos.getZ(i) - y*y*0.08);
+            // Curve parameters
+            const curveLean = (rng() - 0.5) * 5; // Lean Left/Right
+            const curveBack = rng() * 5;         // Lean Back
+            
+            let prevRad = 0.9 + rng() * 0.3;
+            let prevPos = new THREE.Vector3(0, 0, 0);
+            
+            for(let i=0; i<segments; i++) {
+                const t = (i+1) / segments;
+                const segmentH = height / segments;
+                const nextRad = prevRad * 0.9;
+                
+                // Quadratic curve offset
+                const xOff = (t*t) * curveLean;
+                const zOff = (t*t) * curveBack;
+                
+                const nextPos = new THREE.Vector3(xOff, (i+1)*segmentH, zOff);
+                
+                // Find midpoint and orientation
+                const midPos = new THREE.Vector3().addVectors(prevPos, nextPos).multiplyScalar(0.5);
+                const segLen = prevPos.distanceTo(nextPos);
+                
+                const cyl = new THREE.Mesh(
+                    new THREE.CylinderGeometry(nextRad, prevRad, segLen, 6),
+                    trunkMat
+                );
+                cyl.position.copy(midPos);
+                cyl.lookAt(nextPos);
+                cyl.rotateX(Math.PI / 2); // Fix cylinder orientation
+                
+                group.add(cyl);
+                
+                prevRad = nextRad;
+                prevPos = nextPos;
             }
 
-            const palmProto = new THREE.Group();
-            const trunk = new THREE.Mesh(trunkGeo, trunkMat);
-            trunk.position.y = 6;
-            palmProto.add(trunk);
-
-            for(let i=0; i<6; i++) {
+            // --- CROWN GENERATION ---
+            const topPos = prevPos;
+            const numLeaves = 15 + Math.floor(rng() * 10);
+            const leafMat = new THREE.MeshBasicMaterial({ color: CONF.colors.cyan, side: THREE.DoubleSide });
+            
+            for(let i=0; i<numLeaves; i++) {
+                // Distribute leaves around top
+                const angle = (i / numLeaves) * Math.PI * 2 + (rng() * 0.5);
+                const len = 8 + rng() * 6;
+                const width = 2 + rng();
+                
+                // Curved Leaf Geometry
+                const leafGeo = new THREE.PlaneGeometry(width, len, 2, 6);
+                leafGeo.translate(0, len/2, 0); // Pivot at base
+                
+                const pos = leafGeo.attributes.position;
+                for(let k=0; k<pos.count; k++) {
+                    const y = pos.getY(k);
+                    const t = y / len;
+                    // Arching curve
+                    const arch = Math.sin(t * Math.PI) * 2.0; // Up then down? 
+                    // Simple droop: z decreases as y increases (local space)
+                    const droop = Math.pow(t, 1.5) * (len * 0.7);
+                    
+                    pos.setZ(k, pos.getZ(k) + droop);
+                }
+                leafGeo.computeVertexNormals();
+                
                 const leaf = new THREE.Mesh(leafGeo, leafMat);
-                leaf.position.y = 12;
-                leaf.rotation.y = (i/6) * Math.PI * 2;
-                leaf.rotation.x = Math.PI / 4;
-                palmProto.add(leaf);
+                leaf.position.copy(topPos);
+                leaf.rotation.y = angle;
+                // Initial spread angle
+                leaf.rotation.x = -Math.PI / 3 - (rng() * 0.5); 
+                
+                group.add(leaf);
             }
 
-            for(let i=0; i<10; i++) {
-                // Left
-                const l = palmProto.clone();
-                l.position.set(-25, -2, -i * 60);
-                scene.add(l); palms.push(l);
-
-                // Right
-                const r = palmProto.clone();
-                r.position.set(25, -2, -i * 60);
-                scene.add(r); palms.push(r);
-            }
+            return group;
         }
 
         function createStation() {
