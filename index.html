@@ -8,72 +8,72 @@
     <!-- FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;600;700&family=Audiowide&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@500;600;700&family=Audiowide&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    
     <style>
-        /* --- VARIABLES --- */
+        /* --- CORE VARIABLES --- */
         :root {
             --neon-cyan: #00f3ff;
             --neon-pink: #ff00ff;
             --neon-purple: #bc13fe;
             --neon-blue: #0055ff;
-            --bg-dark: #050510;
+            --neon-green: #0aff0a;
+            --neon-yellow: #ffdd00;
+            --bg-dark: #020205;
+            
             --font-display: 'Orbitron', sans-serif;
             --font-tech: 'Rajdhani', sans-serif;
             --font-retro: 'Audiowide', cursive;
         }
 
-        /* --- RESET --- */
+        /* --- RESET & BASE --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            background: var(--bg-dark); 
-            color: white; 
-            font-family: var(--font-tech); 
-            overflow: hidden; 
-            height: 100vh;
-            width: 100vw;
+        html { scroll-behavior: smooth; }
+        body {
+            width: 100%;
+            min-height: 100vh;
+            background: var(--bg-dark);
+            font-family: var(--font-tech);
+            color: #fff;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
-        /* --- LAYERS --- */
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+
+        /* --- CANVAS LAYER --- */
         #canvas-container {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            z-index: 1;
+            z-index: -1; /* Behind everything */
         }
 
-        #ui-layer {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 10;
-            pointer-events: none; /* Pass clicks to canvas if needed, but mainly buttons */
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        /* --- SCREEN EFFECTS --- */
+        /* --- SCREEN ARTIFACTS --- */
         .scanlines {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.15));
-            background-size: 100% 4px;
+            background: linear-gradient(to bottom, 
+                rgba(255,255,255,0), 
+                rgba(255,255,255,0) 50%, 
+                rgba(0,0,0,0.1) 50%, 
+                rgba(0,0,0,0.1));
+            background-size: 100% 3px;
             pointer-events: none;
-            z-index: 90;
-            opacity: 0.6;
+            z-index: 900;
+            opacity: 0.3;
         }
-        
         .vignette {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.8) 100%);
+            background: radial-gradient(circle, transparent 55%, rgba(0,0,0,0.9) 100%);
             pointer-events: none;
-            z-index: 80;
+            z-index: 899;
         }
-        
-        /* --- LOADER --- */
+
+        /* --- LOADING OVERLAY --- */
         #loader {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -83,194 +83,435 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            transition: opacity 1s ease;
+            transition: opacity 1s;
         }
         
-        .loader-title {
+        .loader-text {
             font-family: var(--font-display);
-            font-size: 2rem;
             color: var(--neon-cyan);
+            font-size: 2rem;
             margin-bottom: 2rem;
-            text-shadow: 0 0 20px var(--neon-cyan);
-            letter-spacing: 4px;
+            letter-spacing: 5px;
+            text-shadow: 0 0 10px var(--neon-cyan);
+            animation: pulse 1s infinite alternate;
         }
-
+        
         .start-btn {
             background: transparent;
             border: 2px solid var(--neon-pink);
             color: var(--neon-pink);
-            padding: 1.5rem 4rem;
+            padding: 1rem 3rem;
             font-family: var(--font-display);
-            font-weight: 900;
             font-size: 1.5rem;
-            text-transform: uppercase;
             cursor: pointer;
-            box-shadow: 0 0 15px var(--neon-pink), inset 0 0 10px var(--neon-pink);
+            text-transform: uppercase;
+            box-shadow: 0 0 15px var(--neon-pink);
             transition: 0.3s;
-            position: relative;
-            overflow: hidden;
         }
-        
         .start-btn:hover {
             background: var(--neon-pink);
             color: #000;
-            box-shadow: 0 0 50px var(--neon-pink);
-            transform: scale(1.05);
+            box-shadow: 0 0 40px var(--neon-pink);
         }
 
-        /* --- HEADER & CONTROLS --- */
+        @keyframes pulse { from { opacity: 0.5; } to { opacity: 1; } }
+
+        /* --- UI / HERO LAYER --- */
+        #hero-section {
+            height: 100vh;
+            width: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 10;
+        }
+
+        /* TOP BAR */
         .top-bar {
-            pointer-events: auto;
+            padding: 2rem 3rem;
             display: flex;
             justify-content: flex-end;
-            padding: 2rem;
+            align-items: center;
             gap: 1.5rem;
         }
 
-        .toggle-btn {
+        .sound-ctrl {
             background: rgba(0,0,0,0.6);
             border: 1px solid var(--neon-cyan);
             color: var(--neon-cyan);
-            padding: 0.5rem 1.2rem;
-            font-family: var(--font-display);
-            font-size: 0.8rem;
-            cursor: pointer;
+            padding: 0.5rem 1rem;
+            font-family: var(--font-tech);
+            font-weight: 600;
+            font-size: 0.9rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            backdrop-filter: blur(5px);
+            cursor: pointer;
             transition: 0.3s;
             clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            backdrop-filter: blur(4px);
         }
-
-        .toggle-btn:hover, .toggle-btn.active {
+        .sound-ctrl:hover {
             background: rgba(0, 243, 255, 0.2);
             box-shadow: 0 0 15px var(--neon-cyan);
-            text-shadow: 0 0 5px var(--neon-cyan);
+        }
+        .sound-ctrl.off {
+            border-color: #555;
+            color: #777;
         }
 
-        /* --- HERO TEXT --- */
-        .hero-section {
-            pointer-events: none;
+        /* HERO TEXT */
+        .hero-content {
             text-align: center;
-            margin-top: 5vh;
-            position: relative;
-            z-index: 50;
+            padding-bottom: 10vh; /* Lift up */
         }
 
         h1 {
             font-family: var(--font-display);
-            font-size: clamp(3rem, 6vw, 5rem);
+            font-size: clamp(3rem, 7vw, 6rem);
             font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            line-height: 1.1;
-            margin-bottom: 0.5rem;
             color: #fff;
+            margin: 0;
+            line-height: 1.1;
+            letter-spacing: 4px;
             text-shadow: 
-                2px 2px 0px var(--neon-purple),
-                -2px -2px 0px var(--neon-cyan),
-                0 0 30px rgba(0, 243, 255, 0.5);
-            animation: glitch 3s infinite alternate;
+                3px 3px 0px var(--neon-purple),
+                -3px -3px 0px var(--neon-cyan),
+                0 0 30px var(--neon-cyan);
+            animation: glitch 4s infinite;
         }
 
         h2 {
             font-family: var(--font-retro);
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 2vw, 1.5rem);
             color: var(--neon-pink);
-            letter-spacing: 4px;
+            letter-spacing: 6px;
             text-transform: uppercase;
-            margin-bottom: 2rem;
-            text-shadow: 0 0 10px var(--neon-pink);
-            background: rgba(0,0,0,0.5);
+            margin-top: 1rem;
+            margin-bottom: 2.5rem;
+            text-shadow: 0 0 15px var(--neon-pink);
+            position: relative;
             display: inline-block;
-            padding: 0.5rem 2rem;
-            border: 1px solid rgba(255,0,255,0.3);
-            border-radius: 4px;
-            backdrop-filter: blur(4px);
         }
+        h2::before, h2::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40px; height: 2px;
+            background: var(--neon-pink);
+            box-shadow: 0 0 10px var(--neon-pink);
+        }
+        h2::before { right: 100%; margin-right: 15px; }
+        h2::after { left: 100%; margin-left: 15px; }
 
         @keyframes glitch {
-            0% { transform: skew(0deg); }
-            20% { transform: skew(-1deg); }
-            40% { transform: skew(1deg); }
-            60% { transform: skew(0deg); }
-            80% { transform: skew(-0.5deg); }
-            100% { transform: skew(0.5deg); }
+            0% { transform: translate(0); text-shadow: 3px 3px 0px var(--neon-purple), -3px -3px 0px var(--neon-cyan); }
+            2% { transform: translate(-2px, 2px); text-shadow: -3px 3px 0px var(--neon-purple), 3px -3px 0px var(--neon-cyan); }
+            4% { transform: translate(2px, -2px); text-shadow: 3px -3px 0px var(--neon-purple), -3px 3px 0px var(--neon-cyan); }
+            6% { transform: translate(0); text-shadow: 3px 3px 0px var(--neon-purple), -3px -3px 0px var(--neon-cyan); }
+            100% { transform: translate(0); }
         }
 
-        /* --- ACTION BUTTONS --- */
-        .nav-grid {
-            pointer-events: auto;
+        .nav-row {
             display: flex;
             justify-content: center;
             gap: 2rem;
-            margin-top: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
         }
 
-        .nav-btn {
+        /* HOLOGRAPHIC BUTTONS */
+        .holo-btn {
             position: relative;
-            padding: 1rem 2.5rem;
-            font-family: var(--font-display);
-            font-size: 1rem;
-            font-weight: 700;
-            color: white;
-            background: rgba(0,0,0,0.7);
+            background: rgba(10, 10, 20, 0.7);
             border: 2px solid;
+            padding: 1rem 3rem;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1rem;
             text-transform: uppercase;
             letter-spacing: 2px;
-            cursor: pointer;
+            color: #fff;
             text-decoration: none;
-            transition: all 0.3s;
-            clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
-            backdrop-filter: blur(10px);
-        }
-
-        .btn-cyan { border-color: var(--neon-cyan); color: var(--neon-cyan); }
-        .btn-pink { border-color: var(--neon-pink); color: var(--neon-pink); }
-        .btn-purple { border-color: var(--neon-purple); color: var(--neon-purple); }
-
-        .nav-btn:hover {
-            background: rgba(255,255,255,0.1);
-            transform: translateY(-3px);
-            box-shadow: 0 0 20px currentColor;
-            text-shadow: 0 0 8px currentColor;
-        }
-
-        .nav-btn:active { transform: scale(0.98); }
-
-        /* --- SOCIAL FOOTER --- */
-        .social-bar {
-            pointer-events: auto;
-            padding: 2rem;
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-        }
-
-        .social-icon {
-            font-size: 1.8rem;
-            color: rgba(255,255,255,0.5);
+            overflow: hidden;
             transition: 0.3s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
+            backdrop-filter: blur(5px);
+            clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+            cursor: pointer;
         }
+
+        .holo-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transform: skewX(-20deg);
+            transition: 0.5s;
+        }
+
+        .holo-btn:hover::before { left: 100%; }
+        .holo-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            background: rgba(255,255,255,0.1);
+        }
+
+        .btn-cyan { border-color: var(--neon-cyan); color: var(--neon-cyan); text-shadow: 0 0 8px var(--neon-cyan); box-shadow: inset 0 0 10px rgba(0,243,255,0.2); }
+        .btn-pink { border-color: var(--neon-pink); color: var(--neon-pink); text-shadow: 0 0 8px var(--neon-pink); box-shadow: inset 0 0 10px rgba(255,0,255,0.2); }
+        .btn-purple { border-color: var(--neon-purple); color: var(--neon-purple); text-shadow: 0 0 8px var(--neon-purple); box-shadow: inset 0 0 10px rgba(188,19,254,0.2); }
+
+        .holo-btn:hover.btn-cyan { box-shadow: 0 0 20px var(--neon-cyan), inset 0 0 20px var(--neon-cyan); color: #fff; }
+        .holo-btn:hover.btn-pink { box-shadow: 0 0 20px var(--neon-pink), inset 0 0 20px var(--neon-pink); color: #fff; }
+        .holo-btn:hover.btn-purple { box-shadow: 0 0 20px var(--neon-purple), inset 0 0 20px var(--neon-purple); color: #fff; }
+
+        /* --- CONTENT SECTIONS --- */
+        .content-wrapper {
+            position: relative;
+            z-index: 20;
+            background: transparent;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        section {
+            padding: 100px 0;
+            position: relative;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            margin-bottom: 4rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            display: inline-block;
+            color: #fff;
+            text-shadow: 0 0 10px var(--neon-cyan);
+        }
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 100%; height: 4px;
+            background: var(--neon-cyan);
+            box-shadow: 0 0 15px var(--neon-cyan);
+            margin-top: 10px;
+            transform: skewX(-20deg);
+        }
+
+        /* CARDS & PANELS */
+        .glass-neon-panel {
+            background: rgba(10, 10, 20, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(188, 19, 254, 0.3);
+            border-radius: 4px;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.5), 0 0 15px rgba(188,19,254,0.1);
+            transition: 0.4s;
+        }
+        .glass-neon-panel:hover {
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 30px rgba(255,0,255,0.3);
+            transform: translateY(-5px);
+            background: rgba(20, 10, 30, 0.7);
+        }
+
+        .neon-frame-card {
+            background: rgba(5, 5, 8, 0.85);
+            border: 1px solid var(--neon-cyan);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.15), inset 0 0 20px rgba(0, 243, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+            transition: 0.4s;
+        }
+        .neon-frame-card::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 2px;
+            background: var(--neon-cyan);
+            box-shadow: 0 0 10px var(--neon-cyan);
+            transition: left 0.6s;
+        }
+        .neon-frame-card:hover::before { left: 100%; }
+        .neon-frame-card:hover {
+            box-shadow: 0 0 25px var(--neon-cyan), inset 0 0 30px rgba(0,243,255,0.1);
+            transform: translateY(-5px);
+        }
+
+        .vaporwave-block {
+            background: linear-gradient(135deg, rgba(40,10,60,0.8), rgba(10,5,20,0.9));
+            border-left: 4px solid var(--neon-purple);
+            padding: 25px;
+            transition: 0.3s;
+            margin-bottom: 2rem;
+        }
+        .vaporwave-block:hover {
+            transform: translateX(10px);
+            border-left-color: var(--neon-pink);
+            box-shadow: -5px 0 20px rgba(255,0,255,0.2);
+        }
+
+        /* ABOUT GRID */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+        }
+        @media(min-width: 768px) { .about-grid { grid-template-columns: 2fr 1fr; } }
         
-        .social-icon:hover { transform: scale(1.2) translateY(-5px); color: white; }
-        
-        .soc-li:hover { color: #0077b5; text-shadow: 0 0 20px #0077b5; }
-        .soc-gh:hover { color: #ffffff; text-shadow: 0 0 20px #ffffff; }
-        .soc-em:hover { color: var(--neon-purple); text-shadow: 0 0 20px var(--neon-purple); }
-        .soc-ig:hover { color: #E1306C; text-shadow: 0 0 20px #E1306C; }
-        .soc-tg:hover { color: #0088cc; text-shadow: 0 0 20px #0088cc; }
+        .about-text p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            color: #ddd;
+            line-height: 1.8;
+            text-shadow: 0 0 2px #000;
+        }
+
+        .stats { display: flex; flex-direction: column; gap: 15px; }
+        .stat-card {
+            padding: 20px;
+            text-align: center;
+        }
+        .stat-num {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            color: var(--neon-pink);
+            text-shadow: 0 0 15px var(--neon-pink);
+        }
+        .stat-label {
+            font-family: var(--font-tech);
+            color: var(--neon-cyan);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* TIMELINE */
+        .timeline { border-left: 2px solid rgba(255,255,255,0.1); padding-left: 30px; margin-left: 20px; }
+        .timeline-item { position: relative; }
+        .timeline-item::before {
+            content: ''; position: absolute; left: -46px; top: 25px;
+            width: 16px; height: 16px;
+            background: var(--bg-dark); border: 2px solid var(--neon-cyan);
+            border-radius: 50%; box-shadow: 0 0 10px var(--neon-cyan);
+        }
+        .role {
+            font-family: var(--font-display);
+            font-size: 1.4rem; color: #fff;
+            text-shadow: 0 0 5px rgba(255,255,255,0.5);
+        }
+        .company {
+            font-family: var(--font-tech); color: var(--neon-pink);
+            font-size: 1.1rem; display: block; margin-bottom: 5px;
+        }
+        .date { font-family: 'Courier New', monospace; font-size: 0.9rem; color: #888; margin-bottom: 15px; display: block; }
+
+        /* SKILLS */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        .skill-category { padding: 30px; }
+        .skill-title {
+            color: var(--neon-cyan);
+            font-family: var(--font-tech);
+            font-size: 1.3rem;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(0,243,255,0.2);
+            padding-bottom: 10px; margin-bottom: 15px;
+        }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+        .tag {
+            font-family: monospace; font-size: 0.9rem;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #aaa; transition: 0.3s;
+            clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%);
+        }
+        .tag:hover {
+            border-color: var(--neon-pink); color: #fff;
+            background: rgba(255,0,255,0.2);
+            box-shadow: 0 0 15px var(--neon-pink);
+            transform: scale(1.05);
+        }
+
+        /* PROJECTS */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .project-card {
+            background: #050508;
+            border: 1px solid rgba(0,243,255,0.2);
+            padding: 25px;
+            position: relative;
+            transition: 0.4s;
+            background-image: linear-gradient(rgba(0,255,255,0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0,255,255,0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .project-card:hover {
+            border-color: var(--neon-green);
+            box-shadow: 0 0 25px rgba(10,255,10,0.2);
+            transform: translateY(-5px);
+            background-color: #0a0a12;
+        }
+        .p-title {
+            font-family: var(--font-display); color: #fff; font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+        .p-role { font-family: monospace; color: var(--neon-cyan); font-size: 0.85rem; margin-bottom: 15px; }
+        .p-desc { color: #ccc; font-size: 1rem; line-height: 1.6; }
+
+        /* TERMINAL */
+        #terminal-section { padding-top: 50px; }
+        .terminal-window {
+            background: rgba(5,5,5,0.95);
+            border: 1px solid #333;
+            border-radius: 6px;
+            box-shadow: 0 0 40px rgba(0,255,0,0.1);
+            max-width: 900px; margin: 0 auto;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+        }
+        .terminal-header {
+            background: #151515; padding: 10px 15px;
+            display: flex; gap: 8px; border-bottom: 1px solid #333;
+        }
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .red { background: #ff5f56; } .yellow { background: #ffbd2e; } .green { background: #27c93f; }
+        .terminal-body {
+            padding: 20px; height: 350px; overflow-y: auto;
+            color: #33ff00; text-shadow: 0 0 5px rgba(51,255,0,0.5);
+        }
+        .prompt { color: var(--neon-pink); margin-right: 10px; }
+
+        /* FOOTER */
+        .footer-bar {
+            background: linear-gradient(to top, #000, rgba(0,0,0,0.8));
+            padding: 4rem 0;
+            text-align: center;
+        }
+        .social-links { display: flex; justify-content: center; gap: 3rem; margin-bottom: 2rem; }
+        .social-link {
+            font-size: 2rem; color: #888; transition: 0.3s;
+        }
+        .social-link:hover {
+            color: var(--neon-cyan); transform: scale(1.2);
+            text-shadow: 0 0 20px var(--neon-cyan);
+        }
 
     </style>
 </head>
 <body>
 
-    <!-- AUDIO SYSTEM -->
+    <!-- AUDIO RESOURCES -->
     <audio id="bg-music" loop>
         <source src="music/RETRO1.m4a" type="audio/mp4">
     </audio>
@@ -283,49 +524,202 @@
 
     <!-- LOADING SCREEN -->
     <div id="loader">
-        <div class="loader-title">SYSTEM BOOT SEQUENCE</div>
-        <button class="start-btn" id="start-btn">INITIALIZE</button>
+        <div class="loader-text">SYSTEM INITIALIZING...</div>
+        <button class="start-btn" id="btn-enter">ENTER THE GRID</button>
     </div>
 
-    <!-- OVERLAYS -->
+    <!-- CANVAS WRAPPER (FIXED BACKGROUND) -->
+    <div id="canvas-container"></div>
+    
+    <!-- VFX OVERLAYS -->
     <div class="scanlines"></div>
     <div class="vignette"></div>
 
-    <!-- CANVAS -->
-    <div id="canvas-container"></div>
-
-    <!-- UI LAYER -->
-    <div id="ui-layer">
-        
-        <!-- CONTROLS -->
+    <!-- HERO SECTION -->
+    <div id="hero-section">
+        <!-- HEADER -->
         <div class="top-bar">
-            <button class="toggle-btn active" id="btn-music"><i class="fas fa-music"></i> MUSIC: ON</button>
-            <button class="toggle-btn active" id="btn-sfx"><i class="fas fa-volume-up"></i> SFX: ON</button>
+            <button class="sound-ctrl" id="toggle-music">
+                <i class="fas fa-music"></i> <span>MUSIC: ON</span>
+            </button>
+            <button class="sound-ctrl" id="toggle-sfx">
+                <i class="fas fa-volume-up"></i> <span>SFX: ON</span>
+            </button>
         </div>
 
         <!-- HERO CONTENT -->
-        <div class="hero-section">
+        <div class="hero-content">
             <h1>Elyas Moshirpanahi</h1>
-            <h2>Senior Generative AI Engineer</h2>
+            <h2>Senior GenAI Engineer</h2>
             
-            <div class="nav-grid">
-                <a href="#" class="nav-btn btn-cyan" onmouseenter="playHover()">Portfolio</a>
-                <a href="#" class="nav-btn btn-pink" onmouseenter="playHover()">Resume</a>
-                <a href="#" class="nav-btn btn-purple" onmouseenter="playHover()">Terminal</a>
+            <div class="nav-row">
+                <a href="#projects" class="holo-btn btn-cyan" onmouseenter="playHover()">
+                    <i class="fas fa-project-diagram"></i> Projects
+                </a>
+                <a href="#experience" class="holo-btn btn-pink" onmouseenter="playHover()">
+                    <i class="fas fa-file-alt"></i> Experience
+                </a>
+                <a href="#terminal-section" class="holo-btn btn-purple" onmouseenter="playHover()">
+                    <i class="fas fa-terminal"></i> Terminal
+                </a>
             </div>
         </div>
-
-        <!-- FOOTER -->
-        <div class="social-bar">
-            <a href="https://linkedin.com" target="_blank" class="social-icon soc-li" onmouseenter="playHover()"><i class="fab fa-linkedin"></i></a>
-            <a href="https://github.com" target="_blank" class="social-icon soc-gh" onmouseenter="playHover()"><i class="fab fa-github"></i></a>
-            <a href="mailto:elyas@example.com" class="social-icon soc-em" onmouseenter="playHover()"><i class="fas fa-envelope"></i></a>
-            <a href="https://instagram.com" target="_blank" class="social-icon soc-ig" onmouseenter="playHover()"><i class="fab fa-instagram"></i></a>
-            <a href="https://telegram.org" target="_blank" class="social-icon soc-tg" onmouseenter="playHover()"><i class="fab fa-telegram"></i></a>
+        
+        <!-- SPACER FOR SCROLL -->
+        <div style="height: 50px; text-align: center; opacity: 0.7; padding-bottom: 20px;">
+            <i class="fas fa-chevron-down" style="font-size: 2rem; color: var(--neon-cyan); animation: pulse 1s infinite;"></i>
         </div>
     </div>
 
-    <!-- THREE.JS IMPORTS -->
+    <!-- CONTENT SECTIONS -->
+    <div class="content-wrapper">
+        
+        <!-- ABOUT -->
+        <section id="about">
+            <div class="container">
+                <h2 class="section-title">System Status</h2>
+                <div class="about-grid">
+                    <div class="about-text glass-neon-panel" style="padding: 30px;">
+                        <p>I am a Senior Generative AI Engineer specializing in Large Language Models, Autonomous Agents, and Production Machine Learning Systems. With a deep background in full-stack engineering and algorithmic optimization, I bridge the gap between research-grade AI and scalable, real-world applications.</p>
+                        <p>My core focus is architecting robust RAG pipelines, optimizing inference infrastructure, and deploying agentic workflows that solve complex reasoning tasks. I don't just train models; I build the ecosystems they live in.</p>
+                    </div>
+                    <div class="stats">
+                        <div class="stat-card glass-neon-panel">
+                            <div class="stat-num">4+</div>
+                            <div class="stat-label">Years Exp</div>
+                        </div>
+                        <div class="stat-card glass-neon-panel">
+                            <div class="stat-num">1st</div>
+                            <div class="stat-label">AAIC Winner</div>
+                        </div>
+                        <div class="stat-card glass-neon-panel">
+                            <div class="stat-num">20k+</div>
+                            <div class="stat-label">Users Impacted</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EXPERIENCE -->
+        <section id="experience">
+            <div class="container">
+                <h2 class="section-title">Experience Log</h2>
+                <div class="timeline">
+                    <div class="timeline-item vaporwave-block">
+                        <h3 class="role">Machine Learning Engineer</h3>
+                        <span class="company">Tech / Stealth Startup</span>
+                        <span class="date">Feb 2023 – Present</span>
+                        <ul>
+                            <li>• Architecting GenAI solutions using PyTorch, LangChain, Vector DBs.</li>
+                            <li>• Deployed LLaMA-based agents for automated reasoning tasks.</li>
+                            <li>• Optimized inference latency by 40% (Quantization, ONNX).</li>
+                        </ul>
+                    </div>
+                    <div class="timeline-item vaporwave-block">
+                        <h3 class="role">Full Stack Developer</h3>
+                        <span class="company">YIWU Dar Trading Co.</span>
+                        <span class="date">2021 – 2023</span>
+                        <ul>
+                            <li>• Engineered high-scale VPN platform ("SecureNet").</li>
+                            <li>• Designed robust MVC architecture in Laravel/PHP.</li>
+                            <li>• Automated server management with Python & Bash.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SKILLS -->
+        <section id="skills">
+            <div class="container">
+                <h2 class="section-title">Tech Stack</h2>
+                <div class="skills-grid">
+                    <div class="skill-category neon-frame-card">
+                        <h4 class="skill-title">GenAI & LLMs</h4>
+                        <div class="skill-tags">
+                            <span class="tag">PyTorch</span>
+                            <span class="tag">LangChain</span>
+                            <span class="tag">RAG</span>
+                            <span class="tag">LoRA</span>
+                            <span class="tag">OpenAI API</span>
+                        </div>
+                    </div>
+                    <div class="skill-category neon-frame-card">
+                        <h4 class="skill-title">Backend</h4>
+                        <div class="skill-tags">
+                            <span class="tag">Python</span>
+                            <span class="tag">FastAPI</span>
+                            <span class="tag">Docker</span>
+                            <span class="tag">Kubernetes</span>
+                            <span class="tag">Redis</span>
+                        </div>
+                    </div>
+                    <div class="skill-category neon-frame-card">
+                        <h4 class="skill-title">Core ML</h4>
+                        <div class="skill-tags">
+                            <span class="tag">NumPy</span>
+                            <span class="tag">OpenCV</span>
+                            <span class="tag">Scikit-learn</span>
+                            <span class="tag">Time Series</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECTS -->
+        <section id="projects">
+            <div class="container">
+                <h2 class="section-title">Mission Archives</h2>
+                <div class="projects-grid">
+                    <div class="project-card">
+                        <h3 class="p-title">Market Sentinel</h3>
+                        <div class="p-role">Algorithmic Trading Agent</div>
+                        <p class="p-desc">LSTM-based time-series forecasting system identifying top performing stocks with high precision. Winner of AAIC Competition.</p>
+                    </div>
+                    <div class="project-card">
+                        <h3 class="p-title">SecureNet</h3>
+                        <div class="p-role">High-Scale VPN Platform</div>
+                        <p class="p-desc">Distributed VPN architecture handling thousands of concurrent connections with automated load balancing.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TERMINAL -->
+        <section id="terminal-section">
+            <div class="container">
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="output-line">user@elyas-portfolio:~$ initializing connection...</div>
+                        <div class="output-line">user@elyas-portfolio:~$ status: online</div>
+                        <div class="output-line">user@elyas-portfolio:~$ echo "Ready for deployment."</div>
+                        <div class="output-line">Ready for deployment.</div>
+                        <div class="input-line">
+                            <span class="prompt">user@elyas-portfolio:~$</span>
+                            <span class="cursor">_</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <div class="footer-bar">
+            <div class="social-links">
+                <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                <a href="#" class="social-link"><i class="fas fa-envelope"></i></a>
+            </div>
+            <p style="color: #666; font-size: 0.8rem;">© 2025 ELYAS MOSHIRPANAHI. SYSTEM OPTIMIZED.</p>
+        </div>
+    </div>
+
+    <!-- THREE.JS & POST-PROCESSING -->
     <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
     <script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
     <script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
@@ -334,45 +728,48 @@
     <script src="https://unpkg.com/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
     <script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
 
-    <!-- LOGIC -->
+    <!-- MAIN LOGIC -->
     <script>
-        // --- CONFIGURATION ---
+        // --- CONSTANTS ---
         const CONF = {
-            fov: 60,
-            speed: 40, // Much faster for Cyberpunk feel
+            fov: 75,
+            roadWidth: 10, // Narrower road as requested
+            speed: 40, 
+            palmSpeed: 20, // Slower palms
             colors: {
-                cyan: 0x00f3ff,
                 pink: 0xff00ff,
+                cyan: 0x00f3ff,
                 purple: 0xbc13fe,
                 blue: 0x0055ff,
-                grid: 0x220033
+                grid: 0xff00ff,
+                sky: 0x020205
             }
         };
 
-        // --- AUDIO STATE ---
-        let musicEnabled = true;
-        let sfxEnabled = true;
-        const bgMusic = document.getElementById('bg-music');
-        const sfxHover = document.getElementById('sfx-hover');
-        const sfxBeam = document.getElementById('sfx-beam');
-
-        // --- SCENE GLOBALS ---
+        // --- GLOBAL STATE ---
         let scene, camera, renderer, composer;
-        let road, car;
-        let cityGroup, sunMesh, beamMesh;
-        let palms = [], arches = [];
-        const clock = new THREE.Clock();
+        let car, road, gridHelper, sun;
+        let cityGroup, palms = [], arches = [], tronStation, beamMesh;
+        let clock = new THREE.Clock();
         let time = 0;
+        
+        let musicOn = true;
+        let sfxOn = true;
+        
+        const audioMusic = document.getElementById('bg-music');
+        const audioHover = document.getElementById('sfx-hover');
+        const audioBeam = document.getElementById('sfx-beam');
 
-        // --- INIT ---
+        // --- INITIALIZATION ---
         window.onload = () => {
-            const btn = document.getElementById('start-btn');
-            btn.addEventListener('click', () => {
-                document.getElementById('loader').style.opacity = 0;
+            const btnEnter = document.getElementById('btn-enter');
+            btnEnter.addEventListener('click', () => {
+                document.getElementById('loader').style.opacity = '0';
                 setTimeout(() => document.getElementById('loader').remove(), 1000);
-                if(musicEnabled) {
-                    bgMusic.volume = 0.4;
-                    bgMusic.play().catch(console.error);
+                
+                if(musicOn) {
+                    audioMusic.volume = 0.5;
+                    audioMusic.play().catch(e => console.warn("Audio autoplay blocked"));
                 }
                 initThree();
             });
@@ -381,77 +778,66 @@
         function initThree() {
             const container = document.getElementById('canvas-container');
 
-            // 1. Scene & Camera
+            // 1. SCENE
             scene = new THREE.Scene();
-            scene.fog = new THREE.FogExp2(0x050510, 0.005); // Thick cyber fog
-            scene.background = new THREE.Color(0x050510);
+            scene.background = new THREE.Color(CONF.colors.sky);
+            scene.fog = new THREE.FogExp2(CONF.colors.sky, 0.008); 
 
-            camera = new THREE.PerspectiveCamera(CONF.fov, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 3.5, 12);
-            camera.lookAt(0, 1, -50);
+            // 2. CAMERA
+            camera = new THREE.PerspectiveCamera(CONF.fov, window.innerWidth / window.innerHeight, 0.1, 2000);
+            camera.position.set(0, 2.0, 10); 
+            camera.lookAt(0, 1.5, -50);
 
-            // 2. Renderer
+            // 3. RENDERER
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             renderer.toneMapping = THREE.ReinhardToneMapping;
             container.appendChild(renderer.domElement);
 
-            // 3. Post Processing (BLOOM IS KEY)
-            const renderPass = new THREE.RenderPass(scene, camera);
+            // 4. POST-PROCESSING (BLOOM)
+            const renderScene = new THREE.RenderPass(scene, camera);
             const bloomPass = new THREE.UnrealBloomPass(
                 new THREE.Vector2(window.innerWidth, window.innerHeight), 
                 1.5, 0.4, 0.85
             );
-            bloomPass.threshold = 0;
-            bloomPass.strength = 1.6; // High bloom for neon
-            bloomPass.radius = 0.4;
+            bloomPass.threshold = 0.05;
+            bloomPass.strength = 1.3;
+            bloomPass.radius = 0.5;
 
             composer = new THREE.EffectComposer(renderer);
-            composer.addPass(renderPass);
+            composer.addPass(renderScene);
             composer.addPass(bloomPass);
 
-            // 4. Build World
+            // 5. ASSETS
             createLights();
             createSun();
             createCity();
             createRoad();
             createCar();
-            createTronStation();
-            
-            // Populate Palms & Arches
-            for(let i=0; i<20; i++) spawnPalm(-i*15);
-            for(let i=0; i<10; i++) spawnArch(-i*30 - 10);
+            createPalms();
+            createArches();
+            createStation();
 
-            // 5. Events
+            // 6. EVENTS
             window.addEventListener('resize', onResize);
-            
-            // 6. Loop
             animate();
         }
 
         function createLights() {
-            const ambient = new THREE.AmbientLight(0xffffff, 0.1);
+            const ambient = new THREE.AmbientLight(0xffffff, 0.6);
             scene.add(ambient);
-            
-            const p1 = new THREE.PointLight(CONF.colors.pink, 1.5, 60);
-            p1.position.set(-10, 5, 0);
-            scene.add(p1);
-
-            const p2 = new THREE.PointLight(CONF.colors.cyan, 1.5, 60);
-            p2.position.set(10, 5, 0);
-            scene.add(p2);
+            const pLight = new THREE.PointLight(CONF.colors.cyan, 1.5, 50);
+            pLight.position.set(0, 5, 5);
+            scene.add(pLight);
         }
 
-        // --- OBJECTS ---
-
         function createSun() {
-            // Retro Sun Shader
-            const geometry = new THREE.CircleGeometry(50, 64);
+            const geometry = new THREE.CircleGeometry(60, 64);
             const material = new THREE.ShaderMaterial({
                 uniforms: {
-                    color1: { value: new THREE.Color(0xff00cc) }, // Magenta
-                    color2: { value: new THREE.Color(0xffaa00) }, // Yellow/Orange
+                    color1: { value: new THREE.Color(0xffaa00) },
+                    color2: { value: new THREE.Color(0xff00ff) },
                     uTime: { value: 0 }
                 },
                 vertexShader: `
@@ -467,79 +853,83 @@
                     uniform vec3 color2;
                     uniform float uTime;
                     void main() {
-                        vec3 grad = mix(color2, color1, vUv.y);
-                        // Stripes
-                        float stripe = fract((vUv.y - uTime * 0.05) * 20.0);
-                        float gap = step(0.2, stripe); // 0.2 is gap size
-                        if(vUv.y < 0.6) {
-                            if(gap < 0.5) discard;
-                        }
+                        vec3 grad = mix(color1, color2, vUv.y);
+                        // Moving stripes
+                        float stripe = fract((vUv.y - uTime * 0.1) * 20.0);
+                        float gap = step(0.3, stripe);
+                        if(vUv.y < 0.6 && gap < 0.1) discard; 
                         gl_FragColor = vec4(grad, 1.0);
                     }
                 `,
                 transparent: true
             });
-            sunMesh = new THREE.Mesh(geometry, material);
-            sunMesh.position.set(0, 20, -200);
-            scene.add(sunMesh);
+            sun = new THREE.Mesh(geometry, material);
+            sun.position.set(0, 30, -300);
+            scene.add(sun);
         }
 
         function createCity() {
-            // Cyberpunk Skyline
             cityGroup = new THREE.Group();
+            const geometry = new THREE.BoxGeometry(1, 1, 1);
+            const matDark = new THREE.MeshPhongMaterial({ color: 0x050510 });
+            const matWin = new THREE.MeshBasicMaterial({ color: CONF.colors.cyan });
             
-            const boxGeo = new THREE.BoxGeometry(1, 1, 1);
-            const boxMat = new THREE.MeshBasicMaterial({ color: 0x000000 }); // Silhouette mostly
-            const neonMat = new THREE.MeshBasicMaterial({ color: CONF.colors.cyan });
-            const winMat = new THREE.MeshBasicMaterial({ color: CONF.colors.pink });
-
-            // Create 100 buildings
-            for(let i=0; i<100; i++) {
-                const h = 20 + Math.random() * 60;
-                const w = 5 + Math.random() * 10;
-                const d = 5 + Math.random() * 10;
-                const x = (Math.random() - 0.5) * 400;
-                const z = -200 - Math.random() * 100;
-
-                const b = new THREE.Mesh(boxGeo, boxMat);
-                b.position.set(x, h/2, z);
+            for(let i=0; i<180; i++) {
+                const w = 4 + Math.random() * 8;
+                const d = 4 + Math.random() * 8;
+                const h = 20 + Math.random() * 80;
+                let x = (Math.random() - 0.5) * 500;
+                if(Math.abs(x) < 30) x += 60 * Math.sign(x); // Clear road
+                const z = -200 - Math.random() * 200;
+                const b = new THREE.Mesh(geometry, matDark);
+                b.position.set(x, h/2 - 10, z);
                 b.scale.set(w, h, d);
                 cityGroup.add(b);
 
-                // Add random neon strips
-                if(Math.random() > 0.5) {
-                    const strip = new THREE.Mesh(boxGeo, neonMat);
-                    strip.position.set(x, h * Math.random(), z + d/2 + 0.1);
-                    strip.scale.set(w * 0.8, 0.5, 0.1);
+                // Windows
+                if(Math.random() > 0.7) {
+                    const strip = new THREE.Mesh(geometry, matWin);
+                    strip.position.set(x, Math.random() * h, z + d/2 + 0.1);
+                    strip.scale.set(w * 0.7, 0.4, 0.1);
                     cityGroup.add(strip);
-                }
-                
-                // Add window lights
-                if(Math.random() > 0.3) {
-                    const win = new THREE.Mesh(boxGeo, winMat);
-                    win.position.set(x + (Math.random()-0.5)*w, h * Math.random(), z + d/2 + 0.15);
-                    win.scale.set(1, 1, 0.1);
-                    cityGroup.add(win);
                 }
             }
             scene.add(cityGroup);
         }
 
         function createRoad() {
-            // 1. Grid Road
-            const geometry = new THREE.PlaneGeometry(80, 400, 40, 100);
-            geometry.rotateX(-Math.PI / 2);
+            const planeGeo = new THREE.PlaneGeometry(CONF.roadWidth, 1000);
+            planeGeo.rotateX(-Math.PI / 2);
+            const planeMat = new THREE.MeshStandardMaterial({
+                color: 0x000000,
+                roughness: 0.1,
+                metalness: 0.9
+            });
+            const roadPlane = new THREE.Mesh(planeGeo, planeMat);
+            roadPlane.position.set(0, -1, -200);
+            scene.add(roadPlane);
 
-            const material = new THREE.ShaderMaterial({
+            const gridGeo = new THREE.PlaneGeometry(CONF.roadWidth * 3, 1000, 40, 100);
+            gridGeo.rotateX(-Math.PI / 2);
+            
+            const gridMat = new THREE.ShaderMaterial({
                 uniforms: {
-                    uColor: { value: new THREE.Color(CONF.colors.purple) },
-                    uTime: { value: 0 }
+                    uColor: { value: new THREE.Color(CONF.colors.pink) },
+                    uTime: { value: 0 },
+                    uWidth: { value: CONF.roadWidth }
                 },
                 vertexShader: `
                     varying vec2 vUv;
+                    uniform float uTime;
                     void main() {
                         vUv = uv;
-                        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                        vec3 pos = position;
+                        // Warping sides up
+                        float dist = abs(pos.x);
+                        if(dist > 5.0) {
+                            pos.y += pow(dist - 5.0, 1.5) * 0.5;
+                        }
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
                     }
                 `,
                 fragmentShader: `
@@ -547,170 +937,129 @@
                     uniform vec3 uColor;
                     uniform float uTime;
                     void main() {
-                        // Moving grid
-                        float y = fract(vUv.y * 40.0 + uTime * 8.0);
-                        float lineY = step(0.85, y); // Horizontal lines
-                        
-                        float lineX = step(0.97, fract(vUv.x * 20.0)); // Vertical lines
-                        
-                        float glow = max(lineY, lineX);
-                        
-                        // Fade edges
-                        float alpha = (1.0 - abs(vUv.x - 0.5) * 2.0);
-                        alpha = pow(alpha, 2.0);
-
-                        gl_FragColor = vec4(uColor, glow * alpha);
+                        float gridY = step(0.95, fract(vUv.y * 50.0 + uTime * 2.0));
+                        float gridX = step(0.98, fract(vUv.x * 20.0));
+                        float alpha = max(gridX, gridY);
+                        float fade = 1.0 - smoothstep(0.3, 0.5, abs(vUv.x - 0.5));
+                        gl_FragColor = vec4(uColor, alpha * fade * 0.6);
                     }
                 `,
                 transparent: true,
                 side: THREE.DoubleSide
             });
-            
-            road = new THREE.Mesh(geometry, material);
-            road.position.z = -100;
-            scene.add(road);
-
-            // 2. Wet Asphalt Reflector
-            const reflectGeo = new THREE.PlaneGeometry(80, 400);
-            reflectGeo.rotateX(-Math.PI/2);
-            const reflectMat = new THREE.MeshStandardMaterial({
-                color: 0x000000,
-                roughness: 0.1,
-                metalness: 0.8
-            });
-            const reflector = new THREE.Mesh(reflectGeo, reflectMat);
-            reflector.position.set(0, -0.1, -100);
-            scene.add(reflector);
+            gridHelper = new THREE.Mesh(gridGeo, gridMat);
+            gridHelper.position.set(0, -1.1, -200);
+            scene.add(gridHelper);
         }
 
         function createCar() {
-            const carGrp = new THREE.Group();
-            
-            // Refined DeLorean Shape
-            const mBody = new THREE.MeshStandardMaterial({ color: 0x888888, metalness: 0.9, roughness: 0.2 });
-            const mBlack = new THREE.MeshBasicMaterial({ color: 0x000000 });
-            const mGlowC = new THREE.MeshBasicMaterial({ color: CONF.colors.cyan });
-            const mGlowP = new THREE.MeshBasicMaterial({ color: CONF.colors.pink });
+            car = new THREE.Group();
 
-            // Main Body (Wedge)
-            const chassis = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.5, 5), mBody);
+            // Redesign: Sleeker, lower, wider (Cyberpunk style)
+            const mBody = new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.9, roughness: 0.1 });
+            const mGlow = new THREE.MeshBasicMaterial({ color: CONF.colors.cyan });
+            const mTail = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+
+            // Main Chassis (Wide & Low)
+            const chassis = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.4, 4.5), mBody);
             chassis.position.y = 0.5;
-            carGrp.add(chassis);
+            car.add(chassis);
 
-            // Roof
-            const roof = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.45, 2.5), mBlack);
-            roof.position.set(0, 0.95, -0.2);
-            carGrp.add(roof);
-            
-            // Louvers (Rear window slats)
-            for(let i=0; i<6; i++) {
-                const slat = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.05, 0.2), mBody);
-                slat.position.set(0, 1.0 - i*0.05, 1.2 + i*0.2);
-                slat.rotation.x = -0.2;
-                carGrp.add(slat);
-            }
+            // Cockpit (Tapered)
+            const cockpitGeo = new THREE.BoxGeometry(1.6, 0.35, 2.0);
+            const cockpit = new THREE.Mesh(cockpitGeo, mBody);
+            cockpit.position.set(0, 0.85, -0.2);
+            car.add(cockpit);
 
-            // Wheels
-            const wGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.35, 24);
+            // Glowing Wheels
+            const wGeo = new THREE.CylinderGeometry(0.35, 0.35, 0.4, 16);
             wGeo.rotateZ(Math.PI/2);
-            [[-1.2, 1.6], [1.2, 1.6], [-1.2, -1.6], [1.2, -1.6]].forEach(pos => {
-                const w = new THREE.Mesh(wGeo, mBlack);
-                w.position.set(pos[0], 0.4, pos[1]);
-                carGrp.add(w);
-                // Hubcap glow
-                const h = new THREE.Mesh(new THREE.CircleGeometry(0.25, 16), mGlowC);
-                h.rotation.y = pos[0] > 0 ? Math.PI/2 : -Math.PI/2;
-                h.position.set(pos[0] > 0 ? pos[0]+0.18 : pos[0]-0.18, 0.4, pos[1]);
-                carGrp.add(h);
+            [[-1.1, 1.2], [1.1, 1.2], [-1.1, -1.2], [1.1, -1.2]].forEach(p => {
+                const w = new THREE.Mesh(wGeo, new THREE.MeshBasicMaterial({ color: 0x000 }));
+                w.position.set(p[0], 0.35, p[1]);
+                car.add(w);
+                
+                // Neon Rim
+                const rim = new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.02, 8, 16), mGlow);
+                rim.rotation.y = Math.PI / 2;
+                rim.position.set(p[0] > 0 ? p[0]+0.21 : p[0]-0.21, 0.35, p[1]);
+                car.add(rim);
             });
 
-            // Lights
-            const tail = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.1, 0.1), mGlowP);
-            tail.position.set(0, 0.65, 2.5);
-            carGrp.add(tail);
-
-            const head = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.08, 0.1), mGlowC);
-            head.position.set(0, 0.5, -2.5);
-            carGrp.add(head);
+            // Tail Light Strip
+            const tail = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.05, 0.05), mTail);
+            tail.position.set(0, 0.6, 2.26);
+            car.add(tail);
 
             // Underglow
-            const ug = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 4.8), new THREE.MeshBasicMaterial({ color: CONF.colors.cyan, side: THREE.DoubleSide }));
-            ug.rotation.x = -Math.PI/2;
+            const ug = new THREE.Mesh(new THREE.PlaneGeometry(2.0, 4.2), new THREE.MeshBasicMaterial({ color: CONF.colors.cyan, side: THREE.DoubleSide, transparent: true, opacity: 0.4 }));
+            ug.rotation.x = Math.PI/2;
             ug.position.y = 0.1;
-            carGrp.add(ug);
+            car.add(ug);
 
-            car = carGrp;
+            car.position.set(0, 0, 7);
             scene.add(car);
         }
 
-        function createTronStation() {
-            const station = new THREE.Group();
-            
-            // Base Ring
-            const ring = new THREE.Mesh(
-                new THREE.TorusGeometry(15, 0.5, 16, 64),
-                new THREE.MeshBasicMaterial({ color: CONF.colors.cyan })
-            );
-            ring.rotation.x = Math.PI/2;
-            station.add(ring);
+        function createPalms() {
+            const mat = new THREE.MeshBasicMaterial({ color: CONF.colors.purple, wireframe: true });
+            const leafMat = new THREE.MeshBasicMaterial({ color: CONF.colors.cyan, side: THREE.DoubleSide });
 
-            // Pylons
-            const pylonGeo = new THREE.BoxGeometry(2, 40, 2);
-            const pMat = new THREE.MeshBasicMaterial({ color: 0x111111 });
-            const p1 = new THREE.Mesh(pylonGeo, pMat); p1.position.x = -15;
-            const p2 = new THREE.Mesh(pylonGeo, pMat); p2.position.x = 15;
-            station.add(p1); station.add(p2);
+            const proto = new THREE.Group();
+            const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.3, 7, 4), mat);
+            trunk.position.y = 3.5;
+            proto.add(trunk);
 
-            // Beam Mesh (Hidden default)
-            beamMesh = new THREE.Mesh(
-                new THREE.CylinderGeometry(1, 1, 300, 16),
-                new THREE.MeshBasicMaterial({ color: 0x88ffff, transparent: true, opacity: 0.8 })
-            );
-            beamMesh.position.y = 150;
-            beamMesh.visible = false;
-            station.add(beamMesh);
+            const lGeo = new THREE.PlaneGeometry(1.5, 4);
+            const pos = lGeo.attributes.position;
+            for(let i=0; i<pos.count; i++) pos.setZ(i, pos.getZ(i) - pos.getY(i)*pos.getY(i)*0.05);
 
-            station.position.set(0, 0, -150);
-            scene.add(station);
-        }
-
-        // --- PROCEDURAL SPAWNERS ---
-        function spawnPalm(z) {
-            const grp = new THREE.Group();
-            // Trunk
-            const t = new THREE.Mesh(
-                new THREE.CylinderGeometry(0.2, 0.5, 8, 7),
-                new THREE.MeshBasicMaterial({ color: CONF.colors.pink })
-            );
-            t.position.y = 4;
-            grp.add(t);
-            // Leaves (Fuller)
-            const lMat = new THREE.MeshBasicMaterial({ color: CONF.colors.cyan, side: THREE.DoubleSide });
-            const lGeo = new THREE.PlaneGeometry(2, 6);
-            for(let i=0; i<8; i++) {
-                const l = new THREE.Mesh(lGeo, lMat);
-                l.position.y = 8;
-                l.rotation.y = (i/8) * Math.PI * 2;
-                l.rotation.z = Math.PI/3; // Arch down
-                grp.add(l);
+            for(let i=0; i<5; i++) {
+                const l = new THREE.Mesh(lGeo, leafMat);
+                l.position.y = 7;
+                l.rotation.y = (i/5) * Math.PI * 2;
+                l.rotation.x = 0.5;
+                proto.add(l);
             }
-            
-            // Left & Right
-            const left = grp.clone(); left.position.set(-25, 0, z);
-            const right = grp.clone(); right.position.set(25, 0, z);
-            
-            scene.add(left); palms.push(left);
-            scene.add(right); palms.push(right);
+
+            for(let i=0; i<12; i++) {
+                const l = proto.clone(); l.position.set(-15, -1, -i * 40);
+                const r = proto.clone(); r.position.set(15, -1, -i * 40);
+                scene.add(l); palms.push(l);
+                scene.add(r); palms.push(r);
+            }
         }
 
-        function spawnArch(z) {
-            const arch = new THREE.Mesh(
-                new THREE.TorusGeometry(20, 0.3, 8, 32, Math.PI),
-                new THREE.MeshBasicMaterial({ color: CONF.colors.purple })
-            );
-            arch.position.set(0, 0, z);
-            scene.add(arch);
-            arches.push(arch);
+        function createArches() {
+            const geo = new THREE.TorusGeometry(20, 0.4, 8, 30, Math.PI);
+            const mat = new THREE.MeshBasicMaterial({ color: CONF.colors.pink });
+            
+            for(let i=0; i<6; i++) {
+                const arch = new THREE.Mesh(geo, mat);
+                arch.position.set(0, -1, -i * 80 - 20);
+                scene.add(arch);
+                arches.push(arch);
+            }
+        }
+
+        function createStation() {
+            tronStation = new THREE.Group();
+            const body = new THREE.Mesh(new THREE.BoxGeometry(20, 60, 5), new THREE.MeshBasicMaterial({ color: 0x050505 }));
+            body.position.y = 30;
+            tronStation.add(body);
+
+            const ring = new THREE.Mesh(new THREE.TorusGeometry(8, 0.5, 8, 32), new THREE.MeshBasicMaterial({ color: CONF.colors.blue }));
+            ring.position.set(0, 45, 2);
+            tronStation.add(ring);
+
+            const beamGeo = new THREE.CylinderGeometry(1.5, 1.5, 400, 16);
+            const beamMat = new THREE.MeshBasicMaterial({ color: 0xaaddff, transparent: true, opacity: 0 });
+            beamMesh = new THREE.Mesh(beamGeo, beamMat);
+            beamMesh.position.set(0, 200, 0);
+            tronStation.add(beamMesh);
+
+            tronStation.position.set(0, -5, -350);
+            scene.add(tronStation);
         }
 
         // --- ANIMATION ---
@@ -719,43 +1068,38 @@
             const dt = clock.getDelta();
             time += dt;
 
-            // 1. Uniforms
-            if(road) road.material.uniforms.uTime.value = time;
-            if(sunMesh) sunMesh.material.uniforms.uTime.value = time;
+            // Update Shader Time
+            if(sun) sun.material.uniforms.uTime.value = time;
+            if(gridHelper) gridHelper.material.uniforms.uTime.value = time;
 
-            // 2. Scroll World
-            const move = CONF.speed * dt;
-            
+            // Move Environment
+            const moveSpd = CONF.palmSpeed * dt;
             palms.forEach(p => {
-                p.position.z += move;
-                if(p.position.z > 20) p.position.z = -280;
+                p.position.z += moveSpd;
+                if(p.position.z > 15) p.position.z = -465;
             });
             arches.forEach(a => {
-                a.position.z += move;
-                if(a.position.z > 20) a.position.z = -280;
+                a.position.z += moveSpd * 2; // Arches feel faster
+                if(a.position.z > 15) a.position.z = -465;
             });
 
-            // 3. Car Shake
+            // Car "Vibration" (Driving to Infinity)
             if(car) {
-                car.position.y = 0.5 + Math.sin(time * 30) * 0.01;
-                car.rotation.z = Math.sin(time * 5) * 0.01;
+                car.position.x = Math.sin(time * 0.3) * 0.2; // Very slow drift
+                car.rotation.z = -car.position.x * 0.05;
+                // Tiny vibration
+                car.position.y = 0.5 + (Math.random() * 0.01);
             }
 
-            // 4. TRON Beam Event (Every 30s)
+            // Beam Event
             const cycle = time % 30;
-            if(cycle > 28) {
-                if(!beamMesh.visible) {
-                    beamMesh.visible = true;
-                    if(sfxEnabled) {
-                        sfxBeam.currentTime = 0; 
-                        sfxBeam.volume = 0.6;
-                        sfxBeam.play().catch(()=>{});
-                    }
+            if(cycle > 28 && cycle < 30) {
+                beamMesh.material.opacity = Math.min((cycle-28)*2, 0.8);
+                if(sfxOn && cycle < 28.1) {
+                    audioBeam.currentTime = 0; audioBeam.volume = 0.8; audioBeam.play().catch(()=>{});
                 }
-                const s = Math.sin((cycle-28)*Math.PI) * 4 + 1;
-                beamMesh.scale.set(s, 1, s);
             } else {
-                beamMesh.visible = false;
+                beamMesh.material.opacity = 0;
             }
 
             composer.render();
@@ -768,27 +1112,23 @@
             composer.setSize(window.innerWidth, window.innerHeight);
         }
 
-        // --- UI INTERACTION ---
         window.playHover = () => {
-            if(sfxEnabled) {
-                sfxHover.currentTime = 0;
-                sfxHover.volume = 0.2;
-                sfxHover.play().catch(()=>{});
+            if(sfxOn) {
+                audioHover.currentTime = 0; audioHover.volume = 0.3; audioHover.play().catch(()=>{});
             }
         };
 
-        // Toggles
-        document.getElementById('btn-music').addEventListener('click', function() {
-            musicEnabled = !musicEnabled;
-            this.classList.toggle('active');
-            this.innerHTML = musicEnabled ? '<i class="fas fa-music"></i> MUSIC: ON' : '<i class="fas fa-music"></i> MUSIC: OFF';
-            if(musicEnabled) bgMusic.play(); else bgMusic.pause();
+        document.getElementById('toggle-music').addEventListener('click', function() {
+            musicOn = !musicOn;
+            this.querySelector('span').innerText = musicOn ? 'MUSIC: ON' : 'MUSIC: OFF';
+            this.classList.toggle('off', !musicOn);
+            if(musicOn) audioMusic.play(); else audioMusic.pause();
         });
 
-        document.getElementById('btn-sfx').addEventListener('click', function() {
-            sfxEnabled = !sfxEnabled;
-            this.classList.toggle('active');
-            this.innerHTML = sfxEnabled ? '<i class="fas fa-volume-up"></i> SFX: ON' : '<i class="fas fa-volume-up"></i> SFX: OFF';
+        document.getElementById('toggle-sfx').addEventListener('click', function() {
+            sfxOn = !sfxOn;
+            this.querySelector('span').innerText = sfxOn ? 'SFX: ON' : 'SFX: OFF';
+            this.classList.toggle('off', !sfxOn);
         });
 
     </script>
