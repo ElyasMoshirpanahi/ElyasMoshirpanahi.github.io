@@ -73,73 +73,109 @@
             z-index: 899;
         }
 
-        /* --- LOADING OVERLAY --- */
-        #loader {
+        /* --- GATE / LOADING OVERLAY --- */
+        #gate-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: #000;
             z-index: 9999;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 1s;
+            pointer-events: none; /* Allow clicks through when open */
         }
         
-        .loader-text {
+        .gate-panel {
+            width: 50%; height: 100%;
+            background: #000;
+            border-bottom: 2px solid var(--neon-cyan);
+            position: relative;
+            transition: transform 2s cubic-bezier(0.7, 0, 0.3, 1);
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .gate-panel::before {
+            content: ''; position: absolute;
+            width: 200%; height: 200%;
+            background: 
+                linear-gradient(transparent 95%, var(--neon-purple) 100%),
+                linear-gradient(90deg, transparent 95%, var(--neon-purple) 100%);
+            background-size: 40px 40px;
+            opacity: 0.1;
+            transform: perspective(500px) rotateX(60deg);
+        }
+
+        .gate-left { border-right: 2px solid var(--neon-pink); transform-origin: left; }
+        .gate-right { border-left: 2px solid var(--neon-pink); transform-origin: right; }
+
+        #gate-overlay.open .gate-left { transform: translateX(-100%); }
+        #gate-overlay.open .gate-right { transform: translateX(100%); }
+
+        .loader-content {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+            text-align: center;
+            transition: opacity 0.5s;
+            pointer-events: auto; /* Allow clicking the button */
+        }
+        
+        #gate-overlay.open .loader-content { opacity: 0; pointer-events: none; }
+
+        .loading-text {
             font-family: var(--font-display);
             color: var(--neon-cyan);
             font-size: 2rem;
-            margin-bottom: 2rem;
             letter-spacing: 5px;
             text-shadow: 0 0 10px var(--neon-cyan);
             animation: pulse 1s infinite alternate;
+            margin-bottom: 20px;
         }
         
-        .start-btn {
-            background: transparent;
-            border: 2px solid var(--neon-pink);
-            color: var(--neon-pink);
-            padding: 1rem 3rem;
-            font-family: var(--font-display);
-            font-size: 1.5rem;
-            cursor: pointer;
-            text-transform: uppercase;
-            box-shadow: 0 0 15px var(--neon-pink);
-            transition: 0.3s;
+        .loading-bar-container {
+            width: 300px; height: 4px;
+            background: #111;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 10px var(--neon-pink);
         }
-        .start-btn:hover {
+        
+        .loading-bar {
+            width: 0%; height: 100%;
             background: var(--neon-pink);
-            color: #000;
-            box-shadow: 0 0 40px var(--neon-pink);
+            box-shadow: 0 0 10px var(--neon-pink);
+            transition: width 0.1s;
         }
 
         @keyframes pulse { from { opacity: 0.5; } to { opacity: 1; } }
 
         /* --- UI / HERO LAYER --- */
         #hero-section {
-            position: fixed;
-            top: 0; left: 0;
+            position: relative; /* UNGLUED / SCROLLABLE */
             width: 100%;
-            height: auto;
-            z-index: 100;
-            pointer-events: none; /* Pass clicks to canvas */
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
+            justify-content: flex-start; /* Align top */
             align-items: center;
+            z-index: 10;
+            padding-top: 2rem;
         }
 
-        /* TOP BAR (Sound Controls) */
+        /* TOP BAR (Sound & Config Controls) */
         .top-bar {
-            position: absolute;
+            position: fixed; /* Fixed controls */
             top: 20px; right: 30px;
             display: flex;
             gap: 1rem;
             pointer-events: auto;
-            z-index: 101;
+            z-index: 1000;
         }
 
-        .sound-ctrl {
+        .ctrl-btn {
             background: rgba(0,0,0,0.6);
             border: 1px solid var(--neon-cyan);
             color: var(--neon-cyan);
@@ -153,13 +189,13 @@
             transition: 0.3s;
             backdrop-filter: blur(4px);
         }
-        .sound-ctrl:hover {
+        .ctrl-btn:hover {
             background: var(--neon-cyan);
             color: #000;
             box-shadow: 0 0 15px var(--neon-cyan);
             transform: scale(1.1);
         }
-        .sound-ctrl.off {
+        .ctrl-btn.off {
             border-color: #555;
             color: #777;
         }
@@ -167,15 +203,16 @@
         /* HERO TEXT */
         .hero-content {
             text-align: center;
-            padding: 1.5rem 0 1rem;
+            padding: 2rem 0;
             width: 100%;
-            pointer-events: auto;
-            background: linear-gradient(to bottom, rgba(2,2,5,0.95), rgba(2,2,5,0.6) 80%, transparent);
+            /* Subtle background for text readability */
+            background: radial-gradient(ellipse at center, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 70%);
+            margin-bottom: 35vh; /* HUGE GAP TO REVEAL SCENE */
         }
 
         h1 {
             font-family: var(--font-display);
-            font-size: clamp(2rem, 3.5vw, 3rem); /* Smaller */
+            font-size: clamp(3rem, 6vw, 5rem);
             font-weight: 900;
             text-transform: uppercase;
             color: #fff;
@@ -183,20 +220,21 @@
             line-height: 1.1;
             letter-spacing: 3px;
             text-shadow: 
-                2px 2px 0px var(--neon-purple),
-                -2px -2px 0px var(--neon-cyan),
-                0 0 20px var(--neon-cyan);
+                3px 3px 0px var(--neon-purple),
+                -3px -3px 0px var(--neon-cyan),
+                0 0 30px var(--neon-cyan);
+            animation: glitch 4s infinite;
         }
 
         h2 {
             font-family: var(--font-retro);
-            font-size: clamp(0.8rem, 1.5vw, 1rem); /* Smaller */
+            font-size: clamp(1rem, 2vw, 1.5rem);
             color: var(--neon-pink);
-            letter-spacing: 4px;
+            letter-spacing: 6px;
             text-transform: uppercase;
-            margin-top: 0.5rem;
-            margin-bottom: 1.5rem;
-            text-shadow: 0 0 10px var(--neon-pink);
+            margin-top: 1rem;
+            margin-bottom: 2.5rem;
+            text-shadow: 0 0 15px var(--neon-pink);
             position: relative;
             display: inline-block;
         }
@@ -204,12 +242,12 @@
             content: '';
             position: absolute;
             top: 50%;
-            width: 20px; height: 2px; /* Smaller lines */
+            width: 40px; height: 2px;
             background: var(--neon-pink);
             box-shadow: 0 0 10px var(--neon-pink);
         }
-        h2::before { right: 100%; margin-right: 10px; }
-        h2::after { left: 100%; margin-left: 10px; }
+        h2::before { right: 100%; margin-right: 15px; }
+        h2::after { left: 100%; margin-left: 15px; }
 
         @keyframes glitch {
             0% { transform: translate(0); text-shadow: 3px 3px 0px var(--neon-purple), -3px -3px 0px var(--neon-cyan); }
@@ -222,7 +260,7 @@
         .nav-row {
             display: flex;
             justify-content: center;
-            gap: 1.5rem;
+            gap: 2rem;
             flex-wrap: wrap;
         }
 
@@ -230,11 +268,11 @@
         .holo-btn {
             position: relative;
             background: rgba(10, 10, 20, 0.7);
-            border: 1px solid; /* Thinner border */
-            padding: 0.6rem 2rem; /* Smaller padding */
+            border: 2px solid;
+            padding: 1rem 3rem;
             font-family: var(--font-display);
             font-weight: 700;
-            font-size: 0.85rem; /* Smaller font */
+            font-size: 1rem;
             text-transform: uppercase;
             letter-spacing: 2px;
             color: #fff;
@@ -515,7 +553,7 @@
 <body>
 
     <!-- AUDIO RESOURCES -->
-    <audio id="bg-music" loop>
+    <audio id="bg-music" loop crossorigin="anonymous">
         <source src="music/RETRO1.m4a" type="audio/mp4">
     </audio>
     <audio id="sfx-hover">
@@ -525,10 +563,17 @@
         <source src="sounds/science-fiction-effect-011-305473.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- LOADING SCREEN -->
-    <div id="loader">
-        <div class="loader-text">SYSTEM INITIALIZING...</div>
-        <button class="start-btn" id="btn-enter">ENTER THE GRID</button>
+    <!-- GATE / LOADING SYSTEM -->
+    <div id="gate-overlay">
+        <div class="gate-panel gate-left"></div>
+        <div class="gate-panel gate-right"></div>
+        <div class="loader-content">
+            <div class="loading-text" id="load-text">SYSTEM READY</div>
+            <button id="btn-init" style="background:transparent; border:2px solid var(--neon-cyan); color:var(--neon-cyan); padding:1rem 2rem; font-family:var(--font-display); font-size:1.5rem; cursor:pointer; text-transform:uppercase; box-shadow:0 0 15px var(--neon-cyan); transition:0.3s;">INITIALIZE</button>
+            <div class="loading-bar-container" style="display:none;" id="load-bar-cont">
+                <div class="loading-bar" id="loading-fill"></div>
+            </div>
+        </div>
     </div>
 
     <!-- CANVAS WRAPPER (FIXED BACKGROUND) -->
@@ -540,13 +585,16 @@
 
     <!-- HERO SECTION -->
     <div id="hero-section">
-        <!-- HEADER -->
+        <!-- CONTROLS (TOP RIGHT) -->
         <div class="top-bar">
-            <button class="sound-ctrl" id="toggle-music" title="Toggle Music">
+            <button class="ctrl-btn" id="toggle-music" title="Music">
                 <i class="fas fa-music"></i>
             </button>
-            <button class="sound-ctrl" id="toggle-sfx" title="Toggle SFX">
+            <button class="ctrl-btn" id="toggle-sfx" title="SFX">
                 <i class="fas fa-volume-up"></i>
+            </button>
+            <button class="ctrl-btn" id="toggle-config" title="Config">
+                <i class="fas fa-cog"></i>
             </button>
         </div>
 
@@ -755,25 +803,71 @@
         
         let musicOn = true;
         let sfxOn = true;
+        let musicSync = false;
         
+        // AUDIO
+        let audioCtx, analyser, dataArray;
         const audioMusic = document.getElementById('bg-music');
         const audioHover = document.getElementById('sfx-hover');
         const audioBeam = document.getElementById('sfx-beam');
 
         // --- INITIALIZATION ---
         window.onload = () => {
-            const btnEnter = document.getElementById('btn-enter');
-            btnEnter.addEventListener('click', () => {
-                document.getElementById('loader').style.opacity = '0';
-                setTimeout(() => document.getElementById('loader').remove(), 1000);
+            const btnInit = document.getElementById('btn-init');
+            const loadBarCont = document.getElementById('load-bar-cont');
+            const fill = document.getElementById('loading-fill');
+            const loadText = document.getElementById('load-text');
+
+            btnInit.addEventListener('click', () => {
+                // Hide Button, Show Bar
+                btnInit.style.display = 'none';
+                loadBarCont.style.display = 'block';
+                loadText.innerText = "INITIALIZING CORE...";
                 
+                // Start Audio Context immediately on user interaction
+                setupAudio();
                 if(musicOn) {
                     audioMusic.volume = 0.5;
-                    audioMusic.play().catch(e => console.warn("Audio autoplay blocked"));
+                    audioMusic.play().catch(e => console.warn("Audio error:", e));
                 }
-                initThree();
+
+                // Simulate Load
+                let width = 0;
+                const intv = setInterval(() => {
+                    width += Math.random() * 15;
+                    if(width > 100) width = 100;
+                    fill.style.width = width + '%';
+                    
+                    if(width === 100) {
+                        clearInterval(intv);
+                        setTimeout(openGate, 500);
+                    }
+                }, 150);
             });
+            
+            initThree();
         };
+
+        function openGate() {
+            const gate = document.getElementById('gate-overlay');
+            gate.classList.add('open');
+        }
+
+        function setupAudio() {
+            if(audioCtx) return;
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioCtx.createAnalyser();
+                const source = audioCtx.createMediaElementSource(audioMusic);
+                source.connect(analyser);
+                analyser.connect(audioCtx.destination);
+                analyser.fftSize = 256;
+                const bufferLength = analyser.frequencyBinCount;
+                dataArray = new Uint8Array(bufferLength);
+            } catch(e) {
+                console.warn("Audio API not supported or blocked", e);
+            }
+        }
 
         function initThree() {
             const container = document.getElementById('canvas-container');
@@ -817,7 +911,7 @@
             createCar();
             createPalms();
             createArches();
-            createStation();
+            createPortalEndpoint(); // NEW
 
             // 6. EVENTS
             window.addEventListener('resize', onResize);
@@ -873,8 +967,7 @@
         }
 
         function createSynthwaveTerrain() {
-            // "Pyramid Sound Waves" - Flat base with sharp pink peaks
-            const geometry = new THREE.PlaneGeometry(500, 800, 100, 100);
+            const geometry = new THREE.PlaneGeometry(500, 800, 120, 120);
             geometry.rotateX(-Math.PI / 2);
             geometry.translate(0, -2, -200);
 
@@ -888,7 +981,8 @@
                     uGridWidth: { value: 0.05 },
                     uGridOpacity: { value: 0.8 },
                     uTotalOpacity: { value: 0.7 },
-                    uHue: { value: 0.0 }
+                    uHue: { value: 0.0 },
+                    uGridDensity: { value: 50.0 } // NEW Control
                 },
                 vertexShader: `
                     varying vec2 vUv;
@@ -903,7 +997,6 @@
                         float dist = abs(pos.x);
                         float roadWidth = 10.0;
                         
-                        // Coordinate for "blocks" (Pyramids)
                         float cell = 20.0;
                         vec2 gridPos = pos.xz / cell;
                         vec2 id = floor(gridPos);
@@ -915,11 +1008,9 @@
                             float pyr = 1.0 - 2.0 * max(abs(local.x), abs(local.y));
                             pyr = max(0.0, pyr); 
                             
-                            // Animate height ("Sound Wave" effect)
                             float wave = sin(id.y * 0.5 - uTime * 4.0) * 0.5 + 0.5; 
                             float eq = sin(id.x * 2.0) * 0.5 + 0.5;
                             
-                            // Use uniform height
                             float h = wave * (eq + 0.5) * uHeight;
                             
                             elevation = pyr * h;
@@ -940,6 +1031,7 @@
                     uniform float uGridOpacity;
                     uniform float uTotalOpacity;
                     uniform float uHue;
+                    uniform float uGridDensity;
                     
                     vec3 hueShift(vec3 color, float hue) {
                         const vec3 k = vec3(0.57735, 0.57735, 0.57735);
@@ -948,7 +1040,8 @@
                     }
                     
                     void main() {
-                        vec2 gridUV = vec2(vUv.x * 25.0, vUv.y * 40.0);
+                        // Use Density Uniform
+                        vec2 gridUV = vec2(vUv.x * uGridDensity * 0.6, vUv.y * uGridDensity);
                         vec2 gridFract = fract(gridUV);
                         
                         float w = uGridWidth; 
@@ -956,22 +1049,13 @@
                         float gy = step(1.0 - w, gridFract.y) + step(gridFract.y, w);
                         float grid = min(1.0, gx + gy); 
                         
-                        vec3 dark = vec3(0.05, 0.0, 0.1);
-                        vec3 peak = uColor1 * 0.4; 
+                        vec3 dark = vec3(0.0); 
                         
-                        // Apply Hue Shift
-                        peak = hueShift(peak, uHue);
-                        
-                        float hParams = clamp(vElev / 1.5, 0.0, 1.0); 
-                        vec3 surface = mix(dark, peak, hParams * 0.4); 
-                        
-                        vec3 line = uColor1 * 0.6; 
+                        vec3 line = uColor1; 
                         line = hueShift(line, uHue);
                         
-                        vec3 finalColor = mix(surface, line, grid * uGridOpacity); 
+                        vec3 finalColor = mix(dark, line, grid * uGridOpacity); 
                         
-                        finalColor += peak * hParams * 0.1; 
-
                         gl_FragColor = vec4(finalColor, uTotalOpacity); 
                     }
                 `,
@@ -981,97 +1065,62 @@
             terrain = new THREE.Mesh(geometry, material);
             scene.add(terrain);
             
-            // Initialize UI
             createInterface();
         }
 
         function createInterface() {
-            // Leva-style CSS
             const css = `
                 .leva-panel {
                     position: fixed; top: 100px; right: 20px;
-                    background: #1a1a1a; 
-                    width: 280px;
-                    border-radius: 4px;
-                    font-family: 'Roboto Mono', monospace;
-                    font-size: 11px;
-                    color: #eee;
-                    z-index: 1000;
-                    box-shadow: 0 0 20px rgba(0,0,0,0.5);
-                    user-select: none;
-                    display: none;
+                    background: #1a1a1a; width: 280px; border-radius: 4px;
+                    font-family: 'Roboto Mono', monospace; font-size: 11px; color: #eee;
+                    z-index: 1000; box-shadow: 0 0 20px rgba(0,0,0,0.5);
+                    user-select: none; display: none;
                 }
                 .leva-header {
-                    padding: 10px 12px;
-                    background: #222;
-                    border-bottom: 1px solid #333;
-                    font-weight: bold;
-                    color: var(--neon-cyan);
+                    padding: 10px 12px; background: #222; border-bottom: 1px solid #333;
+                    font-weight: bold; color: var(--neon-cyan);
                     display: flex; justify-content: space-between; align-items: center;
                     border-radius: 4px 4px 0 0;
                 }
-                .leva-row {
-                    display: flex; align-items: center;
-                    padding: 8px 12px;
-                    border-bottom: 1px solid #222;
-                }
+                .leva-row { display: flex; align-items: center; padding: 8px 12px; border-bottom: 1px solid #222; }
                 .leva-row:last-child { border-bottom: none; }
                 .leva-label { width: 40%; color: #888; }
                 .leva-ctrl { width: 60%; display: flex; align-items: center; gap: 8px; }
-                
-                input[type=range] {
-                    -webkit-appearance: none; width: 100%; background: transparent;
-                }
-                input[type=range]::-webkit-slider-runnable-track {
-                    width: 100%; height: 3px; background: #444; border-radius: 2px;
-                }
-                input[type=range]::-webkit-slider-thumb {
-                    -webkit-appearance: none; height: 10px; width: 10px; border-radius: 50%;
-                    background: var(--neon-cyan); margin-top: -3.5px; cursor: pointer;
-                    box-shadow: 0 0 5px var(--neon-cyan);
-                }
+                input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+                input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 3px; background: #444; border-radius: 2px; }
+                input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 10px; width: 10px; border-radius: 50%; background: var(--neon-cyan); margin-top: -3.5px; cursor: pointer; box-shadow: 0 0 5px var(--neon-cyan); }
                 .val-display { width: 30px; text-align: right; color: #aaa; font-size: 10px; }
+                input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--neon-cyan); }
             `;
             const style = document.createElement('style');
             style.textContent = css;
             document.head.appendChild(style);
 
-            // Container
             const div = document.createElement('div');
             div.className = 'leva-panel';
             div.innerHTML = `
-                <div class="leva-header">
-                    <span>VAPOR_CONFIG 1.0</span>
-                    <i class="fas fa-times" id="close-leva" style="cursor:pointer; opacity:0.6;"></i>
-                </div>
-                
+                <div class="leva-header"><span>VAPOR_CONFIG 1.0</span><i class="fas fa-times" id="close-leva" style="cursor:pointer; opacity:0.6;"></i></div>
                 <div class="leva-row"><div class="leva-label">CYBER-SPEED</div><div class="leva-ctrl"><input type="range" min="0" max="100" value="40" id="inp-speed"><span class="val-display">40</span></div></div>
                 <div class="leva-row"><div class="leva-label">SUN ELEVATION</div><div class="leva-ctrl"><input type="range" min="10" max="100" value="30" id="inp-sun-y"><span class="val-display">30</span></div></div>
                 <div class="leva-row"><div class="leva-label">NEON-BLEED</div><div class="leva-ctrl"><input type="range" min="0" max="3" step="0.1" value="1.4" id="inp-bloom"><span class="val-display">1.4</span></div></div>
                 <div class="leva-row"><div class="leva-label">GRID-WARP</div><div class="leva-ctrl"><input type="range" min="0" max="10" step="0.1" value="2.0" id="inp-height"><span class="val-display">2.0</span></div></div>
+                <div class="leva-row"><div class="leva-label">GRID-DENSITY</div><div class="leva-ctrl"><input type="range" min="10" max="200" step="1" value="50" id="inp-density"><span class="val-display">50</span></div></div>
                 <div class="leva-row"><div class="leva-label">SYNTH-SHIFT</div><div class="leva-ctrl"><input type="range" min="0" max="6.28" step="0.1" value="0.0" id="inp-hue"><span class="val-display">0.0</span></div></div>
+                <div class="leva-row"><div class="leva-label">MUSIC SYNC</div><div class="leva-ctrl"><input type="checkbox" id="inp-sync"></div></div>
             `;
             document.body.appendChild(div);
 
-            // Toggle Button
-            const toggle = document.createElement('button');
-            toggle.innerHTML = '<i class="fas fa-cogs"></i> CONFIG';
-            toggle.style.cssText = 'position:fixed; top:90px; right:30px; z-index:999; background:rgba(0,0,0,0.6); border:1px solid #444; color:#aaa; padding:6px 12px; cursor:pointer; font-family:inherit; font-size:10px; border-radius:4px; backdrop-filter:blur(4px); transition:0.2s;';
-            toggle.onmouseover = () => { toggle.style.color = '#fff'; toggle.style.borderColor = '#fff'; };
-            toggle.onmouseout = () => { toggle.style.color = '#aaa'; toggle.style.borderColor = '#444'; };
-            document.body.appendChild(toggle);
-
             const panel = document.querySelector('.leva-panel');
-            toggle.onclick = () => { panel.style.display = panel.style.display === 'none' ? 'block' : 'none'; playHover(); };
+            document.getElementById('toggle-config').onclick = () => { panel.style.display = panel.style.display === 'none' ? 'block' : 'none'; playHover(); };
             document.getElementById('close-leva').onclick = () => { panel.style.display = 'none'; playHover(); };
 
-            // Bindings
             const bind = (id, callback) => {
                 const el = document.getElementById(id);
                 const disp = el.nextElementSibling;
                 el.addEventListener('input', (e) => {
                     const v = parseFloat(e.target.value);
-                    disp.innerText = v.toFixed(1);
+                    if(disp) disp.innerText = v.toFixed(1);
                     callback(v);
                 });
             };
@@ -1080,303 +1129,176 @@
             bind('inp-sun-y', (v) => { if(sun) sun.position.y = v; });
             bind('inp-bloom', (v) => { if(composer) composer.passes[1].strength = v; });
             bind('inp-height', (v) => { if(terrain) terrain.material.uniforms.uHeight.value = v; });
+            bind('inp-density', (v) => { if(terrain) terrain.material.uniforms.uGridDensity.value = v; });
             bind('inp-hue', (v) => { if(terrain) terrain.material.uniforms.uHue.value = v; });
+            
+            document.getElementById('inp-sync').addEventListener('change', (e) => {
+                musicSync = e.target.checked;
+                if(musicSync) setupAudio();
+            });
         }
 
         function createReflectiveRoad() {
-            // Realtime Reflector
             const geometry = new THREE.PlaneGeometry(CONF.roadWidth, 800);
-            
-            roadReflector = new THREE.Reflector(geometry, {
-                clipBias: 0.003,
-                textureWidth: window.innerWidth * window.devicePixelRatio,
-                textureHeight: window.innerHeight * window.devicePixelRatio,
-                color: 0x111111
-            });
+            roadReflector = new THREE.Reflector(geometry, { clipBias: 0.003, textureWidth: window.innerWidth * window.devicePixelRatio, textureHeight: window.innerHeight * window.devicePixelRatio, color: 0x111111 });
             roadReflector.position.set(0, -0.5, -200);
             roadReflector.rotation.x = -Math.PI / 2;
             scene.add(roadReflector);
 
-            // Blue Stripes & Borders
             const borderGeo = new THREE.PlaneGeometry(0.5, 800);
             borderGeo.rotateX(-Math.PI / 2);
             const borderMat = new THREE.MeshBasicMaterial({ color: CONF.colors.cyan });
-            
-            const leftB = new THREE.Mesh(borderGeo, borderMat);
-            leftB.position.set(-CONF.roadWidth/2, -0.4, -200);
-            scene.add(leftB);
+            const leftB = new THREE.Mesh(borderGeo, borderMat); leftB.position.set(-CONF.roadWidth/2, -0.4, -200); scene.add(leftB);
+            const rightB = new THREE.Mesh(borderGeo, borderMat); rightB.position.set(CONF.roadWidth/2, -0.4, -200); scene.add(rightB);
 
-            const rightB = new THREE.Mesh(borderGeo, borderMat);
-            rightB.position.set(CONF.roadWidth/2, -0.4, -200);
-            scene.add(rightB);
-
-            // Center Dashed Lines - Animated via shader or multiple meshes
-            // Simple approach: multiple dashes
             const dashGroup = new THREE.Group();
             const dashGeo = new THREE.PlaneGeometry(0.5, 8);
             dashGeo.rotateX(-Math.PI/2);
-            for(let i=0; i<40; i++) {
-                const dash = new THREE.Mesh(dashGeo, borderMat);
-                dash.position.set(0, -0.4, -i * 20);
-                dashGroup.add(dash);
-            }
+            for(let i=0; i<40; i++) { const dash = new THREE.Mesh(dashGeo, borderMat); dash.position.set(0, -0.4, -i * 20); dashGroup.add(dash); }
             scene.add(dashGroup);
-            
-            // Store dashes for animation
             roadReflector.userData.dashes = dashGroup;
         }
 
         function createCar() {
             car = new THREE.Group();
-
-            // Professional, sleek futuristic car
-            const bodyMat = new THREE.MeshPhysicalMaterial({ 
-                color: 0x050505, 
-                metalness: 0.9, 
-                roughness: 0.2, 
-                clearcoat: 1.0 
-            });
+            const bodyMat = new THREE.MeshPhysicalMaterial({ color: 0x050505, metalness: 0.9, roughness: 0.2, clearcoat: 1.0 });
             const neonMat = new THREE.MeshBasicMaterial({ color: CONF.colors.cyan });
-            const glassMat = new THREE.MeshPhysicalMaterial({ 
-                color: 0x000000, 
-                metalness: 0.9, 
-                roughness: 0.0, 
-                transmission: 0.2 
-            });
+            const glassMat = new THREE.MeshPhysicalMaterial({ color: 0x000000, metalness: 0.9, roughness: 0.0, transmission: 0.2 });
 
-            // Main Body Shape
-            const mainBody = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.6, 5.0), bodyMat);
-            mainBody.position.y = 0.6;
-            car.add(mainBody);
+            const mainBody = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.6, 5.0), bodyMat); mainBody.position.y = 0.6; car.add(mainBody);
+            const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.5, 2.5), glassMat); cabin.position.set(0, 1.1, -0.5); car.add(cabin);
+            const spoiler = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.1, 0.5), bodyMat); spoiler.position.set(0, 1.0, 2.2); car.add(spoiler);
+            const spoilerLegL = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.4, 0.5), bodyMat); spoilerLegL.position.set(1.0, 0.8, 2.2); car.add(spoilerLegL);
+            const spoilerLegR = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.4, 0.5), bodyMat); spoilerLegR.position.set(-1.0, 0.8, 2.2); car.add(spoilerLegR);
 
-            // Top Cabin
-            const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.5, 2.5), glassMat);
-            cabin.position.set(0, 1.1, -0.5);
-            car.add(cabin);
-            
-            // Spoiler
-            const spoiler = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.1, 0.5), bodyMat);
-            spoiler.position.set(0, 1.0, 2.2);
-            car.add(spoiler);
-            
-            const spoilerLegL = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.4, 0.5), bodyMat);
-            spoilerLegL.position.set(1.0, 0.8, 2.2);
-            car.add(spoilerLegL);
-            
-            const spoilerLegR = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.4, 0.5), bodyMat);
-            spoilerLegR.position.set(-1.0, 0.8, 2.2);
-            car.add(spoilerLegR);
-
-            // Neon Lines (Tron style)
             const sideLineGeo = new THREE.BoxGeometry(0.1, 0.05, 5.0);
-            const sideLineL = new THREE.Mesh(sideLineGeo, neonMat);
-            sideLineL.position.set(1.2, 0.5, 0);
-            car.add(sideLineL);
-            
-            const sideLineR = new THREE.Mesh(sideLineGeo, neonMat);
-            sideLineR.position.set(-1.2, 0.5, 0);
-            car.add(sideLineR);
+            const sideLineL = new THREE.Mesh(sideLineGeo, neonMat); sideLineL.position.set(1.2, 0.5, 0); car.add(sideLineL);
+            const sideLineR = new THREE.Mesh(sideLineGeo, neonMat); sideLineR.position.set(-1.2, 0.5, 0); car.add(sideLineR);
 
-            // Wheels (Glowing Discs)
-            const wheelGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.3, 32);
-            wheelGeo.rotateZ(Math.PI/2);
-            const wheelMat = new THREE.MeshBasicMaterial({ color: 0x111111 });
-            const rimMat = new THREE.MeshBasicMaterial({ color: CONF.colors.cyan });
-
-            const wheelPos = [
-                [-1.2, 0.4, 1.5], [1.2, 0.4, 1.5],
-                [-1.2, 0.4, -1.8], [1.2, 0.4, -1.8]
-            ];
-
-            wheelPos.forEach(p => {
-                const w = new THREE.Mesh(wheelGeo, wheelMat);
-                w.position.set(...p);
-                car.add(w);
-                
-                const rim = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.05, 8, 32), rimMat);
-                rim.rotation.y = Math.PI/2;
-                rim.position.set(p[0] + (p[0]>0 ? 0.16 : -0.16), p[1], p[2]);
-                car.add(rim);
+            const wheelGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.3, 32); wheelGeo.rotateZ(Math.PI/2);
+            const wheelMat = new THREE.MeshBasicMaterial({ color: 0x111111 }); const rimMat = new THREE.MeshBasicMaterial({ color: CONF.colors.cyan });
+            [[-1.2, 0.4, 1.5], [1.2, 0.4, 1.5], [-1.2, 0.4, -1.8], [1.2, 0.4, -1.8]].forEach(p => {
+                const w = new THREE.Mesh(wheelGeo, wheelMat); w.position.set(...p); car.add(w);
+                const rim = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.05, 8, 32), rimMat); rim.rotation.y = Math.PI/2; rim.position.set(p[0] + (p[0]>0 ? 0.16 : -0.16), p[1], p[2]); car.add(rim);
             });
 
-            // Tail Lights
-            const tailGeo = new THREE.BoxGeometry(2.2, 0.1, 0.1);
-            const tailMat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-            const tail = new THREE.Mesh(tailGeo, tailMat);
-            tail.position.set(0, 0.7, 2.5);
-            car.add(tail);
+            const tailGeo = new THREE.BoxGeometry(2.2, 0.1, 0.1); const tailMat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+            const tail = new THREE.Mesh(tailGeo, tailMat); tail.position.set(0, 0.7, 2.5); car.add(tail);
+            const headGeo = new THREE.BoxGeometry(0.6, 0.1, 0.1); const headMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+            const headL = new THREE.Mesh(headGeo, headMat); headL.position.set(-0.6, 0.5, -2.5); car.add(headL);
+            const headR = new THREE.Mesh(headGeo, headMat); headR.position.set(0.6, 0.5, -2.5); car.add(headR);
 
-            // Headlights
-            const headGeo = new THREE.BoxGeometry(0.6, 0.1, 0.1);
-            const headMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-            const headL = new THREE.Mesh(headGeo, headMat);
-            headL.position.set(-0.6, 0.5, -2.5);
-            car.add(headL);
-            const headR = new THREE.Mesh(headGeo, headMat);
-            headR.position.set(0.6, 0.5, -2.5);
-            car.add(headR);
-
-            // Move slightly forward toward the road (z=4 instead of 7) for better view
             car.position.set(0, 0, 4);
             scene.add(car);
         }
 
         function createArches() {
-            // Hot Pink Arches
             const geo = new THREE.TorusGeometry(25, 0.5, 8, 40, Math.PI);
             const mat = new THREE.MeshBasicMaterial({ color: CONF.colors.pink });
-            
-            for(let i=0; i<8; i++) {
-                const arch = new THREE.Mesh(geo, mat);
-                arch.position.set(0, -2, -i * 60 - 30);
-                scene.add(arch);
-                arches.push(arch);
-            }
+            for(let i=0; i<8; i++) { const arch = new THREE.Mesh(geo, mat); arch.position.set(0, -2, -i * 60 - 30); scene.add(arch); arches.push(arch); }
         }
 
         function createPalms() {
-            // Clear existing if any
-            palms.forEach(p => scene.remove(p));
-            palms = [];
-
-            const numPalms = 12;
-            const spacing = 50; // Total range 600, matches animation loop (-580 to 20)
-
-            for(let i=0; i<numPalms; i++) {
-                // Generate a unique procedural palm model for this row
+            palms.forEach(p => scene.remove(p)); palms = [];
+            for(let i=0; i<12; i++) {
                 const palmModel = generateProceduralPalm(i);
-                
-                // Left Side
-                const left = palmModel.clone();
-                left.position.set(-25, -2, -i * spacing);
-                left.rotation.y = Math.PI / 4; 
-                scene.add(left);
-                palms.push(left);
-
-                // Right Side (Mirrored)
-                const right = palmModel.clone();
-                right.position.set(25, -2, -i * spacing);
-                right.rotation.y = -Math.PI / 4;
-                right.scale.x = -1; // Mirror geometry
-                scene.add(right);
-                palms.push(right);
+                const left = palmModel.clone(); left.position.set(-25, -2, -i * 50); left.rotation.y = Math.PI / 4; scene.add(left); palms.push(left);
+                const right = palmModel.clone(); right.position.set(25, -2, -i * 50); right.rotation.y = -Math.PI / 4; right.scale.x = -1; scene.add(right); palms.push(right);
             }
         }
 
         function generateProceduralPalm(seed) {
             const group = new THREE.Group();
-            
-            // Deterministic RNG based on seed
-            const rng = () => {
-                seed = (seed * 9301 + 49297) % 233280;
-                return seed / 233280;
-            };
-
-            // --- TRUNK GENERATION ---
-            // Segmented, curved trunk style
-            const height = 14 + rng() * 6; // 14-20 height
-            const segments = 10;
+            const rng = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+            const height = 14 + rng() * 6; 
             const trunkMat = new THREE.MeshBasicMaterial({ color: CONF.colors.purple, wireframe: true });
+            let prevRad = 0.9 + rng() * 0.3; let prevPos = new THREE.Vector3(0, 0, 0);
             
-            // Curve parameters
-            const curveLean = (rng() - 0.5) * 5; // Lean Left/Right
-            const curveBack = rng() * 5;         // Lean Back
-            
-            let prevRad = 0.9 + rng() * 0.3;
-            let prevPos = new THREE.Vector3(0, 0, 0);
-            
-            for(let i=0; i<segments; i++) {
-                const t = (i+1) / segments;
-                const segmentH = height / segments;
-                const nextRad = prevRad * 0.9;
-                
-                // Quadratic curve offset
-                const xOff = (t*t) * curveLean;
-                const zOff = (t*t) * curveBack;
-                
-                const nextPos = new THREE.Vector3(xOff, (i+1)*segmentH, zOff);
-                
-                // Find midpoint and orientation
+            for(let i=0; i<10; i++) {
+                const t = (i+1) / 10;
+                const nextPos = new THREE.Vector3((t*t)*((rng()-0.5)*5), (i+1)*(height/10), (t*t)*(rng()*5));
                 const midPos = new THREE.Vector3().addVectors(prevPos, nextPos).multiplyScalar(0.5);
-                const segLen = prevPos.distanceTo(nextPos);
-                
-                const cyl = new THREE.Mesh(
-                    new THREE.CylinderGeometry(nextRad, prevRad, segLen, 6),
-                    trunkMat
-                );
-                cyl.position.copy(midPos);
-                cyl.lookAt(nextPos);
-                cyl.rotateX(Math.PI / 2); // Fix cylinder orientation
-                
-                group.add(cyl);
-                
-                prevRad = nextRad;
-                prevPos = nextPos;
+                const cyl = new THREE.Mesh(new THREE.CylinderGeometry(prevRad*0.9, prevRad, prevPos.distanceTo(nextPos), 6), trunkMat);
+                cyl.position.copy(midPos); cyl.lookAt(nextPos); cyl.rotateX(Math.PI/2); group.add(cyl);
+                prevRad *= 0.9; prevPos = nextPos;
             }
 
-            // --- CROWN GENERATION ---
-            const topPos = prevPos;
-            const numLeaves = 15 + Math.floor(rng() * 10);
             const leafMat = new THREE.MeshBasicMaterial({ color: CONF.colors.cyan, side: THREE.DoubleSide });
-            
+            const numLeaves = 15 + Math.floor(rng() * 10);
             for(let i=0; i<numLeaves; i++) {
-                // Distribute leaves around top
-                const angle = (i / numLeaves) * Math.PI * 2 + (rng() * 0.5);
                 const len = 8 + rng() * 6;
-                const width = 2 + rng();
-                
-                // Curved Leaf Geometry
-                const leafGeo = new THREE.PlaneGeometry(width, len, 2, 6);
-                leafGeo.translate(0, len/2, 0); // Pivot at base
-                
+                const leafGeo = new THREE.PlaneGeometry(2+rng(), len, 2, 6); leafGeo.translate(0, len/2, 0);
                 const pos = leafGeo.attributes.position;
-                for(let k=0; k<pos.count; k++) {
-                    const y = pos.getY(k);
-                    const t = y / len;
-                    // Arching curve
-                    const arch = Math.sin(t * Math.PI) * 2.0; // Up then down? 
-                    // Simple droop: z decreases as y increases (local space)
-                    const droop = Math.pow(t, 1.5) * (len * 0.7);
-                    
-                    pos.setZ(k, pos.getZ(k) + droop);
-                }
-                leafGeo.computeVertexNormals();
-                
+                for(let k=0; k<pos.count; k++) { pos.setZ(k, pos.getZ(k) + Math.pow(pos.getY(k)/len, 1.5)*(len*0.7)); }
                 const leaf = new THREE.Mesh(leafGeo, leafMat);
-                leaf.position.copy(topPos);
-                leaf.rotation.y = angle;
-                // Initial spread angle
-                leaf.rotation.x = -Math.PI / 3 - (rng() * 0.5); 
-                
-                group.add(leaf);
+                leaf.position.copy(prevPos); leaf.rotation.y = (i/numLeaves)*Math.PI*2+(rng()*0.5); leaf.rotation.x = -Math.PI/3-(rng()*0.5); group.add(leaf);
             }
-
             return group;
         }
 
-        function createStation() {
+        function createPortalEndpoint() {
             tronStation = new THREE.Group();
             
-            // Base
-            const base = new THREE.Mesh(new THREE.CylinderGeometry(30, 40, 5, 64), new THREE.MeshBasicMaterial({ color: 0x111111 }));
-            tronStation.add(base);
+            // Main Spire (Needle)
+            const spireGeo = new THREE.CylinderGeometry(2, 4, 200, 32);
+            const spireMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+            const spire = new THREE.Mesh(spireGeo, spireMat);
+            spire.position.y = 100;
+            
+            // Glow edges on Spire
+            const edges = new THREE.EdgesGeometry(spireGeo);
+            const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: CONF.colors.blue }));
+            spire.add(line);
+            tronStation.add(spire);
 
-            // Glowing Rings
-            const ringGeo = new THREE.TorusGeometry(20, 1, 16, 64);
-            const ringMat = new THREE.MeshBasicMaterial({ color: CONF.colors.blue });
-            const ring1 = new THREE.Mesh(ringGeo, ringMat);
-            ring1.rotation.x = Math.PI/2;
-            ring1.position.y = 3;
-            tronStation.add(ring1);
-
-            // Beam
-            const beamGeo = new THREE.CylinderGeometry(2, 2, 800, 32);
-            const beamMat = new THREE.MeshBasicMaterial({ color: 0x00aaff, transparent: true, opacity: 0, blending: THREE.AdditiveBlending });
+            // The Light Beam
+            const beamGeo = new THREE.CylinderGeometry(1, 1, 1000, 32);
+            const beamMat = new THREE.MeshBasicMaterial({ color: 0xaaddff, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending });
             beamMesh = new THREE.Mesh(beamGeo, beamMat);
-            beamMesh.position.set(0, 400, 0);
+            beamMesh.position.y = 500;
             tronStation.add(beamMesh);
 
-            tronStation.position.set(0, -2, -500);
+            // Base Core
+            const core = new THREE.Mesh(new THREE.CylinderGeometry(15, 20, 40, 32), new THREE.MeshBasicMaterial({ color: 0x050505 }));
+            core.position.y = 20;
+            tronStation.add(core);
+            
+            // Concentric Rings/Discs (Portal Island Steps)
+            const ringMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+            const edgeMat = new THREE.LineBasicMaterial({ color: CONF.colors.cyan });
+
+            const rings = [
+                { r: 60, h: 5, y: 2 },
+                { r: 50, h: 5, y: 8 },
+                { r: 40, h: 5, y: 14 }
+            ];
+
+            rings.forEach(r => {
+                const geo = new THREE.CylinderGeometry(r.r, r.r, r.h, 64);
+                const mesh = new THREE.Mesh(geo, ringMat);
+                mesh.position.y = r.y;
+                
+                const e = new THREE.EdgesGeometry(geo);
+                const l = new THREE.LineSegments(e, edgeMat);
+                mesh.add(l);
+                tronStation.add(mesh);
+            });
+
+            // Vertical Fins (Monoliths)
+            const finGeo = new THREE.BoxGeometry(4, 80, 10);
+            for(let i=0; i<6; i++) {
+                const fin = new THREE.Mesh(finGeo, ringMat);
+                const angle = (i / 6) * Math.PI * 2;
+                fin.position.set(Math.cos(angle) * 35, 40, Math.sin(angle) * 35);
+                fin.rotation.y = -angle;
+                
+                const fe = new THREE.EdgesGeometry(finGeo);
+                const fl = new THREE.LineSegments(fe, new THREE.LineBasicMaterial({ color: CONF.colors.purple }));
+                fin.add(fl);
+                tronStation.add(fin);
+            }
+
+            tronStation.position.set(0, -5, -600);
             scene.add(tronStation);
         }
 
@@ -1386,77 +1308,49 @@
             const dt = clock.getDelta();
             time += dt;
 
+            // Audio Sync
+            if (musicSync && analyser) {
+                analyser.getByteFrequencyData(dataArray);
+                let sum = 0; for(let i=0; i<10; i++) sum += dataArray[i];
+                const val = (sum / 10) / 255; 
+                if(terrain) terrain.material.uniforms.uHeight.value = 2.0 + val * 5.0; 
+            }
+
             // Shader Updates
             if(sun) sun.material.uniforms.uTime.value = time;
             if(terrain) terrain.material.uniforms.uTime.value = time;
 
-            // Move Palms, Arches (Simulate Speed)
+            // Move Environment
             const moveSpd = CONF.speed * dt;
-            
-            palms.forEach(p => {
-                p.position.z += moveSpd;
-                if(p.position.z > 20) p.position.z = -580;
-            });
-            
-            arches.forEach(a => {
-                a.position.z += moveSpd;
-                if(a.position.z > 20) a.position.z = -480;
-            });
+            palms.forEach(p => { p.position.z += moveSpd; if(p.position.z > 20) p.position.z = -580; });
+            arches.forEach(a => { a.position.z += moveSpd; if(a.position.z > 20) a.position.z = -480; });
+            if(roadReflector && roadReflector.userData.dashes) { roadReflector.userData.dashes.children.forEach(d => { d.position.z += moveSpd * 2; if(d.position.z > 10) d.position.z = -790; }); }
 
-            // Move Dashed Lines
-            if(roadReflector && roadReflector.userData.dashes) {
-                roadReflector.userData.dashes.children.forEach(d => {
-                    d.position.z += moveSpd * 2; // Move faster relative to ground
-                    if(d.position.z > 10) d.position.z = -790;
-                });
+            // Beam Pulse
+            if(beamMesh) {
+                beamMesh.material.opacity = 0.3 + Math.sin(time * 3) * 0.2;
             }
 
-            // Beam Event (Every 20 seconds)
-            const cycle = time % 20;
-            if(cycle > 18 && cycle < 20) {
-                // Fade in/out
-                const intensity = Math.sin((cycle - 18) * Math.PI / 2);
-                beamMesh.material.opacity = intensity * 0.8;
-                beamMesh.scale.setScalar(1 + intensity * 2);
-                
-                if(sfxOn && cycle < 18.1) {
-                    audioBeam.currentTime = 0; audioBeam.volume = 0.8; audioBeam.play().catch(()=>{});
-                }
-            } else {
-                beamMesh.material.opacity = 0;
-            }
-
-            // Car Subtle Idle
-            if(car) {
-                // Sleek subtle vibration
-                car.position.x = Math.sin(time * 0.5) * 0.05;
-            }
+            // Car Idle
+            if(car) car.position.x = Math.sin(time * 0.5) * 0.05;
 
             composer.render();
         }
 
         function onResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            composer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight); composer.setSize(window.innerWidth, window.innerHeight);
         }
 
-        window.playHover = () => {
-            if(sfxOn) {
-                audioHover.currentTime = 0; audioHover.volume = 0.3; audioHover.play().catch(()=>{});
-            }
-        };
+        window.playHover = () => { if(sfxOn) { audioHover.currentTime = 0; audioHover.volume = 0.3; audioHover.play().catch(()=>{}); } };
 
         document.getElementById('toggle-music').addEventListener('click', function() {
-            musicOn = !musicOn;
-            this.classList.toggle('off', !musicOn);
-            if(musicOn) audioMusic.play(); else audioMusic.pause();
+            musicOn = !musicOn; this.classList.toggle('off', !musicOn);
+            if(musicOn) { setupAudio(); audioMusic.play(); } else { audioMusic.pause(); }
         });
 
         document.getElementById('toggle-sfx').addEventListener('click', function() {
-            sfxOn = !sfxOn;
-            this.classList.toggle('off', !sfxOn);
+            sfxOn = !sfxOn; this.classList.toggle('off', !sfxOn);
         });
 
     </script>
