@@ -973,16 +973,15 @@
 
             const material = new THREE.ShaderMaterial({
                 uniforms: {
-                    uColor1: { value: new THREE.Color(0xff00ff) }, // Hot Pink
-                    uColor2: { value: new THREE.Color(0xff1493) }, // Deep Pink
+                    uColor1: { value: new THREE.Color(0xff00ff) }, // Hot Pink (Ground)
+                    uColor2: { value: new THREE.Color(0x0055ff) }, // Blue (Hills)
                     uTime: { value: 0 },
-                    // Controls
-                    uHeight: { value: 2.0 },
+                    uHeight: { value: 15.0 }, // Taller hills
                     uGridWidth: { value: 0.05 },
                     uGridOpacity: { value: 0.8 },
                     uTotalOpacity: { value: 0.7 },
                     uHue: { value: 0.0 },
-                    uGridDensity: { value: 50.0 } // NEW Control
+                    uGridDensity: { value: 50.0 }
                 },
                 vertexShader: `
                     varying vec2 vUv;
@@ -995,25 +994,28 @@
                         vec3 pos = position;
                         
                         float dist = abs(pos.x);
-                        float roadWidth = 10.0;
-                        
-                        float cell = 20.0;
-                        vec2 gridPos = pos.xz / cell;
-                        vec2 id = floor(gridPos);
-                        vec2 local = fract(gridPos) - 0.5; 
+                        // Palms are at +/- 25. Arches are +/- 25.
+                        // We start hills further out to leave a gap (Clearance zone).
+                        float hillStart = 45.0; 
                         
                         float elevation = 0.0;
                         
-                        if(dist > roadWidth) {
-                            float pyr = 1.0 - 2.0 * max(abs(local.x), abs(local.y));
-                            pyr = max(0.0, pyr); 
+                        // Only elevate if we are in the "Hill Zone"
+                        if(dist > hillStart) {
+                            // Normalized distance into the hill zone
+                            float factor = (dist - hillStart) / 50.0; // Ramp up intensity
+                            factor = clamp(factor, 0.0, 1.0);
+
+                            float cell = 20.0;
+                            vec2 gridPos = pos.xz / cell;
+                            vec2 id = floor(gridPos);
                             
-                            float wave = sin(id.y * 0.5 - uTime * 4.0) * 0.5 + 0.5; 
-                            float eq = sin(id.x * 2.0) * 0.5 + 0.5;
+                            // Wavy terrain math
+                            float wave = sin(id.y * 0.2 - uTime * 2.0) * 0.5 + 0.5; 
+                            float eq = sin(id.x * 0.5) * 0.5 + 0.5;
                             
-                            float h = wave * (eq + 0.5) * uHeight;
-                            
-                            elevation = pyr * h;
+                            // Combine
+                            elevation = wave * eq * uHeight * factor;
                         }
                         
                         pos.y += elevation;
@@ -1025,8 +1027,8 @@
                 fragmentShader: `
                     varying vec2 vUv;
                     varying float vElev;
-                    uniform vec3 uColor1;
-                    uniform vec3 uColor2;
+                    uniform vec3 uColor1; // Pink
+                    uniform vec3 uColor2; // Blue
                     uniform float uGridWidth;
                     uniform float uGridOpacity;
                     uniform float uTotalOpacity;
@@ -1040,7 +1042,6 @@
                     }
                     
                     void main() {
-                        // Use Density Uniform
                         vec2 gridUV = vec2(vUv.x * uGridDensity * 0.6, vUv.y * uGridDensity);
                         vec2 gridFract = fract(gridUV);
                         
@@ -1051,15 +1052,20 @@
                         
                         vec3 dark = vec3(0.0); 
                         
-                        vec3 line = uColor1; 
-                        line = hueShift(line, uHue);
+                        // Color mixing logic
+                        // If vElev is low (~0), use Pink. If high, use Blue.
+                        float mixFactor = clamp(vElev / 8.0, 0.0, 1.0);
+                        vec3 targetColor = mix(uColor1, uColor2, mixFactor);
+                        
+                        vec3 line = hueShift(targetColor, uHue);
                         
                         vec3 finalColor = mix(dark, line, grid * uGridOpacity); 
                         
                         gl_FragColor = vec4(finalColor, uTotalOpacity); 
                     }
                 `,
-                side: THREE.DoubleSide
+                side: THREE.DoubleSide,
+                transparent: true
             });
             
             terrain = new THREE.Mesh(geometry, material);
