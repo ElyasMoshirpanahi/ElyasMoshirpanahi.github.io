@@ -774,6 +774,8 @@
     <script src="https://unpkg.com/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
     <script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
     <script src="https://unpkg.com/three@0.128.0/examples/js/objects/Reflector.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
     <!-- MAIN LOGIC -->
     <script>
@@ -798,6 +800,7 @@
         let scene, camera, renderer, composer;
         let car, roadReflector, terrain, sun;
         let palms = [], arches = [], tronStation, beamMesh;
+        let bikes = [];
         let clock = new THREE.Clock();
         let time = 0;
         
@@ -912,6 +915,7 @@
             createPalms();
             createArches();
             createPortalEndpoint(); // NEW
+            createTronBikes();
 
             // 6. EVENTS
             window.addEventListener('resize', onResize);
@@ -1325,6 +1329,168 @@
             scene.add(tronStation);
         }
 
+        // --- TRON BIKES ---
+        class TronBike {
+            constructor(scene, color, startPos, targetPos) {
+                this.scene = scene;
+                this.color = color;
+                this.startPos = startPos;
+                this.targetPos = targetPos;
+                this.mesh = new THREE.Group();
+                this.trailPoints = [];
+                this.trailMesh = null;
+                this.speed = 0;
+                
+                this.init();
+            }
+
+            init() {
+                const loader = new THREE.GLTFLoader();
+                loader.load('models/tron_bike.glb', (gltf) => {
+                    const model = gltf.scene;
+                    model.scale.set(1.5, 1.5, 1.5);
+                    model.rotation.y = Math.PI; // Face forward
+                    this.setupMesh(model);
+                }, undefined, (err) => {
+                    this.createProceduralBike();
+                });
+
+                this.createTrail();
+                this.mesh.position.copy(this.startPos);
+                this.scene.add(this.mesh);
+
+                // Animation Sequence
+                this.runSequence();
+            }
+
+            createProceduralBike() {
+                const group = new THREE.Group();
+                
+                // Body
+                const bodyGeo = new THREE.BoxGeometry(1.2, 0.8, 3.5);
+                const bodyMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.2, metalness: 0.8 });
+                const body = new THREE.Mesh(bodyGeo, bodyMat);
+                body.position.y = 0.8;
+                group.add(body);
+
+                // Neon Strips
+                const stripGeo = new THREE.BoxGeometry(1.3, 0.1, 3.6);
+                const stripMat = new THREE.MeshBasicMaterial({ color: this.color });
+                const stripTop = new THREE.Mesh(stripGeo, stripMat);
+                stripTop.position.set(0, 1.1, 0);
+                group.add(stripTop);
+                
+                // Wheels
+                const wheelGeo = new THREE.CylinderGeometry(1.0, 1.0, 0.6, 32);
+                wheelGeo.rotateZ(Math.PI/2);
+                const wheelMat = new THREE.MeshBasicMaterial({ color: 0x050505 });
+                const rimMat = new THREE.MeshBasicMaterial({ color: this.color });
+                const rimGeo = new THREE.TorusGeometry(1.0, 0.05, 16, 64);
+                rimGeo.rotateY(Math.PI/2);
+
+                const positions = [[0, 0.9, 1.2], [0, 0.9, -1.2]];
+                positions.forEach(p => {
+                    const w = new THREE.Mesh(wheelGeo, wheelMat);
+                    w.position.set(...p);
+                    group.add(w);
+                    
+                    const rL = new THREE.Mesh(rimGeo, rimMat); rL.position.set(p[0]+0.31, p[1], p[2]); group.add(rL);
+                    const rR = new THREE.Mesh(rimGeo, rimMat); rR.position.set(p[0]-0.31, p[1], p[2]); group.add(rR);
+                });
+
+                this.setupMesh(group);
+            }
+
+            setupMesh(mesh) {
+                this.mesh.add(mesh);
+            }
+
+            createTrail() {
+                const maxPoints = 300;
+                const geometry = new THREE.BufferGeometry();
+                const positions = new Float32Array(maxPoints * 3);
+                geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                geometry.setDrawRange(0, 0);
+                
+                const material = new THREE.LineBasicMaterial({ 
+                    color: this.color, 
+                    transparent: true, 
+                    opacity: 1,
+                    linewidth: 4 
+                });
+                
+                this.trailMesh = new THREE.Line(geometry, material);
+                this.trailMesh.frustumCulled = false;
+                this.scene.add(this.trailMesh);
+            }
+
+            runSequence() {
+                // 1. Enter
+                gsap.to(this.mesh.position, {
+                    x: this.targetPos.x,
+                    z: this.targetPos.z,
+                    duration: 2.5,
+                    ease: "power2.out",
+                    onComplete: () => {
+                        // 2. Idle
+                        setTimeout(() => {
+                            this.accelerate();
+                        }, 5000);
+                    }
+                });
+                
+                // Bank/Tilt during entry
+                const tilt = this.startPos.x < 0 ? -0.5 : 0.5;
+                gsap.to(this.mesh.rotation, { z: tilt, duration: 1, yoyo: true, repeat: 1 });
+            }
+
+            accelerate() {
+                // 3. Exit
+                gsap.to(this.mesh.position, {
+                    z: -800,
+                    duration: 2.0,
+                    ease: "power4.in",
+                    onUpdate: () => {
+                        // Stretch trail? handled in update
+                    }
+                });
+            }
+
+            update(time) {
+                if(!this.mesh) return;
+                
+                // Hover effect
+                this.mesh.position.y = Math.sin(time * 10) * 0.05;
+
+                // Update Trail
+                const pos = this.mesh.position.clone();
+                pos.z += 1.8; // Behind bike
+                pos.y += 0.5; 
+                
+                this.trailPoints.unshift(pos);
+                if(this.trailPoints.length > 300) this.trailPoints.pop();
+
+                const positions = this.trailMesh.geometry.attributes.position.array;
+                let idx = 0;
+                for(let i=0; i<this.trailPoints.length; i++) {
+                    positions[idx++] = this.trailPoints[i].x;
+                    positions[idx++] = this.trailPoints[i].y;
+                    positions[idx++] = this.trailPoints[i].z;
+                }
+                this.trailMesh.geometry.setDrawRange(0, this.trailPoints.length);
+                this.trailMesh.geometry.attributes.position.needsUpdate = true;
+            }
+        }
+
+        function createTronBikes() {
+            // Left (Blue)
+            const bikeL = new TronBike(scene, 0x00ffff, new THREE.Vector3(-30, 0, 80), new THREE.Vector3(-4, 0, 4));
+            // Right (Orange)
+            const bikeR = new TronBike(scene, 0xff9900, new THREE.Vector3(30, 0, 80), new THREE.Vector3(4, 0, 4));
+            
+            bikes.push(bikeL, bikeR);
+        }
+
         // --- ANIMATION ---
         function animate() {
             requestAnimationFrame(animate);
@@ -1356,6 +1522,9 @@
 
             // Car Idle
             if(car) car.position.x = Math.sin(time * 0.5) * 0.05;
+
+            // Bikes
+            bikes.forEach(b => b.update(time));
 
             composer.render();
         }
