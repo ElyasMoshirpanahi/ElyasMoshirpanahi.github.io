@@ -898,8 +898,8 @@
                 new THREE.Vector2(window.innerWidth, window.innerHeight), 
                 1.5, 0.4, 0.85
             );
-            bloomPass.threshold = 0.05;
-            bloomPass.strength = 1.4;
+            bloomPass.threshold = 0.1;
+            bloomPass.strength = 1.5;
             bloomPass.radius = 0.5;
 
             composer = new THREE.EffectComposer(renderer);
@@ -923,15 +923,24 @@
         }
 
         function createLights() {
-            const ambient = new THREE.AmbientLight(0xffffff, 0.5);
+            // Ambient Light (Subtle fill)
+            const ambient = new THREE.AmbientLight(0xffffff, 0.3);
             scene.add(ambient);
+
+            // Point Light (Center glow)
             const pLight = new THREE.PointLight(CONF.colors.cyan, 1, 50);
             pLight.position.set(0, 5, 5);
             scene.add(pLight);
             
+            // Sun Light (Backlight/Rim)
             const sunLight = new THREE.DirectionalLight(0xff00ff, 0.5);
             sunLight.position.set(0, 50, -100);
             scene.add(sunLight);
+
+            // New Key Light (Specular highlights for bikes)
+            const keyLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            keyLight.position.set(-15, 30, 20); // Top-left-front
+            scene.add(keyLight);
         }
 
         function createSun() {
@@ -1341,6 +1350,10 @@
                 this.trailMesh = null;
                 this.speed = 0;
                 
+                // Trail Config
+                this.trailMaxLen = 80;
+                this.trailWidth = 0.4;
+                
                 this.init();
             }
 
@@ -1350,6 +1363,24 @@
                     const model = gltf.scene;
                     model.scale.set(1.5, 1.5, 1.5);
                     model.rotation.y = Math.PI; // Face forward
+                    
+                    // 1. Upgrade Materials for Glow
+                    model.traverse((o) => {
+                        if (o.isMesh) {
+                            if (o.name.includes('Light') || o.name.includes('Rim') || o.name.includes('Neon')) {
+                                o.material = new THREE.MeshBasicMaterial({ color: this.color });
+                                o.material.toneMapped = false; // Important for bloom
+                            } else {
+                                // Enhance body material
+                                o.material = new THREE.MeshStandardMaterial({
+                                    color: 0x050505,
+                                    roughness: 0.2,
+                                    metalness: 0.8
+                                });
+                            }
+                        }
+                    });
+
                     this.setupMesh(model);
                 }, undefined, (err) => {
                     this.createProceduralBike();
@@ -1366,36 +1397,38 @@
             createProceduralBike() {
                 const group = new THREE.Group();
                 
+                const matBody = new THREE.MeshStandardMaterial({ color: 0x101010, metalness: 0.8, roughness: 0.2 });
+                const matGlow = new THREE.MeshBasicMaterial({ color: this.color });
+                matGlow.toneMapped = false;
+
                 // Body
                 const bodyGeo = new THREE.BoxGeometry(1.2, 0.8, 3.5);
-                const bodyMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.2, metalness: 0.8 });
-                const body = new THREE.Mesh(bodyGeo, bodyMat);
+                const body = new THREE.Mesh(bodyGeo, matBody);
                 body.position.y = 0.8;
                 group.add(body);
 
                 // Neon Strips
                 const stripGeo = new THREE.BoxGeometry(1.3, 0.1, 3.6);
-                const stripMat = new THREE.MeshBasicMaterial({ color: this.color });
-                const stripTop = new THREE.Mesh(stripGeo, stripMat);
+                const stripTop = new THREE.Mesh(stripGeo, matGlow);
                 stripTop.position.set(0, 1.1, 0);
                 group.add(stripTop);
                 
                 // Wheels
                 const wheelGeo = new THREE.CylinderGeometry(1.0, 1.0, 0.6, 32);
                 wheelGeo.rotateZ(Math.PI/2);
-                const wheelMat = new THREE.MeshBasicMaterial({ color: 0x050505 });
-                const rimMat = new THREE.MeshBasicMaterial({ color: this.color });
-                const rimGeo = new THREE.TorusGeometry(1.0, 0.05, 16, 64);
-                rimGeo.rotateY(Math.PI/2);
-
+                
                 const positions = [[0, 0.9, 1.2], [0, 0.9, -1.2]];
                 positions.forEach(p => {
-                    const w = new THREE.Mesh(wheelGeo, wheelMat);
+                    const w = new THREE.Mesh(wheelGeo, matBody);
                     w.position.set(...p);
                     group.add(w);
                     
-                    const rL = new THREE.Mesh(rimGeo, rimMat); rL.position.set(p[0]+0.31, p[1], p[2]); group.add(rL);
-                    const rR = new THREE.Mesh(rimGeo, rimMat); rR.position.set(p[0]-0.31, p[1], p[2]); group.add(rR);
+                    // Wheel Halos (Glow)
+                    const haloGeo = new THREE.TorusGeometry(0.8, 0.05, 16, 48);
+                    haloGeo.rotateY(Math.PI/2);
+                    
+                    const hL = new THREE.Mesh(haloGeo, matGlow); hL.position.set(p[0]+0.31, p[1], p[2]); group.add(hL);
+                    const hR = new THREE.Mesh(haloGeo, matGlow); hR.position.set(p[0]-0.31, p[1], p[2]); group.add(hR);
                 });
 
                 this.setupMesh(group);
@@ -1406,20 +1439,30 @@
             }
 
             createTrail() {
-                const maxPoints = 300;
-                const geometry = new THREE.BufferGeometry();
-                const positions = new Float32Array(maxPoints * 3);
-                geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-                geometry.setDrawRange(0, 0);
+                this.trailGeo = new THREE.BufferGeometry();
+                // Allocate position buffer (2 verts per point: Top & Bottom)
+                const vertexCount = this.trailMaxLen * 2;
+                this.trailGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(vertexCount * 3), 3));
                 
-                const material = new THREE.LineBasicMaterial({ 
+                // Allocate and fill Index buffer for Quads
+                const indices = [];
+                for(let i=0; i < this.trailMaxLen - 1; i++) {
+                    const top = i * 2;
+                    const bot = i * 2 + 1;
+                    const nextTop = (i + 1) * 2;
+                    const nextBot = (i + 1) * 2 + 1;
+                    indices.push(top, bot, nextTop);
+                    indices.push(bot, nextBot, nextTop);
+                }
+                this.trailGeo.setIndex(indices);
+
+                this.trailMesh = new THREE.Mesh(this.trailGeo, new THREE.MeshBasicMaterial({ 
                     color: this.color, 
+                    side: THREE.DoubleSide, 
+                    blending: THREE.AdditiveBlending, 
                     transparent: true, 
-                    opacity: 1,
-                    linewidth: 4 
-                });
-                
-                this.trailMesh = new THREE.Line(geometry, material);
+                    opacity: 0.8 
+                }));
                 this.trailMesh.frustumCulled = false;
                 this.scene.add(this.trailMesh);
             }
@@ -1433,6 +1476,9 @@
                     ease: "power2.out",
                     onComplete: () => {
                         // 2. Idle
+                        gsap.to(this.mesh.position, {
+                            y: 0.1, duration: 1, yoyo: true, repeat: 4 
+                        });
                         setTimeout(() => {
                             this.accelerate();
                         }, 5000);
@@ -1441,44 +1487,57 @@
                 
                 // Bank/Tilt during entry
                 const tilt = this.startPos.x < 0 ? -0.5 : 0.5;
-                gsap.to(this.mesh.rotation, { z: tilt, duration: 1, yoyo: true, repeat: 1 });
+                this.mesh.rotation.z = tilt;
+                gsap.to(this.mesh.rotation, { z: 0, duration: 1.5, ease: "power1.out" });
             }
 
             accelerate() {
-                // 3. Exit
+                // 3. Exit (Wheelie)
+                gsap.to(this.mesh.rotation, { x: -0.2, duration: 0.3, yoyo: true, repeat: 1 });
+                
                 gsap.to(this.mesh.position, {
                     z: -800,
                     duration: 2.0,
                     ease: "power4.in",
-                    onUpdate: () => {
-                        // Stretch trail? handled in update
-                    }
+                    onUpdate: () => { }
                 });
             }
 
             update(time) {
                 if(!this.mesh) return;
                 
-                // Hover effect
-                this.mesh.position.y = Math.sin(time * 10) * 0.05;
-
                 // Update Trail
                 const pos = this.mesh.position.clone();
                 pos.z += 1.8; // Behind bike
-                pos.y += 0.5; 
+                pos.y = 0; 
                 
                 this.trailPoints.unshift(pos);
-                if(this.trailPoints.length > 300) this.trailPoints.pop();
+                if(this.trailPoints.length > this.trailMaxLen) this.trailPoints.pop();
 
-                const positions = this.trailMesh.geometry.attributes.position.array;
-                let idx = 0;
+                const arr = this.trailGeo.attributes.position.array;
+                
                 for(let i=0; i<this.trailPoints.length; i++) {
-                    positions[idx++] = this.trailPoints[i].x;
-                    positions[idx++] = this.trailPoints[i].y;
-                    positions[idx++] = this.trailPoints[i].z;
+                    const pt = this.trailPoints[i];
+                    const idx = i * 6;
+                    
+                    // Top Vertex
+                    arr[idx] = pt.x; 
+                    arr[idx+1] = pt.y + this.trailWidth; 
+                    arr[idx+2] = pt.z;
+                    
+                    // Bottom Vertex
+                    arr[idx+3] = pt.x; 
+                    arr[idx+4] = pt.y; 
+                    arr[idx+5] = pt.z;
                 }
-                this.trailMesh.geometry.setDrawRange(0, this.trailPoints.length);
-                this.trailMesh.geometry.attributes.position.needsUpdate = true;
+                
+                this.trailGeo.attributes.position.needsUpdate = true;
+                
+                if (this.trailPoints.length > 1) {
+                    this.trailGeo.setDrawRange(0, (this.trailPoints.length - 1) * 6);
+                } else {
+                    this.trailGeo.setDrawRange(0, 0);
+                }
             }
         }
 
