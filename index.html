@@ -913,6 +913,7 @@
         
         let sunManualTime = -1;
         let sunManualPos = -1;
+        let lastBikeSpawn = 0;
 
         let musicOn = false;
         let sfxOn = false;
@@ -1023,6 +1024,7 @@
             createArches();
             createPortalEndpoint(); // NEW
             createTronBikes();
+            lastBikeSpawn = 0; // first pair spawns at time 0
 
             // 6. EVENTS
             window.addEventListener('resize', onResize);
@@ -1622,11 +1624,12 @@
             }
         }
 
-        function createTronBikes() {
+        function createTronBikes(zOffset) {
+            zOffset = zOffset || 0;
             // Left (Blue)
-            const bikeL = new TronBike(scene, 0x00ffff, new THREE.Vector3(-30, 0, 80), new THREE.Vector3(-4, 0, 4));
+            const bikeL = new TronBike(scene, 0x00ffff, new THREE.Vector3(-30, 0, 80 + zOffset), new THREE.Vector3(-4, 0, 4 + zOffset));
             // Right (Orange)
-            const bikeR = new TronBike(scene, 0xff9900, new THREE.Vector3(30, 0, 80), new THREE.Vector3(4, 0, 4));
+            const bikeR = new TronBike(scene, 0xff9900, new THREE.Vector3(30, 0, 80 + zOffset), new THREE.Vector3(4, 0, 4 + zOffset));
             
             bikes.push(bikeL, bikeR);
         }
@@ -1693,7 +1696,22 @@
             if(car) car.position.x = Math.sin(time * 0.5) * 0.05;
 
             // Bikes
-            bikes.forEach(b => b.update(time));
+            // Spawn new pair every 60s
+            if(time - lastBikeSpawn >= 60) {
+                lastBikeSpawn = time;
+                const zOff = Math.floor(Math.random() * 20) - 10; // slight random stagger
+                createTronBikes(zOff);
+            }
+            // Clean up bikes that are off-screen (past -750)
+            for(let i = bikes.length - 1; i >= 0; i--) {
+                const b = bikes[i];
+                b.update(time);
+                if(b.mesh.position.z < -750) {
+                    if(b.trailMesh) scene.remove(b.trailMesh);
+                    scene.remove(b.mesh);
+                    bikes.splice(i, 1);
+                }
+            }
 
             composer.render();
         }
