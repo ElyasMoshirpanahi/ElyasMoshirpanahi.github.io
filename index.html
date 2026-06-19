@@ -1693,85 +1693,88 @@
             const group = new THREE.Group();
             const buildingData = [];
             const buildingColors = [0x080818, 0x0a0a1e, 0x0c0c22, 0x0e0e28];
-            // Columns: multiple rows at varying x positions on each side
-            const xCols = [36, 44, 54, 64, 76];
+            // All buildings placed at the far end of the grid — a skyline at the horizon
+            // Grid extends from z≈-600 to z≈200; far visible edge is ~z=-280 to z=-340
+            const farZStart = -270;
+            const farZEnd = -340;
+            const xCols = [32, 38, 44, 50, 56, 64, 75, 88];
             xCols.forEach((x, colIdx) => {
                 [-1, 1].forEach(side => {
                     const xPos = x * side;
-                    for(let z = 50; z >= -280; z -= 25 + Math.random() * 25) {
-                        const h = 10 + Math.random() * 40;
-                        const w = 3 + Math.random() * 4 + colIdx * 0.5;
-                        const d = 5 + Math.random() * 6;
-                        const yBase = -5;
-                        // Main body
-                        const bodyGeo = new THREE.BoxGeometry(w, h, d);
-                        const bodyMat = new THREE.MeshStandardMaterial({
-                            color: buildingColors[Math.floor(Math.random() * buildingColors.length)],
-                            metalness: 0.5,
-                            roughness: 0.5,
-                        });
-                        const body = new THREE.Mesh(bodyGeo, bodyMat);
-                        body.position.set(xPos, yBase + h/2, z);
-                        body.castShadow = false;
-                        body.receiveShadow = false;
-                        group.add(body);
-                        // Roof neon trim
-                        const trimMat = new THREE.MeshBasicMaterial({
-                            color: Math.random() < 0.5 ? 0x00ffff : 0xff00aa,
-                            transparent: true,
-                            opacity: 0.5 + Math.random() * 0.4,
-                            blending: THREE.AdditiveBlending
-                        });
-                        const roofTrim = new THREE.Mesh(
-                            new THREE.BoxGeometry(w + 0.3, 0.2, d + 0.3),
-                            trimMat
+                    // Buildings at the far end: dense skyline across the horizon
+                    const zPos = farZStart + (colIdx / xCols.length) * (farZEnd - farZStart) + (Math.random() - 0.5) * 15;
+                    const h = 15 + Math.random() * 55 * (1 - colIdx / xCols.length * 0.3);
+                    const w = 3 + Math.random() * 5 + colIdx * 0.4;
+                    const d = 4 + Math.random() * 4;
+                    const yBase = -5;
+                    // Main body
+                    const bodyGeo = new THREE.BoxGeometry(w, h, d);
+                    const bodyMat = new THREE.MeshStandardMaterial({
+                        color: buildingColors[Math.floor(Math.random() * buildingColors.length)],
+                        metalness: 0.5,
+                        roughness: 0.5,
+                    });
+                    const body = new THREE.Mesh(bodyGeo, bodyMat);
+                    body.position.set(xPos, yBase + h/2, zPos);
+                    body.castShadow = false;
+                    body.receiveShadow = false;
+                    group.add(body);
+                    // Roof neon trim
+                    const trimMat = new THREE.MeshBasicMaterial({
+                        color: Math.random() < 0.5 ? 0x00ffff : 0xff00aa,
+                        transparent: true,
+                        opacity: 0.5 + Math.random() * 0.4,
+                        blending: THREE.AdditiveBlending
+                    });
+                    const roofTrim = new THREE.Mesh(
+                        new THREE.BoxGeometry(w + 0.3, 0.2, d + 0.3),
+                        trimMat
+                    );
+                    roofTrim.position.set(xPos, yBase + h, zPos);
+                    group.add(roofTrim);
+                    // Antenna/spike on tall buildings
+                    if(h > 25 && Math.random() < 0.5) {
+                        const spike = new THREE.Mesh(
+                            new THREE.CylinderGeometry(0.1, 0.2, 2 + Math.random() * 3, 4),
+                            new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending })
                         );
-                        roofTrim.position.set(xPos, yBase + h, z);
-                        group.add(roofTrim);
-                        // Antenna/spike on tall buildings
-                        if(h > 25 && Math.random() < 0.5) {
-                            const spike = new THREE.Mesh(
-                                new THREE.CylinderGeometry(0.1, 0.2, 2 + Math.random() * 3, 4),
-                                new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending })
-                            );
-                            spike.position.set(xPos + (Math.random() - 0.5) * w * 0.3, yBase + h + 1 + Math.random(), z);
-                            group.add(spike);
-                        }
-                        // Window panel (front face facing camera)
-                        const windowRows = Math.max(1, Math.floor(h / 4));
-                        const windowCols = Math.max(1, Math.floor(w / 1.8));
-                        const litRatio = 0.4 + Math.random() * 0.4;
-                        const tex = createWindowTexture(windowRows, windowCols, litRatio);
-                        const panelGeo = new THREE.PlaneGeometry(w * 0.85, h * 0.75);
-                        const panelMat = new THREE.MeshStandardMaterial({
-                            map: tex,
-                            emissive: new THREE.Color(0x00ffff),
-                            emissiveMap: tex,
-                            emissiveIntensity: 1.0,
-                            transparent: true,
-                            depthWrite: false,
-                            blending: THREE.AdditiveBlending,
-                            side: THREE.DoubleSide
-                        });
-                        const panel = new THREE.Mesh(panelGeo, panelMat);
-                        panel.position.set(xPos, yBase + h/2, z + d/2 + 0.15);
-                        group.add(panel);
-                        // Back window panel
-                        const panelBack = panel.clone();
-                        panelBack.position.set(xPos, yBase + h/2, z - d/2 - 0.15);
-                        panelBack.rotation.y = Math.PI;
-                        group.add(panelBack);
-                        buildingData.push({
-                            panel: panel,
-                            panelBack: panelBack,
-                            tex: tex,
-                            rows: windowRows,
-                            cols: windowCols,
-                            canvas: tex.image,
-                            nextToggle: 2 + Math.random() * 5,
-                            toggleTimer: 0
-                        });
+                        spike.position.set(xPos + (Math.random() - 0.5) * w * 0.3, yBase + h + 1 + Math.random(), zPos);
+                        group.add(spike);
                     }
+                    // Window panel (front face facing camera)
+                    const windowRows = Math.max(1, Math.floor(h / 4));
+                    const windowCols = Math.max(1, Math.floor(w / 1.8));
+                    const litRatio = 0.4 + Math.random() * 0.4;
+                    const tex = createWindowTexture(windowRows, windowCols, litRatio);
+                    const panelGeo = new THREE.PlaneGeometry(w * 0.85, h * 0.75);
+                    const panelMat = new THREE.MeshStandardMaterial({
+                        map: tex,
+                        emissive: new THREE.Color(0x00ffff),
+                        emissiveMap: tex,
+                        emissiveIntensity: 1.0,
+                        transparent: true,
+                        depthWrite: false,
+                        blending: THREE.AdditiveBlending,
+                        side: THREE.DoubleSide
+                    });
+                    const panel = new THREE.Mesh(panelGeo, panelMat);
+                    panel.position.set(xPos, yBase + h/2, zPos + d/2 + 0.15);
+                    group.add(panel);
+                    // Back window panel
+                    const panelBack = panel.clone();
+                    panelBack.position.set(xPos, yBase + h/2, zPos - d/2 - 0.15);
+                    panelBack.rotation.y = Math.PI;
+                    group.add(panelBack);
+                    buildingData.push({
+                        panel: panel,
+                        panelBack: panelBack,
+                        tex: tex,
+                        rows: windowRows,
+                        cols: windowCols,
+                        canvas: tex.image,
+                        nextToggle: 2 + Math.random() * 5,
+                        toggleTimer: 0
+                    });
                 });
             });
             scene.add(group);
