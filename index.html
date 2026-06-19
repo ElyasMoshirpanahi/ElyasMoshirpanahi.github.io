@@ -3,13 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elyas Moshirpanahi | Senior GenAI Engineer</title>
+    <meta name="description" content="Senior MLOps &amp; GenAI Engineer specialized in deployment pipelines, containerized model serving, and CI/CD automation for production AI systems. 8+ years of engineering experience.">
+    <meta property="og:title" content="Elyas Moshirpanahi | Senior MLOps &amp; GenAI Engineer">
+    <meta property="og:description" content="MLOps and ML engineer focused on deployment pipelines, containerized model serving, and CI/CD automation for production AI systems.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://elyasmoshirpanahi.github.io">
+    <meta property="og:image" content="https://elyasmoshirpanahi.github.io/assets/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Elyas Moshirpanahi | Senior MLOps &amp; GenAI Engineer">
+    <meta name="twitter:description" content="MLOps and ML engineer focused on deployment pipelines, containerized model serving, and CI/CD automation for production AI systems.">
+    <meta name="twitter:image" content="https://elyasmoshirpanahi.github.io/assets/og-image.png">
+    <title>Elyas Moshirpanahi | Senior MLOps &amp; GenAI Engineer</title>
     
     <!-- FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@500;600;700&family=Audiowide&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     
     <style>
         /* --- CORE VARIABLES --- */
@@ -148,6 +159,17 @@
             background: var(--neon-pink);
             box-shadow: 0 0 10px var(--neon-pink);
             transition: width 0.1s;
+        }
+
+        /* --- REDUCED MOTION --- */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            html { scroll-behavior: auto; }
+            .gate-panel { transition: none; }
         }
 
         @keyframes pulse { from { opacity: 0.5; } to { opacity: 1; } }
@@ -403,6 +425,39 @@
             gap: 40px;
         }
         @media(min-width: 768px) { .about-grid { grid-template-columns: 2fr 1fr; } }
+
+        /* --- MOBILE RESPONSIVE --- */
+        @media(max-width: 640px) {
+            h1 { font-size: clamp(2rem, 8vw, 3rem); letter-spacing: 1px; }
+            .hero-content { margin-bottom: 20vh; padding: 1rem; }
+            .nav-row { gap: 1rem; flex-direction: column; align-items: center; }
+            .holo-btn { padding: 0.8rem 1.5rem; font-size: 0.85rem; width: 90%; max-width: 280px; text-align: center; }
+            section { padding: 60px 0; }
+            .section-title { font-size: 1.8rem; }
+            .skills-grid { grid-template-columns: 1fr; }
+            .projects-grid { grid-template-columns: 1fr; }
+            .timeline { padding-left: 20px; margin-left: 10px; }
+            .timeline-item::before { left: -36px; width: 12px; height: 12px; }
+            .terminal-body { height: 250px; font-size: 0.85rem; }
+            .top-bar { top: 10px; right: 10px; gap: 0.5rem; }
+            .ctrl-btn { width: 36px; height: 36px; font-size: 0.85rem; }
+            .loading-text { font-size: 1.4rem; }
+            .loading-bar-container { width: 220px; }
+            .gate-panel { width: 100%; height: 50%; }
+            .gate-left { border-right: none; border-bottom: 2px solid var(--neon-pink); }
+            .gate-right { border-left: none; border-top: 2px solid var(--neon-pink); }
+            #gate-overlay.open .gate-left { transform: translateY(-100%); }
+            #gate-overlay.open .gate-right { transform: translateY(100%); }
+            .social-links { gap: 2rem; }
+            .social-link { font-size: 1.6rem; }
+            .stat-num { font-size: 2rem; }
+        }
+        @media(min-width: 641px) and (max-width: 1024px) {
+            .nav-row { gap: 1.5rem; }
+            .holo-btn { padding: 0.8rem 2rem; }
+            .skills-grid { grid-template-columns: repeat(2, 1fr); }
+            .projects-grid { grid-template-columns: repeat(2, 1fr); }
+        }
         
         .about-text p {
             margin-bottom: 1.5rem;
@@ -532,6 +587,15 @@
             color: #33ff00; text-shadow: 0 0 5px rgba(51,255,0,0.5);
         }
         .prompt { color: var(--neon-pink); margin-right: 10px; }
+        .typed-text { color: #33ff00; }
+        .term-status {
+            margin-top: 15px; padding: 8px 12px;
+            background: #0a0a0a; border-top: 1px solid #222;
+            display: flex; gap: 20px; font-family: 'Courier New', monospace;
+            font-size: 0.7rem; color: #666;
+        }
+        .term-status span { display: flex; align-items: center; gap: 4px; }
+        #term-hint { color: var(--neon-cyan); text-shadow: 0 0 8px rgba(0,243,255,0.5); }
 
         /* FOOTER */
         .footer-bar {
@@ -587,10 +651,10 @@
     <div id="hero-section">
         <!-- CONTROLS (TOP RIGHT) -->
         <div class="top-bar">
-            <button class="ctrl-btn" id="toggle-music" title="Music">
+            <button class="ctrl-btn off" id="toggle-music" title="Music">
                 <i class="fas fa-music"></i>
             </button>
-            <button class="ctrl-btn" id="toggle-sfx" title="SFX">
+            <button class="ctrl-btn off" id="toggle-sfx" title="SFX">
                 <i class="fas fa-volume-up"></i>
             </button>
             <button class="ctrl-btn" id="toggle-config" title="Config">
@@ -601,7 +665,7 @@
         <!-- HERO CONTENT -->
         <div class="hero-content">
             <h1>Elyas Moshirpanahi</h1>
-            <h2>Senior GenAI Engineer</h2>
+            <h2>Senior MLOps &amp; GenAI Engineer</h2>
             
             <div class="nav-row">
                 <a href="#projects" class="holo-btn btn-cyan" onmouseenter="playHover()">
@@ -612,6 +676,9 @@
                 </a>
                 <a href="#terminal-section" class="holo-btn btn-purple" onmouseenter="playHover()">
                     <i class="fas fa-terminal"></i> Terminal
+                </a>
+                <a href="assets/resume.pdf" class="holo-btn btn-cyan" target="_blank" rel="noopener noreferrer" onmouseenter="playHover()">
+                    <i class="fas fa-download"></i> Download CV
                 </a>
             </div>
         </div>
@@ -626,12 +693,12 @@
                 <h2 class="section-title">System Status</h2>
                 <div class="about-grid">
                     <div class="about-text glass-neon-panel" style="padding: 30px;">
-                        <p>I am a Senior Generative AI Engineer specializing in Large Language Models, Autonomous Agents, and Production Machine Learning Systems. With a deep background in full-stack engineering and algorithmic optimization, I bridge the gap between research-grade AI and scalable, real-world applications.</p>
-                        <p>My core focus is architecting robust RAG pipelines, optimizing inference infrastructure, and deploying agentic workflows that solve complex reasoning tasks. I don't just train models; I build the ecosystems they live in.</p>
+                        <p>I am a Senior MLOps &amp; GenAI Engineer focused on deployment pipelines, containerized model serving, and CI/CD automation for production AI systems. I bridge the gap between research-grade AI and scalable, real-world applications.</p>
+                        <p>My core focus is architecting robust ML/LLM deployment pipelines with automated CI/CD, designing production-grade REST APIs for secure model serving, and building real-time multi-agent systems (vision, RAG, grounded search). I don't just train models; I build the ecosystems they live in.</p>
                     </div>
                     <div class="stats">
                         <div class="stat-card glass-neon-panel">
-                            <div class="stat-num">4+</div>
+                            <div class="stat-num">8+</div>
                             <div class="stat-label">Years Exp</div>
                         </div>
                         <div class="stat-card glass-neon-panel">
@@ -639,8 +706,8 @@
                             <div class="stat-label">AAIC Winner</div>
                         </div>
                         <div class="stat-card glass-neon-panel">
-                            <div class="stat-num">20k+</div>
-                            <div class="stat-label">Users Impacted</div>
+                            <div class="stat-num">98%</div>
+                            <div class="stat-label">Face-Rec Accuracy</div>
                         </div>
                     </div>
                 </div>
@@ -653,23 +720,39 @@
                 <h2 class="section-title">Experience Log</h2>
                 <div class="timeline">
                     <div class="timeline-item vaporwave-block">
-                        <h3 class="role">Machine Learning Engineer</h3>
-                        <span class="company">Tech / Stealth Startup</span>
-                        <span class="date">Feb 2023 – Present</span>
+                        <h3 class="role">Senior Generative AI &amp; Backend Engineer, MLOps</h3>
+                        <span class="company">Zaubar UG</span>
+                        <span class="date">08/2023 – Present — Berlin (Remote)</span>
                         <ul>
-                            <li>• Architecting GenAI solutions using PyTorch, LangChain, Vector DBs.</li>
-                            <li>• Deployed LLaMA-based agents for automated reasoning tasks.</li>
-                            <li>• Optimized inference latency by 40% (Quantization, ONNX).</li>
+                            <li>• Built &amp; optimized production deployment pipelines for ML/LLM models with automated CI/CD (GitHub Actions).</li>
+                            <li>• Designed production-grade REST APIs for secure model serving; containerized services with Docker.</li>
+                            <li>• Real-time multi-agent systems (vision, RAG, grounded search); led prompt engineering &amp; perf tuning.</li>
                         </ul>
                     </div>
                     <div class="timeline-item vaporwave-block">
-                        <h3 class="role">Full Stack Developer</h3>
-                        <span class="company">YIWU Dar Trading Co.</span>
-                        <span class="date">2021 – 2023</span>
+                        <h3 class="role">Machine Learning Engineer | Team Lead</h3>
+                        <span class="company">FRVT (Face Recognition Vendor Test)</span>
+                        <span class="date">12/2022 – 05/2023 — Tehran</span>
                         <ul>
-                            <li>• Engineered high-scale VPN platform ("SecureNet").</li>
-                            <li>• Designed robust MVC architecture in Laravel/PHP.</li>
-                            <li>• Automated server management with Python & Bash.</li>
+                            <li>• 9-stage face/motion recognition system; 98% accuracy on 400 videos; cut runtime 40% via error analysis.</li>
+                            <li>• Configured codebase for containerization and cloud deployment.</li>
+                        </ul>
+                    </div>
+                    <div class="timeline-item vaporwave-block">
+                        <h3 class="role">Machine Learning Engineer</h3>
+                        <span class="company">Stock Market Prediction</span>
+                        <span class="date">11/2021 – 02/2022 — Tehran</span>
+                        <ul>
+                            <li>• LSTM time-series models, 20% ROI, ranked 1st in profit; daily pipeline ranking 300+ stocks.</li>
+                        </ul>
+                    </div>
+                    <div class="timeline-item vaporwave-block">
+                        <h3 class="role">Full-Stack Developer | Project Manager</h3>
+                        <span class="company">YIWU dar Trading Co., Ltd</span>
+                        <span class="date">04/2018 – 05/2020 — Yichang, China (Remote)</span>
+                        <ul>
+                            <li>• End-to-end VPN platform (+20% sales); stable MVC architecture (+85% stability).</li>
+                            <li>• Python/Bash/cronjob automation.</li>
                         </ul>
                     </div>
                 </div>
@@ -682,32 +765,49 @@
                 <h2 class="section-title">Tech Stack</h2>
                 <div class="skills-grid">
                     <div class="skill-category neon-frame-card">
-                        <h4 class="skill-title">GenAI & LLMs</h4>
+                        <h4 class="skill-title">ML Frameworks</h4>
                         <div class="skill-tags">
                             <span class="tag">PyTorch</span>
+                            <span class="tag">TensorFlow</span>
+                            <span class="tag">Keras</span>
+                            <span class="tag">Scikit-Learn</span>
                             <span class="tag">LangChain</span>
-                            <span class="tag">RAG</span>
-                            <span class="tag">LoRA</span>
-                            <span class="tag">OpenAI API</span>
+                            <span class="tag">LangGraph</span>
                         </div>
                     </div>
                     <div class="skill-category neon-frame-card">
-                        <h4 class="skill-title">Backend</h4>
+                        <h4 class="skill-title">Serving &amp; Deployment</h4>
                         <div class="skill-tags">
-                            <span class="tag">Python</span>
-                            <span class="tag">FastAPI</span>
+                            <span class="tag">REST APIs</span>
                             <span class="tag">Docker</span>
                             <span class="tag">Kubernetes</span>
-                            <span class="tag">Redis</span>
+                            <span class="tag">Microservices</span>
                         </div>
                     </div>
                     <div class="skill-category neon-frame-card">
-                        <h4 class="skill-title">Core ML</h4>
+                        <h4 class="skill-title">MLOps &amp; CI/CD</h4>
                         <div class="skill-tags">
-                            <span class="tag">NumPy</span>
-                            <span class="tag">OpenCV</span>
-                            <span class="tag">Scikit-learn</span>
-                            <span class="tag">Time Series</span>
+                            <span class="tag">GitHub Actions</span>
+                            <span class="tag">Automated Pipelines</span>
+                            <span class="tag">Model Monitoring</span>
+                            <span class="tag">Model Evaluation</span>
+                        </div>
+                    </div>
+                    <div class="skill-category neon-frame-card">
+                        <h4 class="skill-title">Cloud &amp; IaC</h4>
+                        <div class="skill-tags">
+                            <span class="tag">Microsoft Azure</span>
+                            <span class="tag">Azure ML Studio</span>
+                            <span class="tag">Terraform</span>
+                        </div>
+                    </div>
+                    <div class="skill-category neon-frame-card">
+                        <h4 class="skill-title">Data</h4>
+                        <div class="skill-tags">
+                            <span class="tag">SQL</span>
+                            <span class="tag">MongoDB</span>
+                            <span class="tag">Redis</span>
+                            <span class="tag">NoSQL</span>
                         </div>
                     </div>
                 </div>
@@ -722,12 +822,17 @@
                     <div class="project-card">
                         <h3 class="p-title">Market Sentinel</h3>
                         <div class="p-role">Algorithmic Trading Agent</div>
-                        <p class="p-desc">LSTM-based time-series forecasting system identifying top performing stocks with high precision. Winner of AAIC Competition.</p>
+                        <p class="p-desc">LSTM-based time-series forecasting system identifying top performing stocks with high precision. Winner of AAIC Competition — 20% ROI, ranked 1st in profit.</p>
                     </div>
                     <div class="project-card">
-                        <h3 class="p-title">SecureNet</h3>
+                        <h3 class="p-title">SecureNet VPN</h3>
                         <div class="p-role">High-Scale VPN Platform</div>
-                        <p class="p-desc">Distributed VPN architecture handling thousands of concurrent connections with automated load balancing.</p>
+                        <p class="p-desc">End-to-end VPN platform (+20% sales); stable MVC architecture (+85% stability). Automated server management with Python, Bash &amp; cronjobs.</p>
+                    </div>
+                    <div class="project-card">
+                        <h3 class="p-title">FRVT Face Recognition</h3>
+                        <div class="p-role">9-Stage Face/Motion Recognition</div>
+                        <p class="p-desc">98% accuracy on 400 videos; 40% runtime reduction via systematic error analysis. Configured for containerization and cloud deployment.</p>
                     </div>
                 </div>
             </div>
@@ -740,14 +845,17 @@
                     <div class="terminal-header">
                         <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
                     </div>
-                    <div class="terminal-body">
-                        <div class="output-line">user@elyas-portfolio:~$ initializing connection...</div>
-                        <div class="output-line">user@elyas-portfolio:~$ status: online</div>
-                        <div class="output-line">user@elyas-portfolio:~$ echo "Ready for deployment."</div>
-                        <div class="output-line">Ready for deployment.</div>
-                        <div class="input-line">
+                    <div class="terminal-body" id="terminal-body">
+                        <div id="term-output"></div>
+                        <div class="input-line" id="input-line">
                             <span class="prompt">user@elyas-portfolio:~$</span>
-                            <span class="cursor">_</span>
+                            <span class="typed-text" id="typed-text"></span>
+                            <span class="cursor" id="cursor">_</span>
+                        </div>
+                        <div class="term-status" id="term-status">
+                            <span>READY</span>
+                            <span id="term-uptime">UPTIME: 0s</span>
+                            <span>CMD: <span id="term-hint">type 'help'</span></span>
                         </div>
                     </div>
                 </div>
@@ -757,11 +865,11 @@
         <!-- FOOTER -->
         <div class="footer-bar">
             <div class="social-links">
-                <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-github"></i></a>
-                <a href="#" class="social-link"><i class="fas fa-envelope"></i></a>
+                <a href="https://www.linkedin.com/in/elyasmoshirpanahi" class="social-link" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
+                <a href="https://github.com/ElyasMoshirpanahi" class="social-link" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
+                <a href="mailto:elyasmoshirpanahe1376@gmail.com" class="social-link" target="_blank" rel="noopener noreferrer"><i class="fas fa-envelope"></i></a>
             </div>
-            <p style="color: #666; font-size: 0.8rem;">© 2025 ELYAS MOSHIRPANAHI. SYSTEM OPTIMIZED.</p>
+            <p style="color: #666; font-size: 0.8rem;">© 2026 ELYAS MOSHIRPANAHI. SYSTEM OPTIMIZED.</p>
         </div>
     </div>
 
@@ -774,7 +882,6 @@
     <script src="https://unpkg.com/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
     <script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
     <script src="https://unpkg.com/three@0.128.0/examples/js/objects/Reflector.js"></script>
-    <script src="https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
     <!-- MAIN LOGIC -->
@@ -783,7 +890,7 @@
         const CONF = {
             fov: 75,
             roadWidth: 12, 
-            speed: 40, 
+            speed: 100, 
             palmSpeed: 15,
             colors: {
                 pink: 0xff00ff,
@@ -804,8 +911,11 @@
         let clock = new THREE.Clock();
         let time = 0;
         
-        let musicOn = true;
-        let sfxOn = true;
+        let sunManualTime = -1;
+        let sunManualPos = -1;
+
+        let musicOn = false;
+        let sfxOn = false;
         let musicSync = true;
         
         // AUDIO
@@ -829,10 +939,7 @@
                 
                 // Start Audio Context immediately on user interaction
                 setupAudio();
-                if(musicOn) {
-                    audioMusic.volume = 0.5;
-                    audioMusic.play().catch(e => console.warn("Audio error:", e));
-                }
+                // Music starts muted — user clicks toggle to enable
 
                 // Simulate Load
                 let width = 0;
@@ -975,7 +1082,7 @@
                 transparent: true
             });
             sun = new THREE.Mesh(geometry, material);
-            sun.position.set(0, 30, -400);
+            sun.position.set(0, 0, -400);
             scene.add(sun);
         }
 
@@ -995,7 +1102,7 @@
                     uGridOpacity: { value: 0.9 },
                     uTotalOpacity: { value: 0.8 },
                     uHue: { value: 0.0 },
-                    uGridDensity: { value: 40.0 }
+                    uGridDensity: { value: 90.0 }
                 },
                 vertexShader: `
                     varying vec2 vUv;
@@ -1137,13 +1244,13 @@
             div.className = 'leva-panel';
             div.innerHTML = `
                 <div class="leva-header"><span>VAPOR_CONFIG 1.0</span><i class="fas fa-times" id="close-leva" style="cursor:pointer; opacity:0.6;"></i></div>
-                <div class="leva-row"><div class="leva-label">CYBER-SPEED</div><div class="leva-ctrl"><input type="range" min="0" max="100" value="40" id="inp-speed"><span class="val-display">40</span></div></div>
-                <div class="leva-row"><div class="leva-label">SUN ELEVATION</div><div class="leva-ctrl"><input type="range" min="10" max="100" value="30" id="inp-sun-y"><span class="val-display">30</span></div></div>
+                <div class="leva-row"><div class="leva-label">CYBER-SPEED</div><div class="leva-ctrl"><input type="range" min="0" max="100" value="100" id="inp-speed"><span class="val-display">100</span></div></div>
+                <div class="leva-row"><div class="leva-label">SUN ELEVATION</div><div class="leva-ctrl"><input type="range" min="0" max="100" value="30" id="inp-sun-y"><span class="val-display">30</span></div></div>
                 <div class="leva-row"><div class="leva-label">NEON-BLEED</div><div class="leva-ctrl"><input type="range" min="0" max="3" step="0.1" value="1.4" id="inp-bloom"><span class="val-display">1.4</span></div></div>
                 <div class="leva-row"><div class="leva-label">GRID-WARP</div><div class="leva-ctrl"><input type="range" min="0" max="10" step="0.1" value="2.0" id="inp-height"><span class="val-display">2.0</span></div></div>
-                <div class="leva-row"><div class="leva-label">GRID-DENSITY</div><div class="leva-ctrl"><input type="range" min="10" max="200" step="1" value="50" id="inp-density"><span class="val-display">50</span></div></div>
+                <div class="leva-row"><div class="leva-label">GRID-DENSITY</div><div class="leva-ctrl"><input type="range" min="10" max="200" step="1" value="90" id="inp-density"><span class="val-display">90</span></div></div>
                 <div class="leva-row"><div class="leva-label">SYNTH-SHIFT</div><div class="leva-ctrl"><input type="range" min="0" max="6.28" step="0.1" value="0.0" id="inp-hue"><span class="val-display">0.0</span></div></div>
-                <div class="leva-row"><div class="leva-label">MUSIC SYNC</div><div class="leva-ctrl"><input type="checkbox" id="inp-sync"></div></div>
+                <div class="leva-row"><div class="leva-label">MUSIC SYNC</div><div class="leva-ctrl"><input type="checkbox" id="inp-sync" checked></div></div>
             `;
             document.body.appendChild(div);
 
@@ -1162,7 +1269,7 @@
             };
 
             bind('inp-speed', (v) => { CONF.speed = v; });
-            bind('inp-sun-y', (v) => { if(sun) sun.position.y = v; });
+            bind('inp-sun-y', (v) => { sunManualTime = time; sunManualPos = v; });
             bind('inp-bloom', (v) => { if(composer) composer.passes[1].strength = v; });
             bind('inp-height', (v) => { if(terrain) terrain.material.uniforms.uHeight.value = v; });
             bind('inp-density', (v) => { if(terrain) terrain.material.uniforms.uGridDensity.value = v; });
@@ -1358,33 +1465,7 @@
             }
 
             init() {
-                const loader = new THREE.GLTFLoader();
-                loader.load('models/tron_bike.glb', (gltf) => {
-                    const model = gltf.scene;
-                    model.scale.set(1.5, 1.5, 1.5);
-                    model.rotation.y = Math.PI; // Face forward
-                    
-                    // 1. Upgrade Materials for Glow
-                    model.traverse((o) => {
-                        if (o.isMesh) {
-                            if (o.name.includes('Light') || o.name.includes('Rim') || o.name.includes('Neon')) {
-                                o.material = new THREE.MeshBasicMaterial({ color: this.color });
-                                o.material.toneMapped = false; // Important for bloom
-                            } else {
-                                // Enhance body material
-                                o.material = new THREE.MeshStandardMaterial({
-                                    color: 0x050505,
-                                    roughness: 0.2,
-                                    metalness: 0.8
-                                });
-                            }
-                        }
-                    });
-
-                    this.setupMesh(model);
-                }, undefined, (err) => {
-                    this.createProceduralBike();
-                });
+                this.createProceduralBike();
 
                 this.createTrail();
                 this.mesh.position.copy(this.startPos);
@@ -1557,11 +1638,40 @@
             time += dt;
 
             // Audio Sync
+            let audioVal = 0;
             if (musicSync && analyser) {
                 analyser.getByteFrequencyData(dataArray);
                 let sum = 0; for(let i=0; i<10; i++) sum += dataArray[i];
-                const val = (sum / 10) / 255; 
-                if(terrain) terrain.material.uniforms.uHeight.value = 2.0 + val * 5.0; 
+                audioVal = (sum / 10) / 255; 
+                if(terrain) terrain.material.uniforms.uHeight.value = 2.0 + audioVal * 5.0; 
+            }
+
+            // Grid Audio Pulse — grid hops with music beats
+            if(terrain) {
+                if(musicSync && analyser) {
+                    terrain.material.uniforms.uGridOpacity.value = 0.6 + audioVal * 0.4;
+                } else {
+                    terrain.material.uniforms.uGridOpacity.value = 0.9;
+                }
+            }
+
+            // Sun Auto-Oscillation (0→100→0 over 60s)
+            if(sun) {
+                const cycleSec = 60;
+                const t_mod = time % cycleSec;
+                let sunY;
+                if(t_mod <= 30) {
+                    sunY = (t_mod / 30) * 100; // 0→100 in 30s
+                } else {
+                    sunY = 100 - ((t_mod - 30) / 30) * 100; // 100→0 in 30s
+                }
+                // Check manual override (lasts 4s after slider use)
+                const sinceManual = time - sunManualTime;
+                if(sinceManual < 4 && sunManualPos >= 0) {
+                    sun.position.y = sunManualPos;
+                } else {
+                    sun.position.y = sunY;
+                }
             }
 
             // Shader Updates
@@ -1593,11 +1703,257 @@
             renderer.setSize(window.innerWidth, window.innerHeight); composer.setSize(window.innerWidth, window.innerHeight);
         }
 
-        window.playHover = () => { if(sfxOn) { audioHover.currentTime = 0; audioHover.volume = 0.3; audioHover.play().catch(()=>{}); } };
+        window.playHover = () => { if(sfxOn && audioHover) { audioHover.currentTime = 0; audioHover.volume = 0.3; audioHover.play().catch(()=>{}); } };
+
+        // --- INTERACTIVE TERMINAL ---
+        (function initTerminal() {
+            const out = document.getElementById('term-output');
+            const typed = document.getElementById('typed-text');
+            const cursorEl = document.getElementById('cursor');
+            const hintEl = document.getElementById('term-hint');
+            const uptimeEl = document.getElementById('term-uptime');
+            const termBody = document.getElementById('terminal-body');
+            if(!out) return;
+
+            let cmdBuf = '';
+            let history = [];
+            let histIdx = -1;
+            let lock = false;
+            let startTime = Date.now();
+
+            // Available commands
+            const cmds = {
+                help: { desc: 'Show this help menu' },
+                about: { desc: 'About Elyas' },
+                whoami: { desc: 'System identity' },
+                skills: { desc: 'List tech stack' },
+                projects: { desc: 'Show mission archives' },
+                contact: { desc: 'Contact info' },
+                clear: { desc: 'Clear terminal' },
+                neofetch: { desc: 'ASCII system info' },
+                ls: { desc: 'List resources' },
+                date: { desc: 'Current date/time' },
+                uptime: { desc: 'Session uptime' },
+                sudo: { desc: 'Escalate privileges' },
+                echo: { desc: 'Print a message' },
+                banner: { desc: 'ASCII art banner' },
+                matrix: { desc: 'Matrix rain effect' }
+            };
+
+            function updateHint() {
+                const input = cmdBuf.trim().toLowerCase();
+                if(!input) { hintEl.textContent = "type 'help'"; return; }
+                const match = Object.keys(cmds).find(c => c.startsWith(input));
+                hintEl.textContent = match ? match + ' (' + cmds[match].desc + ')' : 'unknown command';
+            }
+
+            function addLine(text, cls) {
+                const d = document.createElement('div');
+                d.className = cls || 'output-line';
+                d.textContent = text;
+                out.appendChild(d);
+                termBody.scrollTop = termBody.scrollHeight;
+            }
+
+            function typewrite(text, i, cb) {
+                if(i >= text.length) { if(cb) cb(); return; }
+                const d = document.createElement('div');
+                d.className = 'output-line';
+                out.appendChild(d);
+                let j = 0;
+                const iv = setInterval(() => {
+                    d.textContent += text[j++];
+                    termBody.scrollTop = termBody.scrollHeight;
+                    if(j >= text.length) { clearInterval(iv); if(cb) cb(); }
+                }, 20);
+            }
+
+            function typewritePrompt(seq, idx, cb) {
+                if(idx >= seq.length) { if(cb) cb(); return; }
+                typewrite(seq[idx], 0, () => {
+                    setTimeout(() => typewritePrompt(seq, idx+1, cb), 150);
+                });
+            }
+
+            function processCommand(input) {
+                const parts = input.trim().split(/\s+/);
+                const cmd = parts[0].toLowerCase();
+                const args = parts.slice(1);
+
+                switch(cmd) {
+                    case 'help':
+                        addLine('╔══════════════════════════════════╗');
+                        addLine('║     AVAILABLE COMMANDS           ║');
+                        addLine('╠══════════════════════════════════╣');
+                        Object.keys(cmds).forEach(k => {
+                            addLine('║  ' + k.padEnd(12) + cmds[k].desc.padEnd(22) + '║');
+                        });
+                        addLine('╚══════════════════════════════════╝');
+                        break;
+                    case 'about':
+                        addLine('Elyas Moshirpanahi — Senior MLOps & GenAI Engineer');
+                        addLine('8+ years engineering. MLOps pipelines, containerized serving,');
+                        addLine('CI/CD for production AI. EU-based · 100% remote.');
+                        break;
+                    case 'whoami':
+                        addLine('user@elyas-portfolio');
+                        addLine('role: Senior MLOps & GenAI Engineer');
+                        addLine('status: ONLINE');
+                        addLine('uptime: ' + Math.floor((Date.now()-startTime)/1000) + 's');
+                        break;
+                    case 'skills':
+                        addLine('── ML Frameworks ──');
+                        addLine('PyTorch · TensorFlow · Keras · Scikit-Learn · LangChain · LangGraph');
+                        addLine('── Serving & Deployment ──');
+                        addLine('REST APIs · Docker · Kubernetes · Microservices');
+                        addLine('── MLOps & CI/CD ──');
+                        addLine('GitHub Actions · Automated Pipelines · Model Monitoring');
+                        addLine('── Cloud & IaC ──');
+                        addLine('Microsoft Azure · Azure ML Studio · Terraform');
+                        addLine('── Data ──');
+                        addLine('SQL · MongoDB · Redis · NoSQL');
+                        break;
+                    case 'projects':
+                        addLine('1. Market Sentinel — LSTM trading agent (20% ROI, 1st AAIC)');
+                        addLine('2. SecureNet VPN — VPN platform (+20% sales, +85% stability)');
+                        addLine('3. FRVT Face Recognition — 98% accuracy, 40% runtime cut');
+                        break;
+                    case 'contact':
+                        addLine('GitHub: https://github.com/ElyasMoshirpanahi');
+                        addLine('LinkedIn: https://www.linkedin.com/in/elyasmoshirpanahi');
+                        addLine('Email: elyasmoshirpanahe1376@gmail.com');
+                        break;
+                    case 'clear':
+                        out.innerHTML = '';
+                        break;
+                    case 'neofetch':
+                        addLine('    ████████████████████████████████████████');
+                        addLine('    ██  ██████  ██       ██       ██  ██████');
+                        addLine('    ██  ██████  ██  ██████  ████████  ██████');
+                        addLine('    ██  ██████  ██  ██████  ████████  ██████');
+                        addLine('    ██       ████       ██       ██       ██');
+                        addLine('    ██████  ██████████  ██  ████████████████');
+                        addLine('    ██████  ██████████  ██  ████████████████');
+                        addLine('    ██████  ██████████  ██  ████████████████');
+                        addLine('    ██       ██       ██       ██       ██');
+                        addLine('    ████████████████████████████████████████');
+                        addLine('user@elyas-portfolio');
+                        addLine('-------------------------');
+                        addLine('OS: Synthwave 1.0 x64');
+                        addLine('Shell: /bin/friday');
+                        addLine('Uptime: ' + Math.floor((Date.now()-startTime)/1000) + 's');
+                        addLine('Theme: neon-cyan/pink');
+                        addLine('Terminal: Hermes V3');
+                        break;
+                    case 'ls':
+                        addLine('./');
+                        addLine('├── about/');
+                        addLine('├── skills/');
+                        addLine('├── projects/');
+                        addLine('├── contact/');
+                        addLine('└── README.md');
+                        break;
+                    case 'date':
+                        addLine(new Date().toString());
+                        break;
+                    case 'uptime':
+                        addLine('Session uptime: ' + Math.floor((Date.now()-startTime)/1000) + ' seconds');
+                        break;
+                    case 'sudo':
+                        if(args.length && args[0] === 'rm' && args[1] === '-rf') {
+                            addLine('sudo: nice try, nice try!');
+                            addLine('SYSTEM: Critical fail—wait... system still running. Phew!');
+                        } else if(args.length && args[0] === 'apt' && args[1] === 'install') {
+                            addLine('sudo: installing ' + (args.slice(2).join(' ') || 'everything') + '...');
+                            addLine('[████████████████████] 100%');
+                            addLine('Package installed. No warranties.');
+                        } else {
+                            addLine('sudo: permission granted. (just kidding, you had it all along)');
+                        }
+                        break;
+                    case 'echo':
+                        addLine(args.join(' ') || '');
+                        break;
+                    case 'banner':
+                        addLine(' ███████╗██╗     ██╗   ██╗ █████╗ ███████╗');
+                        addLine(' ██╔════╝██║     ██║   ██║██╔══██╗██╔════╝');
+                        addLine(' █████╗  ██║     ██║   ██║███████║███████╗');
+                        addLine(' ██╔══╝  ██║     ██║   ██║██╔══██║╚════██║');
+                        addLine(' ███████╗███████╗╚██████╔╝██║  ██║███████║');
+                        addLine(' ╚══════╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝');
+                        addLine('         SYSTEM READY · DEPLOY. LIVE. REPEAT.');
+                        break;
+                    case 'matrix':
+                        addLine('MATRIX MODE ACTIVATED (briefly)');
+                        addLine('01001000 01100101 01101100 01101100 01101111');
+                        addLine('01010111 01101111 01110010 01101100 01100100');
+                        addLine('(this message was too cool to keep to ourselves)');
+                        break;
+                    default:
+                        addLine('bash: ' + cmd + ': command not found. Try help.');
+                }
+            }
+
+            function executeBuffer() {
+                const input = cmdBuf.trim();
+                if(!input) { addLine(''); return; }
+                addLine('user@elyas-portfolio:~$ ' + input, 'output-line');
+                history.push(input); histIdx = history.length;
+                processCommand(input);
+                cmdBuf = '';
+                typed.textContent = '';
+                updateHint();
+            }
+
+            // Keyboard handler
+            termBody.addEventListener('keydown', function(e) {
+                if(lock) return;
+                if(e.key === 'Enter') { e.preventDefault(); executeBuffer(); return; }
+                if(e.key === 'Backspace') { e.preventDefault(); cmdBuf = cmdBuf.slice(0, -1); typed.textContent = cmdBuf; updateHint(); return; }
+                if(e.key === 'Tab') { e.preventDefault(); 
+                    const match = Object.keys(cmds).find(c => c.startsWith(cmdBuf.trim().toLowerCase()));
+                    if(match) { cmdBuf = match + ' '; typed.textContent = cmdBuf; updateHint(); }
+                    return;
+                }
+                if(e.key === 'ArrowUp') { e.preventDefault(); if(history.length && histIdx > 0) { histIdx--; cmdBuf = history[histIdx]; typed.textContent = cmdBuf; updateHint(); } return; }
+                if(e.key === 'ArrowDown') { e.preventDefault(); if(histIdx < history.length-1) { histIdx++; cmdBuf = history[histIdx]; typed.textContent = cmdBuf; } else { histIdx = history.length; cmdBuf = ''; typed.textContent = ''; } updateHint(); return; }
+                if(e.key.length === 1) { cmdBuf += e.key; typed.textContent = cmdBuf; updateHint(); }
+            });
+
+            // Focus: click to focus, show cursor
+            termBody.addEventListener('click', () => termBody.focus());
+            termBody.setAttribute('tabindex', '0');
+            termBody.focus();
+
+            // Intro sequence
+            lock = true;
+            const introLines = [
+                'user@elyas-portfolio:~$ initializing connection...',
+                'user@elyas-portfolio:~$ status: online',
+                'user@elyas-portfolio:~$ echo "Ready for deployment."',
+                'Ready for deployment.'
+            ];
+            let i = 0;
+            function printNext() {
+                if(i >= introLines.length) { lock = false; updateHint(); return; }
+                const line = introLines[i]; i++;
+                if(i === introLines.length) { typewrite(line, 0, printNext); }
+                else { typewrite(line, 0, printNext); }
+            }
+            setTimeout(printNext, 300);
+
+            // Uptime counter
+            setInterval(() => {
+                const s = Math.floor((Date.now()-startTime)/1000);
+                uptimeEl.textContent = 'UPTIME: ' + s + 's';
+            }, 1000);
+        })();
+
+
 
         document.getElementById('toggle-music').addEventListener('click', function() {
             musicOn = !musicOn; this.classList.toggle('off', !musicOn);
-            if(musicOn) { setupAudio(); audioMusic.play(); } else { audioMusic.pause(); }
+            if(musicOn && audioMusic) { setupAudio(); audioMusic.play().catch(()=>{}); } else if(audioMusic) { audioMusic.pause(); }
         });
 
         document.getElementById('toggle-sfx').addEventListener('click', function() {
