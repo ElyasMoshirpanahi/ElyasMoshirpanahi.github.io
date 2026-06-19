@@ -914,6 +914,8 @@
         let sunManualTime = -1;
         let sunManualPos = -1;
         let lastBikeSpawn = 0;
+        let hueManualTime = -1;
+        let hueManualPos = -1;
 
         let musicOn = false;
         let sfxOn = false;
@@ -1275,7 +1277,7 @@
             bind('inp-bloom', (v) => { if(composer) composer.passes[1].strength = v; });
             bind('inp-height', (v) => { if(terrain) terrain.material.uniforms.uHeight.value = v; });
             bind('inp-density', (v) => { if(terrain) terrain.material.uniforms.uGridDensity.value = v; });
-            bind('inp-hue', (v) => { if(terrain) terrain.material.uniforms.uHue.value = v; });
+            bind('inp-hue', (v) => { hueManualTime = time; hueManualPos = v; });
             
             document.getElementById('inp-sync').addEventListener('change', (e) => {
                 musicSync = e.target.checked;
@@ -1679,7 +1681,25 @@
 
             // Shader Updates
             if(sun) sun.material.uniforms.uTime.value = time;
-            if(terrain) terrain.material.uniforms.uTime.value = time;
+            if(terrain) {
+                terrain.material.uniforms.uTime.value = time;
+                // SYNTH-SHIFT auto oscillation (0 → 6.28 → 0 over 45s)
+                const hueCycle = 45;
+                const t_hue = time % hueCycle;
+                let hueVal;
+                if(t_hue <= hueCycle / 2) {
+                    hueVal = (t_hue / (hueCycle / 2)) * 6.28;
+                } else {
+                    hueVal = 6.28 - ((t_hue - hueCycle / 2) / (hueCycle / 2)) * 6.28;
+                }
+                // Check manual override (lasts 4s after slider use)
+                const sinceManual = time - hueManualTime;
+                if(sinceManual < 4 && hueManualPos >= 0) {
+                    terrain.material.uniforms.uHue.value = hueManualPos;
+                } else {
+                    terrain.material.uniforms.uHue.value = hueVal;
+                }
+            }
 
             // Move Environment
             const moveSpd = CONF.speed * dt;
