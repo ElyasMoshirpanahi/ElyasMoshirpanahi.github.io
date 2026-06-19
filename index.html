@@ -918,6 +918,7 @@
         let bikeSpawnCount = 0;
         let hueManualTime = -1;
         let hueManualPos = -1;
+        let bassSmooth = 0;
 
         let musicOn = true;
         let sfxOn = false;
@@ -1117,13 +1118,17 @@
                     uGridOpacity: { value: 0.9 },
                     uTotalOpacity: { value: 0.8 },
                     uHue: { value: 0.0 },
-                    uGridDensity: { value: 90.0 }
+                    uGridDensity: { value: 90.0 },
+                    uAudioBass: { value: 0.0 },
+                    uAudioMid: { value: 0.0 }
                 },
                 vertexShader: `
                     varying vec2 vUv;
                     varying float vElev;
                     uniform float uTime;
                     uniform float uHeight;
+                    uniform float uAudioBass;
+                    uniform float uAudioMid;
 
                     // Classic 2D Noise for Vaporwave Hills
                     float random (in vec2 st) {
@@ -1163,6 +1168,12 @@
                             n += 0.5 * noise(gridPos * 2.0);
                             
                             elevation = n * uHeight * factor;
+                            
+                            // Audio-driven wave motion — classic visualizer "jumping" grid
+                            // Different X positions get different phase offsets = equalizer bars
+                            float waveX = sin(pos.x * 0.08 + uTime * 1.5) * uAudioBass * 8.0 * factor;
+                            float waveX2 = cos(pos.x * 0.12 + uTime * 2.2 + pos.z * 0.02) * uAudioMid * 4.0 * factor;
+                            elevation += waveX + waveX2;
                         }
                         
                         pos.y += elevation;
@@ -1811,21 +1822,49 @@
             // Update building window lights
             updateBuildingLights(dt);
 
-            // Audio Sync
+            // Audio Sync — Classic music visualizer
             let audioVal = 0;
+            let bassVal = 0;
+            let midVal = 0;
+            let highVal = 0;
             if (musicSync && analyser) {
                 analyser.getByteFrequencyData(dataArray);
-                let sum = 0; for(let i=0; i<10; i++) sum += dataArray[i];
-                audioVal = (sum / 10) / 255; 
-                if(terrain) terrain.material.uniforms.uHeight.value = 2.0 + audioVal * 5.0; 
+                const len = dataArray.length;
+                // Compute frequency bands
+                let bassSum = 0, midSum = 0, highSum = 0;
+                const bassCount = Math.floor(len * 0.15);  // ~0-150Hz
+                const midCount = Math.floor(len * 0.30);   // ~150-800Hz
+                for(let i = 0; i < bassCount; i++) bassSum += dataArray[i];
+                for(let i = bassCount; i < bassCount + midCount; i++) midSum += dataArray[i];
+                for(let i = bassCount + midCount; i < len; i++) highSum += dataArray[i];
+                bassVal = bassSum / bassCount / 255;
+                midVal = midSum / midCount / 255;
+                highVal = highSum / (len - bassCount - midCount) / 255;
+                audioVal = (bassSum + midSum + highSum) / len / 255;
+                
+                // Smooth the bass for more natural bounce
+                bassSmooth = bassSmooth * 0.7 + bassVal * 0.3;
+                bassVal = bassSmooth;
             }
 
-            // Grid Audio Pulse — grid hops with music beats
+            // Grid Audio Pulse — Classic "jumping" visualizer style
             if(terrain) {
                 if(musicSync && analyser) {
-                    terrain.material.uniforms.uGridOpacity.value = 0.6 + audioVal * 0.4;
+                    // Terrain height jumps with bass
+                    terrain.material.uniforms.uHeight.value = 2.0 + bassVal * 25.0;
+                    // Grid opacity pulses wide (0.2 ↔ 1.0) with overall energy
+                    terrain.material.uniforms.uGridOpacity.value = 0.2 + audioVal * 0.8;
+                    // Grid width thickens on bass hits (0.04 ↔ 0.15)
+                    terrain.material.uniforms.uGridWidth.value = 0.04 + bassVal * 0.12;
+                    // Audio wave uniforms
+                    terrain.material.uniforms.uAudioBass.value = bassVal;
+                    terrain.material.uniforms.uAudioMid.value = midVal;
                 } else {
+                    terrain.material.uniforms.uHeight.value = 20.0;
                     terrain.material.uniforms.uGridOpacity.value = 0.9;
+                    terrain.material.uniforms.uGridWidth.value = 0.08;
+                    terrain.material.uniforms.uAudioBass.value = 0;
+                    terrain.material.uniforms.uAudioMid.value = 0;
                 }
             }
 
