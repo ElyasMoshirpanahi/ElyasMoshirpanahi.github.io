@@ -1039,6 +1039,8 @@
             bikeSpawnCount++;
             lastBikeSpawn = 0; // first pair spawns at time 0
             cityBuildingData = createCityBuildings();
+            createStarField();
+            createLightBeams();
 
             // 6. EVENTS
             window.addEventListener('resize', onResize);
@@ -1693,18 +1695,16 @@
             const group = new THREE.Group();
             const buildingData = [];
             const buildingColors = [0x080818, 0x0a0a1e, 0x0c0c22, 0x0e0e28];
-            // All buildings placed at the far end of the grid — a skyline at the horizon
-            // Grid extends from z≈-600 to z≈200; far visible edge is ~z=-280 to z=-340
+            // All buildings at the far end of the grid — horizon skyline
             const farZStart = -270;
-            const farZEnd = -340;
-            const xCols = [32, 38, 44, 50, 56, 64, 75, 88];
+            const farZEnd = -350;
+            const xCols = [32, 38, 44, 50, 56, 64, 72, 80, 90];
             xCols.forEach((x, colIdx) => {
                 [-1, 1].forEach(side => {
-                    const xPos = x * side;
-                    // Buildings at the far end: dense skyline across the horizon
+                    const xPos = x * side + (Math.random() - 0.5) * 4;
                     const zPos = farZStart + (colIdx / xCols.length) * (farZEnd - farZStart) + (Math.random() - 0.5) * 15;
-                    const h = 15 + Math.random() * 55 * (1 - colIdx / xCols.length * 0.3);
-                    const w = 3 + Math.random() * 5 + colIdx * 0.4;
+                    const h = 18 + Math.random() * 50 * (1 - colIdx / xCols.length * 0.3);
+                    const w = 4 + Math.random() * 5 + colIdx * 0.3;
                     const d = 4 + Math.random() * 4;
                     const yBase = -5;
                     // Main body
@@ -1816,6 +1816,110 @@
             });
         }
 
+        // --- STAR FIELD ---
+        function createStarField() {
+            const starCount = 800;
+            const starGeo = new THREE.BufferGeometry();
+            const positions = new Float32Array(starCount * 3);
+            const starSizes = new Float32Array(starCount);
+            for(let i = 0; i < starCount; i++) {
+                // Spread stars in a wide arc above the horizon
+                const theta = Math.random() * Math.PI * 2;
+                const radius = 200 + Math.random() * 500;
+                const y = 20 + Math.random() * 120;
+                positions[i*3] = Math.cos(theta) * radius;
+                positions[i*3+1] = y;
+                positions[i*3+2] = -200 - Math.random() * 400;
+                starSizes[i] = 0.5 + Math.random() * 1.5;
+            }
+            starGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            starGeo.setAttribute('size', new THREE.BufferAttribute(starSizes, 1));
+            const starMat = new THREE.PointsMaterial({
+                color: 0xffffff,
+                size: 1.2,
+                transparent: true,
+                opacity: 0.7,
+                sizeAttenuation: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+            });
+            const stars = new THREE.Points(starGeo, starMat);
+            scene.add(stars);
+        }
+
+        // --- NEON BEAMS (light columns shooting from tallest buildings) ---
+        let lightBeams = [];
+        function createLightBeams() {
+            const beamGroup = new THREE.Group();
+            const beamPositions = [];
+            // Place beams at a few tall building locations
+            const beamLocations = [];
+            for(let x = 35; x <= 90; x += 10 + Math.random() * 10) {
+                [-1, 1].forEach(side => {
+                    beamLocations.push({ x: x * side, z: -290 - Math.random() * 40 });
+                });
+            }
+            beamLocations.forEach(loc => {
+                const beamHeight = 40 + Math.random() * 60;
+                const beamGeo = new THREE.CylinderGeometry(0.15, 0.08, beamHeight, 6);
+                const beamMat = new THREE.MeshBasicMaterial({
+                    color: Math.random() < 0.5 ? 0x00ffff : 0xff00aa,
+                    transparent: true,
+                    opacity: 0.08 + Math.random() * 0.12,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false,
+                });
+                const beam = new THREE.Mesh(beamGeo, beamMat);
+                beam.position.set(loc.x, -5 + beamHeight/2, loc.z);
+                beamGroup.add(beam);
+                // Brighter core beam
+                const coreGeo = new THREE.CylinderGeometry(0.04, 0.02, beamHeight, 4);
+                const coreMat = new THREE.MeshBasicMaterial({
+                    color: 0xffffff,
+                    transparent: true,
+                    opacity: 0.15 + Math.random() * 0.15,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false,
+                });
+                const core = new THREE.Mesh(coreGeo, coreMat);
+                core.position.copy(beam.position);
+                beamGroup.add(core);
+                // Glow disc at top
+                const glowGeo = new THREE.RingGeometry(0.5, 2.5 + Math.random() * 2, 16);
+                const glowMat = new THREE.MeshBasicMaterial({
+                    color: beamMat.color,
+                    transparent: true,
+                    opacity: 0.15 + Math.random() * 0.2,
+                    blending: THREE.AdditiveBlending,
+                    side: THREE.DoubleSide,
+                    depthWrite: false,
+                });
+                const glow = new THREE.Mesh(glowGeo, glowMat);
+                glow.position.set(loc.x, -5 + beamHeight, loc.z);
+                beamGroup.add(glow);
+                lightBeams.push({
+                    beam: beam,
+                    core: core,
+                    glow: glow,
+                    baseOpacity: beamMat.opacity,
+                    speed: 0.5 + Math.random() * 1.5,
+                    phase: Math.random() * Math.PI * 2,
+                });
+            });
+            scene.add(beamGroup);
+        }
+
+        function updateLightBeams(dt, time) {
+            lightBeams.forEach(bd => {
+                const pulse = 0.5 + 0.5 * Math.sin(time * bd.speed + bd.phase);
+                bd.beam.material.opacity = bd.baseOpacity * (0.6 + 0.4 * pulse);
+                bd.core.material.opacity = (0.1 + 0.2 * pulse);
+                const glowScale = 0.8 + 0.4 * pulse;
+                bd.glow.scale.x = glowScale;
+                bd.glow.scale.y = glowScale;
+            });
+        }
+
         // --- ANIMATION ---
         function animate() {
             requestAnimationFrame(animate);
@@ -1824,6 +1928,8 @@
 
             // Update building window lights
             updateBuildingLights(dt);
+            // Pulse neon beams
+            updateLightBeams(dt, time);
 
             // Audio Sync — Classic music visualizer
             let audioVal = 0;
