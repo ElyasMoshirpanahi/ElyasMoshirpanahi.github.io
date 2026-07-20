@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FitInsured — Move more. Pay less.</title>
+<meta name="description" content="FitInsured connects your wearables, rewards movement with FitCoin, and lowers your insurance rates through AI risk scoring.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0c;
+    --bg-2:#111114;
+    --panel:#16161a;
+    --ink:#f4f2ee;
+    --muted:#b7b3ac;
+    --line:rgba(244,242,238,.14);
+    --accent:#e8c07d;      /* warm gold, like tungsten light */
+    --accent-ink:#1a1508;
+    --grain:.05;
+    --r:2px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Inter",system-ui,sans-serif;
+    font-size:16px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  /* film grain overlay */
+  body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:9999;
+    opacity:var(--grain);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode:overlay;
+  }
+  h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:400;line-height:1.08;margin:0}
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+  .eyebrow{
+    font-family:"Inter",sans-serif;
+    font-size:.72rem;
+    letter-spacing:.32em;
+    text-transform:uppercase;
+    color:var(--accent);
+    font-weight:600;
+    margin:0 0 18px;
+  }
+  .lead{color:var(--muted);font-size:1.075rem;max-width:56ch}
+
+  /* focus */
+  a:focus-visible,button:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:3px;
+    border-radius:var(--r);
+  }
+
+  /* ---------- NAV ---------- */
+  header.site{
+    position:sticky;top:0;z-index:100;
+    background:rgba(10,10,12,.72);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;height:68px}
+  .wordmark{display:flex;align-items:center;gap:10px;font-family:"Fraunces",serif;font-size:1.3rem;letter-spacing:.01em}
+  .wordmark .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 14px var(--accent)}
+  .wordmark b{font-weight:600}
+  .nav-links{display:none;gap:32px;align-items:center}
+  .nav-links a{color:var(--muted);font-size:.92rem;transition:color .2s ease}
+  .nav-links a:hover{color:var(--ink)}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:9px;
+    min-height:44px;padding:0 22px;
+    font-family:"Inter",sans-serif;font-size:.92rem;font-weight:600;
+    border-radius:999px;border:1px solid transparent;cursor:pointer;
+    transition:transform .2s ease,background .2s ease,color .2s ease,border-color .2s ease;
+  }
+  .btn-primary{background:var(--accent);color:var(--accent-ink)}
+  .btn-primary:hover{transform:translateY(-2px)}
+  .btn-ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+  @media(min-width:860px){.nav-links{display:flex}}
+
+  /* ---------- HERO (full-bleed dark gallery) ---------- */
+  .hero{position:relative;min-height:92vh;display:flex;align-items:flex-end;overflow:hidden}
+  .hero .frame{
+    position:absolute;inset:0;
+    background:
+      radial-gradient(120% 90% at 78% 18%, rgba(232,192,125,.30), transparent 55%),
+      radial-gradient(90% 120% at 12% 92%, rgba(80,120,150,.35), transparent 60%),
+      linear-gradient(160deg,#0b0d12 0%,#14171d 45%,#0a0a0c 100%);
+  }
+  /* duotone "photograph" of a runner suggested with layered gradients */
+  .hero .subject{
+    position:absolute;inset:0;
+    background:
+      radial-gradient(38% 60% at 66% 55%, rgba(232,192,125,.22), transparent 62%),
+      conic-gradient(from 210deg at 70% 60%, rgba(255,255,255,.06), transparent 40%);
+    mix-blend-mode:screen;
+    filter:contrast(1.1);
+  }
+  .hero .vignette{position:absolute;inset:0;background:radial-gradient(120% 100% at 50% 40%,transparent 40%,rgba(0,0,0,.65) 100%)}
+  .hero-inner{position:relative;z-index:2;padding:0 0 72px}
+  .hero h1{font-size:clamp(2.9rem,8vw,6.4rem);letter-spacing:-.02em;max-width:15ch}
+  .hero h1 em{font-style:italic;color:var(--accent)}
+  .hero .lead{margin:22px 0 30px}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:14px}
+  .capt{
+    position:absolute;right:24px;bottom:26px;z-index:2;
+    font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);
+    display:flex;align-items:center;gap:10px;
+  }
+  .capt .bar{width:34px;height:1px;background:var(--muted)}
+
+  /* ---------- SECTION shell ---------- */
+  section{padding:96px 0;position:relative}
+  .sec-head{max-width:60ch;margin-bottom:52px}
+  .sec-head h2{font-size:clamp(2rem,4.4vw,3.3rem);letter-spacing:-.015em}
+  .sec-head p{margin:16px 0 0}
+
+  /* ---------- FLOW (contact sheet) ---------- */
+  #flow{background:var(--bg-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .sheet{display:grid;gap:1px;background:var(--line);grid-template-columns:1fr}
+  @media(min-width:680px){.sheet{grid-template-columns:repeat(2,1fr)}}
+  @media(min-width:1000px){.sheet{grid-template-columns:repeat(5,1fr)}}
+  .plate{
+    position:relative;background:var(--panel);padding:26px 22px 30px;min-height:230px;
+    display:flex;flex-direction:column;justify-content:space-between;
+    transition:background .2s ease;
+  }
+  .plate:hover{background:#1c1c22}
+  .plate .no{font-family:"Fraunces",serif;font-size:.85rem;color:var(--accent);letter-spacing:.1em}
+  .plate .expo{
+    height:96px;border-radius:var(--r);margin:16px 0;overflow:hidden;position:relative;
+    border:1px solid var(--line);
+  }
+  .plate .expo::before{content:"";position:absolute;inset:0}
+  .p1 .expo::before{background:linear-gradient(135deg,#233043,#0e141c)}
+  .p2 .expo::before{background:linear-gradient(135deg,#2a3a2e,#0f150f)}
+  .p3 .expo::before{background:linear-gradient(135deg,#4a3a1c,#17110a)}
+  .p4 .expo::before{background:linear-gradient(135deg,#3a2340,#140d18)}
+  .p5 .expo::before{background:linear-gradient(135deg,#123539,#0a1516)}
+  .plate .expo .ic{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--ink);opacity:.9}
+  .plate h3{font-size:1.18rem;margin-bottom:6px}
+  .plate p{margin:0;color:var(--muted);font-size:.9rem}
+
+  /* ---------- FITCOIN ---------- */
+  #fitcoin{overflow:hidden}
+  .coin-grid{display:grid;gap:40px;align-items:center;grid-template-columns:1fr}
+  @media(min-width:920px){.coin-grid{grid-template-columns:1.05fr .95fr}}
+  .coin-vis{
+    position:relative;aspect-ratio:4/3;border-radius:6px;overflow:hidden;border:1px solid var(--line);
+    background:
+      radial-gradient(60% 70% at 50% 45%, rgba(232,192,125,.5), rgba(232,192,125,0) 60%),
+      radial-gradient(120% 120% at 20% 90%, #1a1206, #0a0a0c 70%);
+  }
+  .coin-vis .disc{
+    position:absolute;left:50%;top:50%;width:44%;aspect-ratio:1;transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:conic-gradient(from 90deg,#f4d99a,#c9962f,#f4d99a,#a9741f,#f4d99a);
+    box-shadow:0 20px 60px rgba(232,192,125,.35), inset 0 0 0 6px rgba(0,0,0,.15);
+    display:flex;align-items:center;justify-content:center;color:#1a1508;font-family:"Fraunces",serif;font-weight:600;font-size:clamp(1.6rem,4vw,2.4rem);
+    animation:float 6s ease-in-out infinite;
+  }
+  @keyframes float{0%,100%{transform:translate(-50%,-52%)}50%{transform:translate(-50%,-48%)}}
+  .rewards{list-style:none;padding:0;margin:26px 0 0;display:grid;gap:14px}
+  .rewards li{display:flex;gap:14px;align-items:flex-start}
+  .rewards .tick{flex:0 0 auto;width:26px;height:26px;border-radius:50%;background:rgba(232,192,125,.14);display:flex;align-items:center;justify-content:center;color:var(--accent);margin-top:2px}
+  .rewards b{display:block;font-weight:600}
+  .rewards span{color:var(--muted);font-size:.92rem}
+
+  /* ---------- PARTNER API ---------- */
+  #api{background:var(--bg-2);border-top:1px solid var(--line)}
+  .api-grid{display:grid;gap:36px;grid-template-columns:1fr}
+  @media(min-width:920px){.api-grid{grid-template-columns:.9fr 1.1fr}}
+  .terminal{
+    background:#08090b;border:1px solid var(--line);border-radius:8px;overflow:hidden;
+    font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;font-size:.82rem;
+  }
+  .terminal .bar{display:flex;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid var(--line);background:#0d0f12}
+  .terminal .bar .d{width:11px;height:11px;border-radius:50%}
+  .terminal .bar .d1{background:#ff5f56}.terminal .bar .d2{background:#ffbd2e}.terminal .bar .d3{background:#27c93f}
+  .terminal .bar span{margin-left:8px;color:var(--muted);font-size:.74rem;letter-spacing:.05em}
+  .terminal pre{margin:0;padding:18px;overflow-x:auto;line-height:1.65;color:#d7d3cc}
+  .terminal .k{color:#e8c07d}.terminal .s{color:#8fd6b4}.terminal .n{color:#89b4fa}.terminal .c{color:#6c7280}
+  .api-points{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:16px}
+  .api-points li{padding-left:20px;position:relative;color:var(--muted)}
+  .api-points li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:1px;background:var(--accent)}
+  .api-points b{color:var(--ink);font-weight:600}
+
+  /* ---------- CTA band ---------- */
+  .band{position:relative;text-align:center;overflow:hidden}
+  .band .frame{position:absolute;inset:0;background:radial-gradient(90% 140% at 50% 0%,rgba(232,192,125,.22),transparent 60%),linear-gradient(180deg,#0f1116,#0a0a0c)}
+  .band .inner{position:relative;z-index:2}
+  .band h2{font-size:clamp(2rem,5vw,3.6rem)}
+  .band p{margin:16px auto 28px;max-width:48ch}
+
+  /* ---------- FOOTER ---------- */
+  footer.site{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg)}
+  .foot-grid{display:grid;gap:32px;grid-template-columns:1fr;margin-bottom:36px}
+  @media(min-width:760px){.foot-grid{grid-template-columns:2fr 1fr 1fr 1fr}}
+  .foot-grid h4{font-family:"Inter",sans-serif;font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);margin:0 0 16px;font-weight:600}
+  .foot-grid ul{list-style:none;margin:0;padding:0;display:grid;gap:11px}
+  .foot-grid a{color:var(--muted);font-size:.92rem;transition:color .2s ease;display:inline-block;min-height:24px}
+  .foot-grid a:hover{color:var(--accent)}
+  .foot-about p{color:var(--muted);font-size:.92rem;max-width:34ch;margin:14px 0 0}
+  .foot-bottom{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center;padding-top:26px;border-top:1px solid var(--line);color:var(--muted);font-size:.82rem}
+  .socials{display:flex;gap:6px}
+  .socials a{width:44px;height:44px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:50%;color:var(--muted);transition:.2s ease}
+  .socials a:hover{color:var(--accent);border-color:var(--accent)}
+  .skip{position:absolute;left:-9999px;top:0;background:var(--accent);color:var(--accent-ink);padding:10px 16px;z-index:1000;border-radius:0 0 6px 0}
+  .skip:focus{left:0}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site">
+  <div class="wrap nav">
+    <a class="wordmark" href="#" aria-label="FitInsured home">
+      <span class="dot" aria-hidden="true"></span>Fit<b>Insured</b>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#flow">How it works</a>
+      <a href="#fitcoin">FitCoin</a>
+      <a href="#api">For insurers</a>
+      <a class="btn btn-primary" href="#get-started">Start free</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- HERO -->
+  <section class="hero" aria-label="Introduction">
+    <div class="frame" aria-hidden="true"></div>
+    <div class="subject" aria-hidden="true"></div>
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="wrap hero-inner">
+      <p class="eyebrow">FitInsured — InsurTech, in focus</p>
+      <h1>Move more.<br><em>Pay less.</em></h1>
+      <p class="lead">Your body is already telling the story. FitInsured turns every step, ride and heartbeat from your wearables into lower insurance rates — captured, developed and rewarded in FitCoin.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#get-started">Connect your wearable
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a class="btn btn-ghost" href="#flow">See how it works</a>
+      </div>
+    </div>
+    <p class="capt"><span class="bar" aria-hidden="true"></span>Exposure 01 — the active life</p>
+  </section>
+
+  <!-- FLOW / contact sheet -->
+  <section id="flow" aria-labelledby="flow-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">The contact sheet</p>
+        <h2 id="flow-h">Five frames, one lower premium</h2>
+        <p class="lead">From the device on your wrist to the rate on your policy — here is the full sequence, developed frame by frame.</p>
+      </div>
+      <div class="sheet">
+        <article class="plate p1">
+          <span class="no">01 / Capture</span>
+          <div class="expo" aria-hidden="true"><span class="ic">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="4" width="10" height="16" rx="3"/><path d="M12 8v3l2 1" stroke-linecap="round"/></svg>
+          </span></div>
+          <div><h3>Connect wearables</h3><p>Apple Health, Google Fit, Fitbit, Garmin and Strava sync in a tap.</p></div>
+        </article>
+        <article class="plate p2">
+          <span class="no">02 / Develop</span>
+          <div class="expo" aria-hidden="true"><span class="ic">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 13h4l2 5 4-12 2 7h6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span></div>
+          <div><h3>Track health metrics</h3><p>Steps, heart rate, sleep and workouts become a clear activity record.</p></div>
+        </article>
+        <article class="plate p3">
+          <span class="no">03 / Reward</span>
+          <div class="expo" aria-hidden="true"><span class="ic">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M9.5 10.2c0-1 1.1-1.7 2.5-1.7s2.5.7 2.5 1.7-1.1 1.6-2.5 1.6-2.5.7-2.5 1.7 1.1 1.7 2.5 1.7 2.5-.7 2.5-1.7" stroke-linecap="round"/></svg>
+          </span></div>
+          <div><h3>Earn FitCoin</h3><p>Every active day pays out FitCoin you can actually spend.</p></div>
+        </article>
+        <article class="plate p4">
+          <span class="no">04 / Score</span>
+          <div class="expo" aria-hidden="true"><span class="ic">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 15a8 8 0 0 1 16 0" /><path d="M12 15l4-4" stroke-linecap="round"/><circle cx="12" cy="15" r="1.4" fill="currentColor" stroke="none"/></svg>
+          </span></div>
+          <div><h3>AI risk score</h3><p>Our model reads your movement into a fair, dynamic risk profile.</p></div>
+        </article>
+        <article class="plate p5">
+          <span class="no">05 / Print</span>
+          <div class="expo" aria-hidden="true"><span class="ic">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 17l4-4 3 3 5-6 4 4" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20h16" stroke-linecap="round"/></svg>
+          </span></div>
+          <div><h3>Lower insurance rates</h3><p>A healthier score prints straight onto your premium — less to pay.</p></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- FITCOIN -->
+  <section id="fitcoin" aria-labelledby="coin-h">
+    <div class="wrap coin-grid">
+      <div class="coin-vis" role="img" aria-label="A glowing gold FitCoin token, developed like a print in a darkroom.">
+        <div class="disc" aria-hidden="true">FC</div>
+      </div>
+      <div>
+        <p class="eyebrow">FitCoin rewards</p>
+        <h2 id="coin-h">The currency of movement</h2>
+        <p class="lead">FitCoin is the reward layer of FitInsured. The more you move, the more you bank — and it compounds into real savings, not just points that gather dust.</p>
+        <ul class="rewards">
+          <li>
+            <span class="tick" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span><b>Earn daily</b>FitCoin lands automatically for steps, workouts and closed activity goals.</span>
+          </li>
+          <li>
+            <span class="tick" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span><b>Redeem against premiums</b>Apply your balance directly to your next insurance payment.</span>
+          </li>
+          <li>
+            <span class="tick" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span><b>Unlock partner perks</b>Spend FitCoin with gyms, gear brands and wellness partners.</span>
+          </li>
+        </ul>
+        <div style="margin-top:30px"><a class="btn btn-primary" href="#get-started">Start earning FitCoin</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARTNER API -->
+  <section id="api" aria-labelledby="api-h">
+    <div class="wrap api-grid">
+      <div>
+        <p class="eyebrow">For insurers</p>
+        <h2 id="api-h">Anonymized risk, on demand</h2>
+        <p class="lead">FitInsured's partner API gives insurance companies structured, privacy-preserving access to aggregated activity risk — no personal data, just the signal you underwrite on.</p>
+        <ul class="api-points">
+          <li><b>Anonymized by design.</b> Cohort-level risk scores, never raw personal health records.</li>
+          <li><b>Real-time endpoints.</b> Pull fresh AI risk bands as member activity evolves.</li>
+          <li><b>Underwriting-ready.</b> Feed scores straight into pricing and eligibility models.</li>
+        </ul>
+        <div style="margin-top:28px"><a class="btn btn-ghost" href="#get-started">Request API access</a></div>
+      </div>
+      <div class="terminal" role="img" aria-label="Sample partner API request and JSON response returning an anonymized cohort risk score.">
+        <div class="bar" aria-hidden="true">
+          <span class="d d1"></span><span class="d d2"></span><span class="d d3"></span>
+          <span>partner-api.fitinsured.com</span>
+        </div>
+<pre aria-hidden="true"><span class="c"># Request an anonymized cohort risk score</span>
+<span class="k">GET</span> /v1/risk/cohort?region=<span class="s">"EU-W"</span>&band=<span class="s">"active"</span>
+<span class="k">Authorization:</span> Bearer <span class="s">sk_live_••••••••</span>
+
+<span class="c"># 200 OK</span>
+{
+  <span class="k">"cohort_id"</span>: <span class="s">"eu-w-active-2026q3"</span>,
+  <span class="k">"members"</span>: <span class="n">18422</span>,
+  <span class="k">"avg_risk_score"</span>: <span class="n">0.31</span>,
+  <span class="k">"risk_band"</span>: <span class="s">"low"</span>,
+  <span class="k">"avg_daily_steps"</span>: <span class="n">9840</span>,
+  <span class="k">"pii"</span>: <span class="n">null</span>,
+  <span class="k">"anonymized"</span>: <span class="n">true</span>
+}</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BAND -->
+  <section class="band" id="get-started" aria-labelledby="band-h">
+    <div class="frame" aria-hidden="true"></div>
+    <div class="wrap inner">
+      <p class="eyebrow">The final frame</p>
+      <h2 id="band-h">Your movement is worth money</h2>
+      <p class="lead" style="color:var(--muted);margin-left:auto;margin-right:auto">Connect a wearable in under two minutes, start banking FitCoin today, and watch your premium develop into something smaller.</p>
+      <a class="btn btn-primary" href="#" style="min-width:220px">Get started free</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-about">
+        <a class="wordmark" href="#" aria-label="FitInsured home"><span class="dot" aria-hidden="true"></span>Fit<b>Insured</b></a>
+        <p>The InsurTech platform that turns movement into lower insurance rates. Move more. Pay less.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#flow">How it works</a></li>
+          <li><a href="#fitcoin">FitCoin rewards</a></li>
+          <li><a href="#get-started">Get started</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Insurers</h4>
+        <ul>
+          <li><a href="#api">Partner API</a></li>
+          <li><a href="#api">Risk data</a></li>
+          <li><a href="#api">Documentation</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Security</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 FitInsured. Anonymized data, honest premiums.</span>
+      <div class="socials">
+        <a href="#" aria-label="FitInsured on X">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.9 2H22l-7.5 8.6L23 22h-6.9l-5.4-7-6.2 7H1.3l8-9.2L1 2h7l4.9 6.5L18.9 2Zm-2.4 18h1.9L7.6 4H5.6l10.9 16Z"/></svg>
+        </a>
+        <a href="#" aria-label="FitInsured on LinkedIn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.94 5A1.94 1.94 0 1 1 3 5a1.94 1.94 0 0 1 3.94 0ZM3.3 8.5h3.3V21H3.3V8.5Zm5.4 0h3.16v1.7h.05c.44-.83 1.5-1.7 3.1-1.7 3.32 0 3.93 2.18 3.93 5V21h-3.3v-4.9c0-1.17 0-2.67-1.63-2.67s-1.88 1.27-1.88 2.58V21H8.7V8.5Z"/></svg>
+        </a>
+        <a href="#" aria-label="FitInsured on Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Subtle parallax on the hero "photograph" — respects reduced-motion.
+  (function(){
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var subject = document.querySelector('.hero .subject');
+    if(reduce || !subject) return;
+    var ticking = false;
+    window.addEventListener('scroll', function(){
+      if(ticking) return;
+      ticking = true;
+      requestAnimationFrame(function(){
+        var y = window.scrollY;
+        subject.style.transform = 'translateY(' + (y * 0.12) + 'px) scale(1.02)';
+        ticking = false;
+      });
+    }, {passive:true});
+  })();
+</script>
+</body>
+</html>
