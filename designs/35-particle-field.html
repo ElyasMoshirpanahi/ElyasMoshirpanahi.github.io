@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FitInsured — Move more. Pay less.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #05060f;
+    --bg-2: #0b0e1f;
+    --panel: rgba(18, 22, 45, 0.72);
+    --panel-border: rgba(120, 170, 255, 0.22);
+    --text: #eef2ff;
+    --text-dim: #b7c0e0;
+    --accent: #34e0c8;
+    --accent-2: #6aa8ff;
+    --accent-glow: rgba(52, 224, 200, 0.55);
+    --focus: #ffe27a;
+    --radius: 16px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--text);
+    background: radial-gradient(1200px 800px at 70% -10%, #12183a 0%, var(--bg) 55%);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, .wordmark { font-family: 'Space Grotesk', system-ui, sans-serif; }
+
+  /* Particle canvas sits behind everything */
+  #field {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    display: block;
+  }
+
+  .layer {
+    position: relative;
+    z-index: 1;
+  }
+
+  a { color: var(--accent); }
+
+  /* Focus visibility — never removed */
+  a:focus-visible,
+  button:focus-visible,
+  .btn:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
+    border-radius: 8px;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* NAV */
+  header.site {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    backdrop-filter: blur(10px);
+    background: linear-gradient(180deg, rgba(5,6,15,0.9), rgba(5,6,15,0.35));
+    border-bottom: 1px solid rgba(120,170,255,0.14);
+  }
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 64px;
+    gap: 16px;
+  }
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 1.25rem;
+    letter-spacing: 0.2px;
+    color: var(--text);
+    text-decoration: none;
+    padding: 8px 4px;
+  }
+  .wordmark .mark {
+    width: 30px; height: 30px;
+    filter: drop-shadow(0 0 8px var(--accent-glow));
+  }
+  .wordmark b { color: var(--accent); }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    list-style: none;
+    margin: 0; padding: 0;
+  }
+  .nav-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 14px;
+    color: var(--text-dim);
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 500;
+    transition: color 200ms ease, background 200ms ease;
+  }
+  .nav-links a:hover { color: var(--text); background: rgba(120,170,255,0.12); }
+  .nav-hide-sm { display: none; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 0 22px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: transform 180ms ease, box-shadow 200ms ease, background 200ms ease;
+  }
+  .btn-primary {
+    color: #04211d;
+    background: linear-gradient(120deg, var(--accent), var(--accent-2));
+    box-shadow: 0 0 0 rgba(52,224,200,0), 0 8px 26px rgba(52,224,200,0.28);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 22px var(--accent-glow), 0 12px 30px rgba(52,224,200,0.35); }
+  .btn-ghost {
+    color: var(--text);
+    background: rgba(120,170,255,0.08);
+    border-color: var(--panel-border);
+  }
+  .btn-ghost:hover { background: rgba(120,170,255,0.18); }
+
+  /* HERO */
+  .hero { padding: 80px 0 64px; text-align: center; }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 8px 16px;
+    border: 1px solid var(--panel-border);
+    border-radius: 999px;
+    background: rgba(52,224,200,0.06);
+  }
+  .hero h1 {
+    font-size: clamp(2.3rem, 6vw, 4.1rem);
+    line-height: 1.08;
+    margin: 22px 0 16px;
+    letter-spacing: -1px;
+  }
+  .hero h1 .grad {
+    background: linear-gradient(120deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero p.sub {
+    max-width: 640px;
+    margin: 0 auto 32px;
+    font-size: 1.18rem;
+    color: var(--text-dim);
+  }
+  .hero-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+  }
+
+  /* Section shells */
+  section { padding: 64px 0; }
+  .section-head { text-align: center; max-width: 680px; margin: 0 auto 44px; }
+  .section-head h2 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    margin: 0 0 12px;
+    letter-spacing: -0.5px;
+  }
+  .section-head p { color: var(--text-dim); margin: 0; font-size: 1.08rem; }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: var(--radius);
+    backdrop-filter: blur(8px);
+  }
+
+  /* FLOW */
+  .flow {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .flow-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px;
+  }
+  .flow-step .ico {
+    flex: 0 0 auto;
+    width: 52px; height: 52px;
+    display: grid; place-items: center;
+    border-radius: 14px;
+    background: rgba(52,224,200,0.12);
+    border: 1px solid var(--panel-border);
+    color: var(--accent);
+  }
+  .flow-step h3 { margin: 2px 0 6px; font-size: 1.15rem; }
+  .flow-step p { margin: 0; color: var(--text-dim); }
+  .flow-step .n {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.8rem;
+    color: var(--accent-2);
+    letter-spacing: 2px;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  /* FITCOIN */
+  .coin-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    align-items: center;
+  }
+  .coin-visual {
+    display: grid;
+    place-items: center;
+    padding: 40px;
+    min-height: 220px;
+  }
+  .coin-svg { width: 180px; height: 180px; filter: drop-shadow(0 0 26px var(--accent-glow)); }
+  .coin-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+  .coin-list li { display: flex; gap: 12px; align-items: flex-start; }
+  .coin-list .chk {
+    flex: 0 0 auto; width: 26px; height: 26px; color: var(--accent);
+  }
+  .coin-list b { color: var(--text); }
+  .coin-list span { color: var(--text-dim); }
+
+  /* B2B */
+  .b2b { padding: 34px; }
+  .b2b-grid { display: grid; grid-template-columns: 1fr; gap: 30px; align-items: center; }
+  .code-card {
+    background: #04061a;
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    padding: 18px;
+    font-family: 'Space Grotesk', ui-monospace, monospace;
+    font-size: 0.86rem;
+    overflow-x: auto;
+    color: #cfd8ff;
+  }
+  .code-card .k { color: var(--accent-2); }
+  .code-card .s { color: var(--accent); }
+  .code-card .c { color: #7c86ad; }
+  .b2b h2 { margin-top: 0; }
+  .b2b ul { color: var(--text-dim); padding-left: 20px; margin: 16px 0 24px; }
+  .b2b li { margin-bottom: 8px; }
+
+  /* FOOTER */
+  footer.site {
+    border-top: 1px solid rgba(120,170,255,0.14);
+    padding: 40px 0 60px;
+    margin-top: 40px;
+    background: linear-gradient(180deg, rgba(5,6,15,0.2), rgba(5,6,15,0.85));
+  }
+  .foot-top {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .foot-links { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; margin: 16px 0 0; padding: 0; }
+  .foot-links a {
+    display: inline-flex; align-items: center; min-height: 44px; padding: 0 12px;
+    color: var(--text-dim); text-decoration: none; border-radius: 8px;
+    transition: color 200ms ease;
+  }
+  .foot-links a:hover { color: var(--accent); }
+  .foot-note { color: #7c86ad; font-size: 0.9rem; margin-top: 20px; }
+
+  .brands { display: flex; flex-wrap: wrap; gap: 10px 18px; justify-content: center; margin-top: 26px; }
+  .brand-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 14px; border-radius: 999px;
+    border: 1px solid var(--panel-border);
+    background: rgba(120,170,255,0.06);
+    color: var(--text-dim); font-size: 0.9rem; font-weight: 500;
+  }
+  .brand-chip svg { color: var(--accent); }
+
+  @media (min-width: 720px) {
+    .nav-hide-sm { display: flex; }
+    .flow { grid-template-columns: repeat(5, 1fr); }
+    .flow-step { flex-direction: column; align-items: flex-start; min-height: 100%; }
+    .coin-grid { grid-template-columns: 0.9fr 1.1fr; }
+    .b2b-grid { grid-template-columns: 1.1fr 0.9fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+    .btn-primary:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+<canvas id="field" aria-hidden="true"></canvas>
+
+<div class="layer">
+  <header class="site">
+    <div class="wrap">
+      <nav aria-label="Primary">
+        <a class="wordmark" href="#top" aria-label="FitInsured home">
+          <svg class="mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 21s-7-4.35-9.33-9.02C1.2 8.98 2.9 5.5 6.2 5.5c1.94 0 3.2 1.06 3.8 2.2.6-1.14 1.86-2.2 3.8-2.2 3.3 0 5 3.48 3.53 6.48C19 16.65 12 21 12 21Z" fill="url(#g1)"/>
+            <path d="M6 12.2h3l1.4-3 2.2 5 1.2-2h4" stroke="#04211d" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs><linearGradient id="g1" x1="2" y1="5" x2="22" y2="21"><stop stop-color="#34e0c8"/><stop offset="1" stop-color="#6aa8ff"/></linearGradient></defs>
+          </svg>
+          Fit<b>Insured</b>
+        </a>
+        <ul class="nav-links">
+          <li class="nav-hide-sm"><a href="#flow">How it works</a></li>
+          <li class="nav-hide-sm"><a href="#fitcoin">FitCoin</a></li>
+          <li class="nav-hide-sm"><a href="#partners">Partners</a></li>
+          <li><a class="btn btn-primary" href="#get-started" style="min-height:44px;padding:0 18px;">Get started</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- HERO -->
+    <section class="hero" aria-labelledby="hero-h">
+      <div class="wrap">
+        <span class="eyebrow">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="currentColor"/></svg>
+          InsurTech · Wearable-powered
+        </span>
+        <h1 id="hero-h">Move more. <span class="grad">Pay less.</span></h1>
+        <p class="sub">FitInsured connects your wearables, tracks the health metrics that matter, and turns your activity into FitCoin rewards and lower insurance rates through AI-powered risk scoring.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#get-started" id="get-started">
+            Start earning FitCoin
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a class="btn btn-ghost" href="#partners">For insurers</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FLOW -->
+    <section id="flow" aria-labelledby="flow-h">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="flow-h">How FitInsured works</h2>
+          <p>From your wrist to your premium — one connected loop that rewards staying active.</p>
+        </div>
+        <div class="flow">
+          <article class="flow-step panel">
+            <span class="ico" aria-hidden="true">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="7" y="2.5" width="10" height="19" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v4l2.5 1.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </span>
+            <div>
+              <span class="n">STEP 01</span>
+              <h3>Connect wearables</h3>
+              <p>Link Apple Health, Google Fit, Fitbit, Garmin or Strava in seconds.</p>
+            </div>
+          </article>
+          <article class="flow-step panel">
+            <span class="ico" aria-hidden="true">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M3 13h4l2-6 3 12 2.5-7 1.5 3h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <div>
+              <span class="n">STEP 02</span>
+              <h3>Track health metrics</h3>
+              <p>Steps, heart rate, sleep and activity sync automatically and securely.</p>
+            </div>
+          </article>
+          <article class="flow-step panel">
+            <span class="ico" aria-hidden="true">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.8"/><path d="M10 9h3.2a1.8 1.8 0 0 1 0 3.6H10m0 0V15m0-6V7.5m0 4.1h3.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </span>
+            <div>
+              <span class="n">STEP 03</span>
+              <h3>Earn FitCoin</h3>
+              <p>Every workout and healthy habit converts into redeemable FitCoin.</p>
+            </div>
+          </article>
+          <article class="flow-step panel">
+            <span class="ico" aria-hidden="true">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 4.2-2.9 7.4-7 8.5-4.1-1.1-7-4.3-7-8.5V6l7-3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 12l2 2 4-4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <div>
+              <span class="n">STEP 04</span>
+              <h3>AI risk score</h3>
+              <p>Our models turn activity into a fair, dynamic underwriting score.</p>
+            </div>
+          </article>
+          <article class="flow-step panel">
+            <span class="ico" aria-hidden="true">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 15l5-5 3 3 7-8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 5h4v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <div>
+              <span class="n">STEP 05</span>
+              <h3>Lower rates</h3>
+              <p>The more active you are, the less you pay on your premium.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- FITCOIN -->
+    <section id="fitcoin" aria-labelledby="coin-h">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="coin-h">FitCoin rewards</h2>
+          <p>A rewards currency that grows with your effort — spend it where it counts.</p>
+        </div>
+        <div class="coin-grid panel" style="padding:28px;">
+          <div class="coin-visual">
+            <svg class="coin-svg" viewBox="0 0 120 120" role="img" aria-label="FitCoin token">
+              <circle cx="60" cy="60" r="52" fill="url(#cg)"/>
+              <circle cx="60" cy="60" r="52" fill="none" stroke="#04211d" stroke-width="3" opacity="0.35"/>
+              <circle cx="60" cy="60" r="42" fill="none" stroke="#04211d" stroke-width="2" opacity="0.4"/>
+              <path d="M40 66h9l5-16 8 30 6-19 4 8h12" stroke="#04211d" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <defs><linearGradient id="cg" x1="10" y1="10" x2="110" y2="110"><stop stop-color="#34e0c8"/><stop offset="1" stop-color="#6aa8ff"/></linearGradient></defs>
+            </svg>
+          </div>
+          <div>
+            <ul class="coin-list">
+              <li>
+                <svg class="chk" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8"/><path d="M8 12.5l2.5 2.5 5-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span><b>Redeem against premiums.</b> Apply FitCoin directly to your monthly insurance bill.</span>
+              </li>
+              <li>
+                <svg class="chk" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8"/><path d="M8 12.5l2.5 2.5 5-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span><b>Partner marketplace.</b> Trade FitCoin for gear, gym passes and wellness perks.</span>
+              </li>
+              <li>
+                <svg class="chk" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8"/><path d="M8 12.5l2.5 2.5 5-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span><b>Streak multipliers.</b> Consistent weekly activity earns bonus FitCoin.</span>
+              </li>
+              <li>
+                <svg class="chk" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8"/><path d="M8 12.5l2.5 2.5 5-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span><b>Transparent ledger.</b> Every coin is traceable to the activity that earned it.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- B2B -->
+    <section id="partners" aria-labelledby="b2b-h">
+      <div class="wrap">
+        <div class="b2b panel">
+          <div class="b2b-grid">
+            <div>
+              <h2 id="b2b-h">Partner APIs for insurers</h2>
+              <p style="color:var(--text-dim);margin:0;">Integrate FitInsured's anonymized, consent-based risk data into your own underwriting stack. Price policies on real behavior, not just demographics.</p>
+              <ul>
+                <li>Anonymized, aggregated activity-risk cohorts</li>
+                <li>Real-time AI risk scores via REST &amp; webhooks</li>
+                <li>Consent &amp; compliance controls built in</li>
+                <li>Sandbox keys and versioned SDKs</li>
+              </ul>
+              <a class="btn btn-primary" href="#get-started">Request API access</a>
+            </div>
+            <div class="code-card" aria-label="Example partner API request and response">
+<span class="c"># Fetch an anonymized risk score</span>
+<span class="k">GET</span> /v1/risk/score?cohort=active_35_44
+
+<span class="c"># Response</span>
+{
+  <span class="k">"risk_index"</span>: <span class="s">0.42</span>,
+  <span class="k">"band"</span>: <span class="s">"low"</span>,
+  <span class="k">"active_days_30d"</span>: <span class="s">23</span>,
+  <span class="k">"anonymized"</span>: <span class="s">true</span>,
+  <span class="k">"consent"</span>: <span class="s">"granted"</span>
+}
+            </div>
+          </div>
+        </div>
+
+        <div class="brands" aria-label="Supported wearable integrations">
+          <span class="brand-chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="6"/></svg>Apple Health</span>
+          <span class="brand-chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="6"/></svg>Google Fit</span>
+          <span class="brand-chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="6"/></svg>Fitbit</span>
+          <span class="brand-chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="6"/></svg>Garmin</span>
+          <span class="brand-chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="6"/></svg>Strava</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site">
+    <div class="wrap">
+      <div class="foot-top">
+        <a class="wordmark" href="#top" aria-label="FitInsured home">
+          <svg class="mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 21s-7-4.35-9.33-9.02C1.2 8.98 2.9 5.5 6.2 5.5c1.94 0 3.2 1.06 3.8 2.2.6-1.14 1.86-2.2 3.8-2.2 3.3 0 5 3.48 3.53 6.48C19 16.65 12 21 12 21Z" fill="url(#g2)"/>
+            <path d="M6 12.2h3l1.4-3 2.2 5 1.2-2h4" stroke="#04211d" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs><linearGradient id="g2" x1="2" y1="5" x2="22" y2="21"><stop stop-color="#34e0c8"/><stop offset="1" stop-color="#6aa8ff"/></linearGradient></defs>
+          </svg>
+          Fit<b>Insured</b>
+        </a>
+        <p style="color:var(--text-dim);margin:0;max-width:360px;">Move more. Pay less. Insurance that rewards a healthier you.</p>
+      </div>
+      <ul class="foot-links">
+        <li><a href="#flow">How it works</a></li>
+        <li><a href="#fitcoin">FitCoin</a></li>
+        <li><a href="#partners">Partner APIs</a></li>
+        <li><a href="#get-started">Get started</a></li>
+        <li><a href="#top">Privacy</a></li>
+        <li><a href="#top">Security</a></li>
+      </ul>
+      <p class="foot-note">© 2026 FitInsured, Inc. Health data is processed with your consent and shared with insurers only in anonymized, aggregated form.</p>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var canvas = document.getElementById('field');
+  var ctx = canvas.getContext('2d');
+  var particles = [];
+  var w = 0, h = 0, dpr = 1;
+  var raf = null;
+  var reduceQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  var mouse = { x: null, y: null, active: false };
+  var LINK_DIST = 130;      // px for connection lines
+  var MOUSE_DIST = 170;     // px for pointer interaction
+
+  function particleCount() {
+    // Cap and scale by viewport for performance
+    var target = Math.round((w * h) / 16000);
+    return Math.max(40, Math.min(target, 120));
+  }
+
+  function rand(min, max) { return Math.random() * (max - min) + min; }
+
+  function build() {
+    particles = [];
+    var count = particleCount();
+    for (var i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: rand(-0.35, 0.35),
+        vy: rand(-0.35, 0.35),
+        r: rand(1, 2.4)
+      });
+    }
+  }
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = window.innerWidth;
+    h = window.innerHeight;
+    canvas.width = Math.floor(w * dpr);
+    canvas.height = Math.floor(h * dpr);
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    build();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+
+      // wrap around edges
+      if (p.x < -10) p.x = w + 10; else if (p.x > w + 10) p.x = -10;
+      if (p.y < -10) p.y = h + 10; else if (p.y > h + 10) p.y = -10;
+
+      // pointer gentle attraction
+      if (mouse.active && mouse.x !== null) {
+        var mdx = mouse.x - p.x;
+        var mdy = mouse.y - p.y;
+        var md = Math.sqrt(mdx * mdx + mdy * mdy);
+        if (md < MOUSE_DIST && md > 0.001) {
+          var pull = (1 - md / MOUSE_DIST) * 0.35;
+          p.x += (mdx / md) * pull;
+          p.y += (mdy / md) * pull;
+        }
+      }
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(52, 224, 200, 0.9)';
+      ctx.fill();
+    }
+
+    // constellation links
+    for (var a = 0; a < particles.length; a++) {
+      for (var b = a + 1; b < particles.length; b++) {
+        var pa = particles[a], pb = particles[b];
+        var dx = pa.x - pb.x, dy = pa.y - pb.y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < LINK_DIST) {
+          var alpha = (1 - dist / LINK_DIST) * 0.4;
+          ctx.beginPath();
+          ctx.moveTo(pa.x, pa.y);
+          ctx.lineTo(pb.x, pb.y);
+          ctx.strokeStyle = 'rgba(106, 168, 255,' + alpha + ')';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+      // links to pointer
+      if (mouse.active && mouse.x !== null) {
+        var pdx = particles[a].x - mouse.x, pdy = particles[a].y - mouse.y;
+        var pd = Math.sqrt(pdx * pdx + pdy * pdy);
+        if (pd < MOUSE_DIST) {
+          var pa2 = (1 - pd / MOUSE_DIST) * 0.55;
+          ctx.beginPath();
+          ctx.moveTo(particles[a].x, particles[a].y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.strokeStyle = 'rgba(52, 224, 200,' + pa2 + ')';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+    }
+
+    raf = requestAnimationFrame(draw);
+  }
+
+  function drawStatic() {
+    // single frame, no animation loop (reduced motion)
+    ctx.clearRect(0, 0, w, h);
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(52, 224, 200, 0.85)';
+      ctx.fill();
+    }
+    for (var a = 0; a < particles.length; a++) {
+      for (var b = a + 1; b < particles.length; b++) {
+        var pa = particles[a], pb = particles[b];
+        var dx = pa.x - pb.x, dy = pa.y - pb.y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < LINK_DIST) {
+          ctx.beginPath();
+          ctx.moveTo(pa.x, pa.y);
+          ctx.lineTo(pb.x, pb.y);
+          ctx.strokeStyle = 'rgba(106, 168, 255,' + (1 - dist / LINK_DIST) * 0.35 + ')';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function start() {
+    if (raf) cancelAnimationFrame(raf);
+    if (reduceQuery.matches) {
+      drawStatic();           // freeze: render one static frame only
+    } else {
+      raf = requestAnimationFrame(draw);
+    }
+  }
+
+  function stop() {
+    if (raf) { cancelAnimationFrame(raf); raf = null; }
+  }
+
+  // Pointer interaction
+  window.addEventListener('pointermove', function (e) {
+    mouse.x = e.clientX; mouse.y = e.clientY; mouse.active = true;
+  }, { passive: true });
+  window.addEventListener('pointerleave', function () { mouse.active = false; });
+  window.addEventListener('blur', function () { mouse.active = false; });
+
+  // Pause when tab hidden (perf)
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) { stop(); }
+    else { start(); }
+  });
+
+  // React to reduced-motion changes live
+  if (reduceQuery.addEventListener) {
+    reduceQuery.addEventListener('change', function () { stop(); resize(); start(); });
+  } else if (reduceQuery.addListener) {
+    reduceQuery.addListener(function () { stop(); resize(); start(); });
+  }
+
+  var resizeTimer = null;
+  window.addEventListener('resize', function () {
+    if (resizeTimer) clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () { resize(); if (reduceQuery.matches) drawStatic(); }, 150);
+  });
+
+  resize();
+  start();
+})();
+</script>
+</body>
+</html>

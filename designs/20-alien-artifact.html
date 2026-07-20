@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FitInsured — The Signal Rewards the Living</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --obsidian:#05060a;
+    --obsidian2:#0a0d16;
+    --rune:#5ef2d0;
+    --rune2:#9b6bff;
+    --rune3:#ffd36b;
+    --glow:#7cf9 e0;
+    --glow:#7cf9e0;
+    --text:#c9d4e6;
+    --muted:#6a7690;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Cormorant Garamond',serif;background:var(--obsidian);color:var(--text);overflow-x:hidden;line-height:1.65;font-size:1.08rem}
+  h1,h2,h3,.glyph{font-family:'Cinzel',serif;letter-spacing:.04em;line-height:1.1;font-weight:600}
+  .mono{font-family:'Space Mono',monospace}
+
+  /* obsidian field with runic light */
+  .void{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(45% 55% at 50% 8%, rgba(94,242,208,.12), transparent 60%),
+      radial-gradient(40% 40% at 12% 70%, rgba(155,107,255,.12), transparent 60%),
+      radial-gradient(40% 40% at 88% 60%, rgba(255,211,107,.08), transparent 60%),
+      linear-gradient(180deg,#05060a,#080a12 40%,#05060a);
+  }
+  .stars{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background-image:radial-gradient(1px 1px at 20% 30%,#fff,transparent),radial-gradient(1px 1px at 70% 60%,#bfe,transparent),radial-gradient(1px 1px at 40% 80%,#fff,transparent),radial-gradient(1px 1px at 85% 20%,#dcf,transparent),radial-gradient(1px 1px at 55% 15%,#fff,transparent);
+    background-size:300px 300px;animation:twinkle 6s ease-in-out infinite alternate}
+  @keyframes twinkle{to{opacity:.2}}
+  .scanline{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.06;background:repeating-linear-gradient(180deg,transparent 0 3px,#5ef2d0 3px 4px)}
+
+  .rune-text{color:var(--rune);text-shadow:0 0 18px rgba(94,242,208,.6),0 0 40px rgba(94,242,208,.25)}
+  .rune-text2{color:var(--rune2);text-shadow:0 0 18px rgba(155,107,255,.6)}
+
+  .wrap{position:relative;z-index:2;max-width:1120px;margin:0 auto;padding:0 24px}
+
+  nav{position:relative;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:28px 24px;max-width:1120px;margin:0 auto}
+  .logo{font-family:'Cinzel';font-weight:700;font-size:1.3rem;letter-spacing:.14em;display:flex;align-items:center;gap:12px}
+  .sigil{width:30px;height:30px;position:relative;display:grid;place-items:center}
+  .sigil::before{content:"";position:absolute;inset:0;border:1px solid var(--rune);transform:rotate(45deg);box-shadow:0 0 14px rgba(94,242,208,.6),inset 0 0 8px rgba(94,242,208,.4)}
+  .sigil::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--rune);box-shadow:0 0 12px var(--rune)}
+  .nav-links{display:flex;gap:34px;align-items:center;font-family:'Cinzel';font-size:.78rem;letter-spacing:.12em;text-transform:uppercase}
+  .nav-links a{color:var(--muted);text-decoration:none;transition:.2s}
+  .nav-links a:hover{color:var(--rune)}
+
+  .btn{
+    display:inline-block;font-family:'Cinzel';font-weight:600;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;
+    padding:15px 32px;text-decoration:none;color:var(--obsidian);position:relative;
+    background:linear-gradient(180deg,#7cf9e0,#3fd9b6);
+    box-shadow:0 0 24px rgba(94,242,208,.45),inset 0 0 12px rgba(255,255,255,.4);
+    clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);transition:.2s;
+  }
+  .btn:hover{box-shadow:0 0 36px rgba(94,242,208,.7);transform:translateY(-2px)}
+  .btn.ghost{background:transparent;color:var(--rune);border:1px solid rgba(94,242,208,.4);box-shadow:inset 0 0 20px rgba(94,242,208,.08)}
+  .nav-links .btn{padding:12px 24px}
+
+  header{position:relative;padding:70px 0 100px;text-align:center}
+  .badge{display:inline-flex;gap:12px;align-items:center;font-family:'Cinzel';font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);padding:10px 22px;border:1px solid rgba(94,242,208,.2);margin-bottom:38px;position:relative}
+  .badge::before,.badge::after{content:"◈";color:var(--rune);font-size:.7rem}
+  h1{font-size:clamp(2.4rem,6.5vw,5rem);margin-bottom:28px;font-weight:600}
+  .sub{max-width:600px;margin:0 auto 44px;font-size:clamp(1.15rem,2.2vw,1.5rem);color:#9fb0cc;font-weight:300;font-style:italic}
+  .hero-cta{display:flex;gap:18px;justify-content:center;flex-wrap:wrap}
+
+  /* the artifact */
+  .artifact{margin:70px auto 0;width:min(360px,80vw);aspect-ratio:1;position:relative;display:grid;place-items:center}
+  .ring{position:absolute;border:1px solid rgba(94,242,208,.35);border-radius:50%;box-shadow:0 0 30px rgba(94,242,208,.12),inset 0 0 30px rgba(94,242,208,.08)}
+  .ring.r1{inset:0;animation:rot 40s linear infinite}
+  .ring.r2{inset:14%;border-color:rgba(155,107,255,.35);border-style:dashed;animation:rot 26s linear infinite reverse}
+  .ring.r3{inset:30%;border-color:rgba(255,211,107,.3);animation:rot 18s linear infinite}
+  @keyframes rot{to{transform:rotate(360deg)}}
+  .core{width:32%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 40% 35%,#7cf9e0,#2b9d84 55%,#0a2e28);box-shadow:0 0 60px rgba(94,242,208,.6),inset 0 0 30px rgba(255,255,255,.3);position:relative;z-index:2;animation:pulse 4s ease-in-out infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 60px rgba(94,242,208,.6),inset 0 0 30px rgba(255,255,255,.3)}50%{box-shadow:0 0 90px rgba(94,242,208,.85),inset 0 0 40px rgba(255,255,255,.5)}}
+  .glyph-mark{position:absolute;font-family:'Cinzel';color:var(--rune);font-size:1.1rem;text-shadow:0 0 12px var(--rune);z-index:3}
+  .g1{top:2%;left:50%;transform:translateX(-50%)}
+  .g2{bottom:4%;left:50%;transform:translateX(-50%);color:var(--rune2);text-shadow:0 0 12px var(--rune2)}
+  .g3{top:50%;left:2%;transform:translateY(-50%)}
+  .g4{top:50%;right:2%;transform:translateY(-50%);color:var(--rune3);text-shadow:0 0 12px var(--rune3)}
+
+  .partners{padding:46px 0;text-align:center;border-top:1px solid rgba(94,242,208,.1);border-bottom:1px solid rgba(94,242,208,.1)}
+  .partners p{font-family:'Cinzel';font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);margin-bottom:24px}
+  .partner-row{display:flex;gap:clamp(20px,5vw,56px);justify-content:center;flex-wrap:wrap;font-family:'Cinzel';font-size:.92rem;letter-spacing:.08em;color:#8ea0bd}
+
+  section{position:relative;padding:110px 0}
+  .eyebrow{font-family:'Cinzel';font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:var(--rune2);margin-bottom:18px}
+  h2{font-size:clamp(2rem,5vw,3.3rem);margin-bottom:20px;font-weight:600}
+  .lead{max-width:620px;color:#9fb0cc;font-size:1.25rem;font-weight:300;font-style:italic}
+  .center{text-align:center}.center .lead{margin:0 auto}
+
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:64px;background:rgba(94,242,208,.14);border:1px solid rgba(94,242,208,.14)}
+  .card{position:relative;padding:40px 26px;background:var(--obsidian2);transition:.3s}
+  .card:hover{background:#0e1220;box-shadow:inset 0 0 40px rgba(94,242,208,.08)}
+  .card .rune-ic{font-family:'Cinzel';font-size:2.2rem;color:var(--rune);text-shadow:0 0 18px rgba(94,242,208,.5);margin-bottom:22px;display:block}
+  .card:nth-child(2) .rune-ic{color:var(--rune2);text-shadow:0 0 18px rgba(155,107,255,.5)}
+  .card:nth-child(3) .rune-ic{color:var(--rune3);text-shadow:0 0 18px rgba(255,211,107,.5)}
+  .step-n{font-family:'Space Mono';font-size:.72rem;letter-spacing:.14em;color:var(--muted);margin-bottom:14px}
+  .card h3{font-size:1.3rem;margin-bottom:10px;font-family:'Cinzel';font-weight:500;letter-spacing:.02em}
+  .card p{font-size:1.02rem;color:#8ea0bd;font-weight:300}
+
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+  .metrics{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin-top:34px;background:rgba(94,242,208,.14);border:1px solid rgba(94,242,208,.14)}
+  .metric{padding:26px;background:var(--obsidian2)}
+  .metric .big{font-family:'Cinzel';font-weight:600;font-size:2.1rem;color:var(--rune);text-shadow:0 0 16px rgba(94,242,208,.4)}
+  .metric .cap{font-size:.98rem;color:var(--muted);font-family:'Space Mono';font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;margin-top:6px}
+
+  .panel{border:1px solid rgba(94,242,208,.22);background:linear-gradient(180deg,#080b14,#05060a);position:relative}
+  .panel::before{content:"";position:absolute;top:-1px;left:24px;right:24px;height:1px;background:linear-gradient(90deg,transparent,var(--rune),transparent)}
+  .panel-in{padding:32px}
+  .panel-in .tag{font-family:'Space Mono';font-size:.72rem;color:var(--muted);letter-spacing:.1em;margin-bottom:18px}
+  pre{font-family:'Space Mono',monospace;font-size:.86rem;line-height:1.9;color:#8ea0bd;white-space:pre-wrap}
+  .k{color:var(--rune)}.s{color:var(--rune3)}.n{color:var(--rune2)}
+
+  ul.checks{list-style:none;margin-top:28px;display:grid;gap:16px}
+  ul.checks li{display:flex;gap:14px;align-items:flex-start;color:#b6c3da;font-size:1.1rem}
+  ul.checks li::before{content:"◈";color:var(--rune);text-shadow:0 0 10px var(--rune);margin-top:3px;font-size:.8rem}
+
+  .banner{border:1px solid rgba(94,242,208,.22);padding:90px 30px;text-align:center;position:relative;overflow:hidden;background:radial-gradient(60% 100% at 50% 0%,rgba(94,242,208,.1),transparent 70%)}
+  .banner::after{content:"◈ ◈ ◈";position:absolute;bottom:20px;left:50%;transform:translateX(-50%);color:rgba(94,242,208,.3);letter-spacing:1em;font-size:.7rem}
+
+  footer{position:relative;z-index:2;border-top:1px solid rgba(94,242,208,.12);margin-top:110px;padding:66px 0 40px}
+  .foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px}
+  footer h4{font-family:'Cinzel';font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
+  footer a{display:block;color:#8ea0bd;text-decoration:none;margin-bottom:13px;font-size:1.02rem;transition:.2s}
+  footer a:hover{color:var(--rune)}
+  .foot-bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-top:52px;padding-top:28px;border-top:1px solid rgba(94,242,208,.1);font-family:'Space Mono';font-size:.74rem;color:var(--muted);letter-spacing:.04em}
+
+  @media(max-width:900px){.steps{grid-template-columns:1fr 1fr}.split{grid-template-columns:1fr}.foot-grid{grid-template-columns:1fr 1fr}.nav-links{display:none}}
+  @media(max-width:520px){.steps{grid-template-columns:1fr}.metrics{grid-template-columns:1fr}.foot-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="void"></div>
+<div class="stars"></div>
+<div class="scanline"></div>
+
+<nav>
+  <div class="logo"><span class="sigil"></span>FITINSURED</div>
+  <div class="nav-links">
+    <a href="#how">Protocol</a>
+    <a href="#rewards">FitCoin</a>
+    <a href="#insurers">For Insurers</a>
+    <a href="#" class="btn">Get the app</a>
+  </div>
+</nav>
+
+<header class="wrap">
+  <div class="badge">Signal · 2026 · Vitality Protocol</div>
+  <h1>The signal <span class="rune-text">rewards</span><br>the living.</h1>
+  <p class="sub">FitInsured reads the pulse of your wearables, encodes movement into FitCoin, and lets an ancient-feeling AI decode your true risk, so your insurance rate bends to the healthy life you live.</p>
+  <div class="hero-cta">
+    <a href="#" class="btn">Begin the ritual</a>
+    <a href="#how" class="btn ghost">Read the protocol</a>
+  </div>
+
+  <div class="artifact">
+    <div class="ring r1"></div>
+    <div class="ring r2"></div>
+    <div class="ring r3"></div>
+    <div class="core"></div>
+    <span class="glyph-mark g1">◇</span>
+    <span class="glyph-mark g2">✦</span>
+    <span class="glyph-mark g3">◈</span>
+    <span class="glyph-mark g4">⟡</span>
+  </div>
+</header>
+
+<div class="partners wrap">
+  <p>The artifact listens to</p>
+  <div class="partner-row"><span>Apple Health</span><span>Google Fit</span><span>Fitbit</span><span>Garmin</span><span>Strava</span></div>
+</div>
+
+<section id="how" class="wrap">
+  <div class="center">
+    <div class="eyebrow">The Protocol</div>
+    <h2>Four glyphs, <span class="rune-text">one path</span>.</h2>
+    <p class="lead">An old rhythm, newly decoded: move, earn, be measured, be rewarded.</p>
+  </div>
+  <div class="steps">
+    <div class="card"><span class="rune-ic">◇</span><div class="step-n">GLYPH I</div><h3>Attune Devices</h3><p>Bind Apple Health, Fitbit, Garmin, Strava or Google Fit to the signal. Your data stays sealed and encrypted.</p></div>
+    <div class="card"><span class="rune-ic">✦</span><div class="step-n">GLYPH II</div><h3>Forge FitCoin</h3><p>Steps, sleep and effort are transmuted into FitCoin, redeemable for premium credits and rare perks.</p></div>
+    <div class="card"><span class="rune-ic">◈</span><div class="step-n">GLYPH III</div><h3>Decode Risk</h3><p>The AI reads your living trends, not frozen snapshots, and inscribes a personalized risk score.</p></div>
+    <div class="card"><span class="rune-ic">⟡</span><div class="step-n">GLYPH IV</div><h3>Unlock the Rate</h3><p>A truer score bends your insurance premium downward, personalized through our partner providers.</p></div>
+  </div>
+</section>
+
+<section id="rewards" class="wrap">
+  <div class="split">
+    <div>
+      <div class="eyebrow">FitCoin</div>
+      <h2>Currency forged<br>from <span class="rune-text">motion</span>.</h2>
+      <p class="lead">FitCoin is the residue of a life well-moved. Spend it against your premium, trade it for partner perks, or ascend the reward constellations.</p>
+      <div class="metrics">
+        <div class="metric"><div class="big">1,240</div><div class="cap">FitCoin / cycle</div></div>
+        <div class="metric"><div class="big">$18</div><div class="cap">Premium credit / mo</div></div>
+        <div class="metric"><div class="big">4.9★</div><div class="cap">Rated by seekers</div></div>
+        <div class="metric"><div class="big">92%</div><div class="cap">Hold 30-day streaks</div></div>
+      </div>
+    </div>
+    <div class="panel"><div class="panel-in">
+      <div class="tag">// signal readout · today</div>
+<pre><span class="k">activity</span>: {
+  steps: <span class="n">11,842</span>,
+  sleep_score: <span class="n">88</span>,
+  active_min: <span class="n">64</span>
+}
+<span class="k">fitcoin_forged</span>: <span class="s">+142 FC</span>
+<span class="k">risk_delta</span>: <span class="s">−0.7 pts</span>
+<span class="k">next_reward</span>: <span class="s">"−$3 premium"</span></pre>
+    </div></div>
+  </div>
+</section>
+
+<section id="insurers" class="wrap">
+  <div class="split">
+    <div class="panel"><div class="panel-in">
+      <div class="tag">GET /v2/risk/cohort</div>
+<pre><span class="k">GET</span> api.fitinsured.io/v2/risk
+{
+  <span class="k">"cohort"</span>: <span class="s">"anon-4471"</span>,
+  <span class="k">"population"</span>: <span class="n">18402</span>,
+  <span class="k">"avg_risk"</span>: <span class="n">0.612</span>,
+  <span class="k">"trend_30d"</span>: <span class="s">"−4.1%"</span>,
+  <span class="k">"pii"</span>: <span class="s">null</span>
+}</pre>
+    </div></div>
+    <div>
+      <div class="eyebrow">For Insurers · B2B2C</div>
+      <h2>Read the risk,<br>never the <span class="rune-text2">name</span>.</h2>
+      <p class="lead">Channel the FitInsured API into your underwriting and price on real, living behavior. Fully anonymized, consent-first, and compliant by design.</p>
+      <ul class="checks">
+        <li>Real-time, privacy-preserving cohort risk signals</li>
+        <li>Clean REST &amp; webhook APIs with SDKs for every stack</li>
+        <li>Consent-based data, aggregated and de-identified end to end</li>
+        <li>Launch reward-linked policies without building the wearable layer</li>
+      </ul>
+      <div style="margin-top:34px"><a href="#" class="btn">Request API access</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="banner">
+    <div class="eyebrow">400,000+ souls attuned</div>
+    <h2>Let the signal<br><span class="rune-text">reward you</span>.</h2>
+    <p class="lead center" style="margin:0 auto 34px">Bind your first device, forge your first FitCoin, and watch the rate bend to your will.</p>
+    <div class="hero-cta"><a href="#" class="btn">Begin the ritual</a><a href="#" class="btn ghost">Summon sales</a></div>
+  </div>
+</section>
+
+<footer class="wrap">
+  <div class="foot-grid">
+    <div>
+      <div class="logo" style="margin-bottom:18px"><span class="sigil"></span>FITINSURED</div>
+      <p style="color:var(--muted);max-width:290px;font-weight:300;font-style:italic">The vitality protocol connecting wearables, FitCoin and a smarter kind of insurance.</p>
+    </div>
+    <div><h4>Protocol</h4><a href="#">How it works</a><a href="#">FitCoin</a><a href="#">Pricing</a><a href="#">Download</a></div>
+    <div><h4>Insurers</h4><a href="#">Risk API</a><a href="#">Documentation</a><a href="#">Compliance</a><a href="#">Contact sales</a></div>
+    <div><h4>Order</h4><a href="#">About</a><a href="#">Careers</a><a href="#">Privacy</a><a href="#">Security</a></div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 FITINSURED, INC. // ALL SIGNALS RESERVED</span>
+    <span>NOT MEDICAL ADVICE · PRODUCTS VARY BY PARTNER &amp; REGION</span>
+  </div>
+</footer>
+</body>
+</html>

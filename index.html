@@ -325,10 +325,12 @@
         .btn-cyan { border-color: var(--neon-cyan); color: var(--neon-cyan); text-shadow: 0 0 8px var(--neon-cyan); box-shadow: inset 0 0 10px rgba(0,243,255,0.2); }
         .btn-pink { border-color: var(--neon-pink); color: var(--neon-pink); text-shadow: 0 0 8px var(--neon-pink); box-shadow: inset 0 0 10px rgba(255,0,255,0.2); }
         .btn-purple { border-color: var(--neon-purple); color: var(--neon-purple); text-shadow: 0 0 8px var(--neon-purple); box-shadow: inset 0 0 10px rgba(188,19,254,0.2); }
+        .btn-green { border-color: var(--neon-green); color: var(--neon-green); text-shadow: 0 0 8px var(--neon-green); box-shadow: inset 0 0 10px rgba(10,255,10,0.2); }
 
         .holo-btn:hover.btn-cyan { box-shadow: 0 0 20px var(--neon-cyan), inset 0 0 20px var(--neon-cyan); color: #fff; }
         .holo-btn:hover.btn-pink { box-shadow: 0 0 20px var(--neon-pink), inset 0 0 20px var(--neon-pink); color: #fff; }
         .holo-btn:hover.btn-purple { box-shadow: 0 0 20px var(--neon-purple), inset 0 0 20px var(--neon-purple); color: #fff; }
+        .holo-btn:hover.btn-green { box-shadow: 0 0 20px var(--neon-green), inset 0 0 20px var(--neon-green); color: #fff; }
 
         /* --- CONTENT SECTIONS --- */
         .content-wrapper {
@@ -598,6 +600,44 @@
         #term-hint { color: var(--neon-cyan); text-shadow: 0 0 8px rgba(0,243,255,0.5); }
         .output-line.muted { color: #555; font-size: 0.75rem; opacity: 0.7; }
 
+        /* DESIGN GALLERY */
+        .gallery-lead {
+            max-width: 60ch; margin: 0 auto 2.5rem; text-align: center;
+            color: #9aa0b5; font-size: 1.05rem; line-height: 1.6;
+        }
+        .gallery-preview-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1rem; max-width: 900px; margin: 0 auto 2.5rem;
+        }
+        .gallery-chip {
+            display: block; padding: 1rem; min-height: 44px;
+            background: rgba(10,10,20,0.6);
+            border: 1px solid rgba(0,243,255,0.15); border-radius: 10px;
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+        .gallery-chip:hover, .gallery-chip:focus-visible {
+            transform: translateY(-4px); border-color: var(--neon-cyan);
+            box-shadow: 0 8px 30px -8px rgba(0,243,255,0.4); outline: none;
+        }
+        .gallery-chip .chip-num { font-family: var(--font-display); font-size: 0.7rem; color: var(--neon-pink); letter-spacing: 0.1em; }
+        .gallery-chip .chip-name { font-size: 0.85rem; color: #fff; margin-top: 4px; line-height: 1.3; }
+        .gallery-cta-wrap { text-align: center; }
+        .gallery-cta {
+            display: inline-block; padding: 0.9rem 2rem; min-height: 44px;
+            font-family: var(--font-display); letter-spacing: 0.05em;
+            border: 2px solid var(--neon-green); color: var(--neon-green);
+            border-radius: 6px; text-shadow: 0 0 8px var(--neon-green);
+            transition: box-shadow 0.25s ease, color 0.25s ease;
+        }
+        .gallery-cta:hover, .gallery-cta:focus-visible {
+            box-shadow: 0 0 24px var(--neon-green), inset 0 0 24px var(--neon-green);
+            color: #fff; outline: none;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .gallery-chip, .gallery-cta { transition: none; }
+            .gallery-chip:hover, .gallery-chip:focus-visible { transform: none; }
+        }
+
         /* FOOTER */
         .footer-bar {
             background: linear-gradient(to top, #000, rgba(0,0,0,0.8));
@@ -677,6 +717,9 @@
                 </a>
                 <a href="#terminal-section" class="holo-btn btn-purple" onmouseenter="playHover()">
                     <i class="fas fa-terminal"></i> Terminal
+                </a>
+                <a href="#designs-section" class="holo-btn btn-green" onmouseenter="playHover()">
+                    <i class="fas fa-palette"></i> Designs
                 </a>
                 <a href="assets/resume.pdf" class="holo-btn btn-cyan" target="_blank" rel="noopener noreferrer" onmouseenter="playHover()">
                     <i class="fas fa-download"></i> Download CV
@@ -863,6 +906,20 @@
             </div>
         </section>
 
+        <!-- DESIGN GALLERY SHOWCASE -->
+        <section id="designs-section">
+            <div class="container">
+                <h2 class="section-title">Design Lab</h2>
+                <p class="gallery-lead">A collection of 50 experimental landing-page concepts — every one a distinct visual direction, from bioluminescent depths to alien artifacts. A living playground of interface aesthetics.</p>
+                <div class="gallery-preview-grid" id="galleryPreview" aria-label="Design concept previews"></div>
+                <div class="gallery-cta-wrap">
+                    <a href="designs/index.html" class="gallery-cta" onmouseenter="playHover()">
+                        <i class="fas fa-shapes" aria-hidden="true"></i> Explore All 50 Designs
+                    </a>
+                </div>
+            </div>
+        </section>
+
         <!-- FOOTER -->
         <div class="footer-bar">
             <div class="social-links">
@@ -873,6 +930,30 @@
             <p style="color: #666; font-size: 0.8rem;">© 2026 ELYAS MOSHIRPANAHI. SYSTEM OPTIMIZED.</p>
         </div>
     </div>
+
+    <!-- DESIGN GALLERY PREVIEW POPULATOR -->
+    <script>
+        (function () {
+            const featured = [
+                ["01", "Bioluminescent Deep", "01-bioluminescent-deep"],
+                ["09", "Data-Viz Cockpit", "09-dataviz-cockpit"],
+                ["16", "Synthwave Grid", "16-synthwave-grid"],
+                ["17", "Holographic Iridescent", "17-holographic-iridescent"],
+                ["18", "Liquid Chrome", "18-liquid-chrome"],
+                ["20", "Alien Artifact", "20-alien-artifact"]
+            ];
+            const grid = document.getElementById("galleryPreview");
+            if (!grid) return;
+            featured.forEach(function (d) {
+                const a = document.createElement("a");
+                a.className = "gallery-chip";
+                a.href = "designs/" + d[2] + ".html";
+                a.setAttribute("aria-label", "Open design concept " + d[0] + ": " + d[1]);
+                a.innerHTML = '<span class="chip-num">' + d[0] + '</span><span class="chip-name">' + d[1] + '</span>';
+                grid.appendChild(a);
+            });
+        })();
+    </script>
 
     <!-- THREE.JS & POST-PROCESSING -->
     <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>

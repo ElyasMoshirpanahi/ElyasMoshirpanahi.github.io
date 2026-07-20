@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FitInsured — Ride the Health Horizon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d0221;
+    --bg2:#1a0533;
+    --pink:#ff2e97;
+    --purple:#b026ff;
+    --cyan:#05d9e8;
+    --orange:#ff8b2b;
+    --yellow:#ffdd00;
+    --text:#e8d5ff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Rajdhani',sans-serif;
+    overflow-x:hidden;
+    position:relative;
+  }
+  ::selection{background:var(--pink);color:#fff}
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3,.orb{font-family:'Orbitron',sans-serif}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 24px;position:relative;z-index:2}
+
+  /* NAV */
+  nav{position:fixed;top:0;width:100%;z-index:100;background:rgba(13,2,33,.55);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,46,151,.25)}
+  .nav-in{display:flex;justify-content:space-between;align-items:center;max-width:1160px;margin:0 auto;padding:16px 24px}
+  .logo{font-family:'Orbitron';font-weight:900;font-size:20px;letter-spacing:2px;
+    background:linear-gradient(90deg,var(--cyan),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 0 20px rgba(255,46,151,.5)}
+  .nav-links{display:flex;gap:26px;font-weight:600;font-size:15px;letter-spacing:1px}
+  .nav-links a{color:var(--text);opacity:.75;transition:.2s;text-transform:uppercase}
+  .nav-links a:hover{opacity:1;color:var(--cyan);text-shadow:0 0 10px var(--cyan)}
+  @media(max-width:760px){.nav-links{display:none}}
+
+  /* HERO */
+  .hero{
+    min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
+    position:relative;overflow:hidden;padding:120px 24px 0;
+    background:linear-gradient(180deg,#0d0221 0%,#2a0a4a 45%,#5c1a6b 70%,var(--pink) 88%,var(--orange) 100%);
+  }
+  /* sun */
+  .sun{
+    position:absolute;bottom:26%;left:50%;transform:translateX(-50%);
+    width:min(460px,80vw);height:min(460px,80vw);border-radius:50%;
+    background:linear-gradient(180deg,var(--yellow),var(--orange) 45%,var(--pink));
+    box-shadow:0 0 120px rgba(255,139,43,.6),0 0 200px rgba(255,46,151,.4);
+    z-index:0;
+  }
+  /* sun stripes */
+  .sun::after{
+    content:"";position:absolute;inset:0;border-radius:50%;
+    background:repeating-linear-gradient(180deg,transparent 0 26px,var(--bg) 26px 32px);
+    -webkit-mask:linear-gradient(180deg,transparent 52%,#000 52%);mask:linear-gradient(180deg,transparent 52%,#000 52%);
+    opacity:.85;
+  }
+  /* perspective grid */
+  .grid{
+    position:absolute;left:0;right:0;bottom:0;height:45vh;z-index:1;
+    background-image:
+      linear-gradient(rgba(5,217,232,.5) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(5,217,232,.5) 1px,transparent 1px);
+    background-size:44px 44px;
+    transform:perspective(320px) rotateX(74deg);
+    transform-origin:bottom;
+    animation:grid 1.6s linear infinite;
+    -webkit-mask:linear-gradient(180deg,transparent,#000 40%);mask:linear-gradient(180deg,transparent,#000 40%);
+  }
+  @keyframes grid{from{background-position:0 0}to{background-position:0 44px}}
+  /* stars */
+  .stars{position:absolute;inset:0;z-index:0;
+    background-image:radial-gradient(1px 1px at 20% 30%,#fff,transparent),radial-gradient(1px 1px at 70% 20%,#fff,transparent),radial-gradient(1px 1px at 40% 15%,#fff,transparent),radial-gradient(2px 2px at 85% 40%,#fff,transparent),radial-gradient(1px 1px at 55% 8%,#fff,transparent);
+    opacity:.7}
+
+  .hero-content{position:relative;z-index:3;max-width:900px}
+  .tagline{
+    display:inline-block;border:1px solid var(--cyan);color:var(--cyan);border-radius:30px;
+    padding:7px 20px;font-size:13px;letter-spacing:3px;text-transform:uppercase;margin-bottom:26px;font-weight:600;
+    box-shadow:0 0 20px rgba(5,217,232,.35);background:rgba(5,217,232,.06);
+  }
+  h1{
+    font-size:clamp(2.6rem,8vw,6rem);font-weight:900;line-height:.98;letter-spacing:1px;text-transform:uppercase;
+    color:#fff;margin-bottom:22px;
+    text-shadow:0 0 12px var(--pink),3px 3px 0 var(--purple),6px 6px 0 rgba(5,217,232,.5);
+  }
+  h1 .glow{background:linear-gradient(90deg,var(--cyan),var(--yellow));-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 24px rgba(5,217,232,.6)}
+  .hero p{font-size:clamp(1.05rem,2vw,1.35rem);max-width:600px;margin:0 auto 34px;opacity:.92;font-weight:500}
+  .btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+  .btn{
+    font-family:'Orbitron';font-weight:700;font-size:15px;letter-spacing:1px;text-transform:uppercase;
+    padding:16px 34px;border-radius:8px;cursor:pointer;transition:.25s;position:relative;
+  }
+  .btn-primary{background:linear-gradient(90deg,var(--pink),var(--purple));color:#fff;
+    box-shadow:0 0 24px rgba(255,46,151,.6),0 6px 0 #7a1560}
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 0 40px rgba(255,46,151,.9),0 9px 0 #7a1560}
+  .btn-ghost{background:transparent;color:var(--cyan);border:2px solid var(--cyan);box-shadow:0 0 18px rgba(5,217,232,.3)}
+  .btn-ghost:hover{background:rgba(5,217,232,.12);transform:translateY(-3px)}
+
+  /* SECTIONS */
+  section{padding:100px 0;position:relative}
+  .sec-tag{text-align:center;color:var(--pink);letter-spacing:5px;text-transform:uppercase;font-size:13px;font-weight:700;margin-bottom:12px;text-shadow:0 0 12px var(--pink)}
+  .sec-title{text-align:center;font-size:clamp(2rem,5vw,3.4rem);text-transform:uppercase;color:#fff;margin-bottom:14px;letter-spacing:1px;
+    text-shadow:0 0 20px rgba(176,38,255,.6)}
+  .sec-sub{text-align:center;max-width:600px;margin:0 auto 60px;opacity:.8;font-size:1.1rem}
+
+  /* HOW */
+  #how{background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%)}
+  .cards{display:grid;gap:24px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+  .card{
+    background:rgba(26,5,51,.6);border:1px solid rgba(176,38,255,.4);border-radius:14px;padding:34px 28px;
+    position:relative;overflow:hidden;transition:.3s;
+  }
+  .card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--cyan),var(--pink))}
+  .card:hover{transform:translateY(-8px);border-color:var(--cyan);box-shadow:0 0 40px rgba(5,217,232,.25)}
+  .card .step{font-family:'Orbitron';font-size:13px;color:var(--cyan);letter-spacing:2px;margin-bottom:14px}
+  .card .icon{font-size:36px;margin-bottom:16px;filter:drop-shadow(0 0 10px var(--pink))}
+  .card h3{font-size:1.35rem;text-transform:uppercase;color:#fff;margin-bottom:12px;letter-spacing:.5px}
+  .card p{opacity:.82;line-height:1.55;font-size:1rem}
+  .card b{color:var(--yellow)}
+
+  /* DEVICES BAR */
+  .devices{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:56px}
+  .device{border:1px solid rgba(5,217,232,.4);border-radius:30px;padding:10px 22px;font-weight:600;letter-spacing:1px;
+    text-transform:uppercase;font-size:14px;color:var(--cyan);transition:.25s;background:rgba(5,217,232,.05)}
+  .device:hover{background:var(--cyan);color:var(--bg);box-shadow:0 0 22px rgba(5,217,232,.6)}
+
+  /* STATS */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:22px;margin-top:70px}
+  .stat{text-align:center;padding:30px 18px;border:1px solid rgba(255,46,151,.3);border-radius:14px;
+    background:linear-gradient(180deg,rgba(255,46,151,.08),transparent)}
+  .stat .n{font-family:'Orbitron';font-weight:900;font-size:clamp(2rem,4vw,3rem);
+    background:linear-gradient(90deg,var(--yellow),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat .l{text-transform:uppercase;letter-spacing:2px;font-size:12px;opacity:.75;margin-top:8px;font-weight:600}
+
+  /* B2B */
+  #b2b{background:linear-gradient(180deg,var(--bg2) 0%,#0d0221 100%);border-top:1px solid rgba(5,217,232,.2)}
+  .b2b-grid{display:grid;gap:40px;align-items:center;grid-template-columns:1fr}
+  @media(min-width:900px){.b2b-grid{grid-template-columns:1fr 1fr}}
+  .b2b-copy h2{font-size:clamp(1.8rem,4vw,3rem);text-transform:uppercase;color:#fff;margin-bottom:20px;line-height:1.05;text-shadow:0 0 18px rgba(176,38,255,.5)}
+  .b2b-copy .lead{font-size:1.15rem;opacity:.85;margin-bottom:28px;line-height:1.6}
+  .b2b-feats{list-style:none;margin-bottom:32px}
+  .b2b-feats li{padding:14px 0;border-bottom:1px solid rgba(176,38,255,.25);display:flex;gap:14px;align-items:flex-start}
+  .b2b-feats .arw{color:var(--cyan);font-family:'Orbitron';font-weight:700}
+  .b2b-feats b{color:#fff;text-transform:uppercase;letter-spacing:.5px}
+  .b2b-feats span{opacity:.75;display:block;margin-top:2px}
+  .panel{
+    border:1px solid var(--cyan);border-radius:16px;padding:30px;
+    background:linear-gradient(180deg,rgba(5,217,232,.08),rgba(176,38,255,.06));
+    box-shadow:0 0 50px rgba(5,217,232,.15);
+  }
+  .panel .ptag{font-family:'Orbitron';font-size:12px;letter-spacing:2px;color:var(--cyan);text-transform:uppercase;margin-bottom:20px}
+  .prow{display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:15px}
+  .prow:last-child{border:none}
+  .prow b{font-family:'Orbitron';color:var(--yellow);font-size:14px}
+  .gauge{margin-top:22px;height:12px;border-radius:8px;background:rgba(255,255,255,.1);overflow:hidden}
+  .gauge i{display:block;height:100%;width:72%;background:linear-gradient(90deg,var(--cyan),var(--pink));box-shadow:0 0 14px var(--pink)}
+  .gauge-l{display:flex;justify-content:space-between;font-size:12px;margin-top:8px;opacity:.7;text-transform:uppercase;letter-spacing:1px}
+
+  /* CTA */
+  .cta-final{text-align:center;background:linear-gradient(180deg,#0d0221,#3a0a55);border-top:1px solid rgba(255,46,151,.3)}
+  .cta-final h2{font-size:clamp(2.2rem,6vw,4rem);text-transform:uppercase;color:#fff;margin-bottom:18px;
+    text-shadow:0 0 24px var(--pink),0 0 40px var(--purple)}
+  .cta-final p{opacity:.85;max-width:520px;margin:0 auto 34px;font-size:1.15rem}
+
+  /* FOOTER */
+  footer{background:#08011a;padding:70px 0 34px;border-top:1px solid rgba(176,38,255,.25)}
+  .foot-grid{display:grid;gap:36px;grid-template-columns:2fr 1fr 1fr 1fr}
+  @media(max-width:760px){.foot-grid{grid-template-columns:1fr 1fr}}
+  .foot-brand .logo{font-size:24px;margin-bottom:14px;display:inline-block}
+  .foot-brand p{opacity:.7;max-width:280px;line-height:1.6}
+  .foot-grid h5{font-family:'Orbitron';color:var(--cyan);font-size:13px;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+  .foot-grid a{display:block;opacity:.7;margin-bottom:10px;transition:.2s}
+  .foot-grid a:hover{opacity:1;color:var(--pink);text-shadow:0 0 10px var(--pink)}
+  .foot-bottom{max-width:1160px;margin:44px auto 0;padding:24px 24px 0;border-top:1px solid rgba(255,255,255,.08);
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:13px;opacity:.6}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-in">
+    <div class="logo">FITINSURED</div>
+    <div class="nav-links">
+      <a href="#how">Protocol</a>
+      <a href="#stats">Stats</a>
+      <a href="#b2b">Insurers</a>
+      <a href="#join">Enter</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="stars"></div>
+  <div class="sun"></div>
+  <div class="grid"></div>
+  <div class="hero-content">
+    <span class="tagline">◢ Wearable-Powered Insurance ◤</span>
+    <h1>Ride the<br><span class="glow">Health Horizon</span></h1>
+    <p>Sync your wearable. Mint FitCoin with every move. Let our AI risk engine drive your premiums down and your rewards up. The future of insurance runs on you.</p>
+    <div class="btns">
+      <a href="#join" class="btn btn-primary">Start Free</a>
+      <a href="#how" class="btn btn-ghost">See the Protocol</a>
+    </div>
+  </div>
+</header>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="wrap">
+    <p class="sec-tag">The Protocol</p>
+    <h2 class="sec-title">From Movement to Money</h2>
+    <p class="sec-sub">A four-stage loop that turns your daily activity into personalized, ever-lower insurance rates.</p>
+    <div class="cards">
+      <div class="card">
+        <div class="step">STAGE 01</div>
+        <div class="icon">⌚</div>
+        <h3>Connect</h3>
+        <p>Link Apple Health, Google Fit, Fitbit, Garmin, or Strava in a single tap. Read-only, revocable, encrypted end to end.</p>
+      </div>
+      <div class="card">
+        <div class="step">STAGE 02</div>
+        <div class="icon">🪙</div>
+        <h3>Earn FitCoin</h3>
+        <p>Every verified active minute mints <b>FitCoin</b>. Streaks stack multipliers. Redeem for premium credits and partner perks.</p>
+      </div>
+      <div class="card">
+        <div class="step">STAGE 03</div>
+        <div class="icon">🧠</div>
+        <h3>AI Risk Score</h3>
+        <p>Our engine turns heart rate, sleep, and movement into a dynamic, explainable risk score — refreshed every single day.</p>
+      </div>
+      <div class="card">
+        <div class="step">STAGE 04</div>
+        <div class="icon">💸</div>
+        <h3>Save Big</h3>
+        <p>Better score, better rate. Members average <b>23% off</b> life and health premiums within their first active year.</p>
+      </div>
+    </div>
+
+    <div class="devices">
+      <span class="device">Apple Health</span>
+      <span class="device">Google Fit</span>
+      <span class="device">Fitbit</span>
+      <span class="device">Garmin</span>
+      <span class="device">Strava</span>
+    </div>
+
+    <div id="stats" class="stats">
+      <div class="stat"><div class="n">1.2M</div><div class="l">Active Riders</div></div>
+      <div class="stat"><div class="n">23%</div><div class="l">Avg Premium Cut</div></div>
+      <div class="stat"><div class="n">840M</div><div class="l">FitCoin Minted</div></div>
+      <div class="stat"><div class="n">42</div><div class="l">Insurer Partners</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- B2B -->
+<section id="b2b">
+  <div class="wrap">
+    <p class="sec-tag">For Insurers</p>
+    <h2 class="sec-title">Underwrite the Future</h2>
+    <p class="sec-sub">Plug into a living stream of anonymized, consent-based health signals and price risk in real time.</p>
+    <div class="b2b-grid">
+      <div class="b2b-copy">
+        <h2>Risk data,<br>on tap.</h2>
+        <p class="lead">One clean API delivers actuarial-grade population health insights — no PII, full compliance, continuous updates.</p>
+        <ul class="b2b-feats">
+          <li><span class="arw">▸</span><div><b>Anonymized by Design</b><span>Differential privacy + k-anonymity ≥ 50. Aggregates only.</span></div></li>
+          <li><span class="arw">▸</span><div><b>Explainable Scores</b><span>Feature attributions your compliance teams can audit.</span></div></li>
+          <li><span class="arw">▸</span><div><b>Real-Time Deltas</b><span>Webhooks stream cohort risk shifts in under 120ms.</span></div></li>
+        </ul>
+        <a href="#join" class="btn btn-primary">Request API Access</a>
+      </div>
+      <div class="panel">
+        <div class="ptag">◢ Risk API · v3 · Live Feed</div>
+        <div class="prow"><span>Cohort — active 40-49</span><b>score 0.71</b></div>
+        <div class="prow"><span>Trend (MoM)</span><b>-4.2%</b></div>
+        <div class="prow"><span>Members in cohort</span><b>18,420</b></div>
+        <div class="prow"><span>Confidence</span><b>0.96</b></div>
+        <div class="prow"><span>Anonymity floor</span><b>k ≥ 50</b></div>
+        <div class="gauge"><i></i></div>
+        <div class="gauge-l"><span>Risk index</span><span>72 / low-moderate</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="join" class="cta-final">
+  <div class="wrap">
+    <h2>Enter the Grid</h2>
+    <p>Free to join. Sync in 60 seconds. Start minting FitCoin and cutting premiums today.</p>
+    <div class="btns">
+      <a href="#" class="btn btn-primary">Download App</a>
+      <a href="#b2b" class="btn btn-ghost">Book Insurer Demo</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <span class="logo">FITINSURED</span>
+        <p>Wearable-powered insurance for the neon age. Move more, pay less, own your data.</p>
+      </div>
+      <div><h5>Product</h5><a href="#">FitCoin</a><a href="#">AI Risk Score</a><a href="#">Integrations</a><a href="#">Pricing</a></div>
+      <div><h5>Insurers</h5><a href="#">Risk API</a><a href="#">Docs</a><a href="#">Case Studies</a></div>
+      <div><h5>Company</h5><a href="#">About</a><a href="#">Careers</a><a href="#">Privacy</a><a href="#">Security</a></div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 FitInsured, Inc. All rights reserved.</span>
+      <span>FitCoin has no cash value outside partner redemptions.</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

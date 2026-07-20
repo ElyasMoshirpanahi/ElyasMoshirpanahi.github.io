@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FitInsured — Move more. Pay less.</title>
+<meta name="description" content="FitInsured connects your wearables, rewards activity with FitCoin, and uses AI risk scoring to lower your insurance rates. B2B partner APIs available.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#0a1930;
+    --paper-2:#0c1f3d;
+    --ink:#e6f2ff;
+    --ink-dim:#9fc4e8;
+    --line:#2f6fb0;
+    --line-soft:#1c447a;
+    --cyan:#5fd3ff;
+    --cyan-bright:#8ce6ff;
+    --accent:#ffd166;
+    --grid: 24px;
+    --hair:1px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation:none!important;transition:none!important;}
+  }
+  body{
+    margin:0;
+    font-family:'IBM Plex Sans',system-ui,sans-serif;
+    font-size:16px;
+    line-height:1.5;
+    color:var(--ink);
+    background-color:var(--paper);
+    background-image:
+      linear-gradient(var(--line-soft) var(--hair), transparent var(--hair)),
+      linear-gradient(90deg, var(--line-soft) var(--hair), transparent var(--hair)),
+      linear-gradient(rgba(95,211,255,0.06) var(--hair), transparent var(--hair)),
+      linear-gradient(90deg, rgba(95,211,255,0.06) var(--hair), transparent var(--hair));
+    background-size:
+      calc(var(--grid)*5) calc(var(--grid)*5),
+      calc(var(--grid)*5) calc(var(--grid)*5),
+      var(--grid) var(--grid),
+      var(--grid) var(--grid);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace;}
+  a{color:var(--cyan-bright);}
+  h1,h2,h3{line-height:1.2;font-weight:600;margin:0;}
+  p{margin:0;}
+
+  /* focus */
+  a:focus-visible,button:focus-visible{
+    outline:2px solid var(--cyan-bright);
+    outline-offset:3px;
+  }
+
+  .wrap{max-width:1100px;margin:0 auto;padding:0 20px;}
+
+  /* label chips */
+  .tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--cyan);
+    border:var(--hair) dashed var(--line);
+    padding:6px 10px;
+    display:inline-block;
+  }
+  .dim-note{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--ink-dim);
+    letter-spacing:0.05em;
+  }
+
+  /* corner crosshair marks on framed blocks */
+  .frame{
+    position:relative;
+    border:var(--hair) solid var(--line);
+  }
+  .frame::before,.frame::after{
+    content:"";
+    position:absolute;
+    width:14px;height:14px;
+    border:var(--hair) solid var(--cyan);
+  }
+  .frame::before{top:-1px;left:-1px;border-right:none;border-bottom:none;}
+  .frame::after{bottom:-1px;right:-1px;border-left:none;border-top:none;}
+
+  /* NAV */
+  header.site{
+    position:sticky;top:0;z-index:20;
+    background:rgba(10,25,48,0.9);
+    backdrop-filter:blur(6px);
+    border-bottom:var(--hair) solid var(--line);
+  }
+  nav{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:16px;min-height:64px;
+  }
+  .wordmark{
+    display:flex;align-items:center;gap:10px;
+    text-decoration:none;color:var(--ink);
+    font-weight:700;letter-spacing:0.02em;font-size:18px;
+    padding:8px 4px;
+  }
+  .wordmark svg{display:block;}
+  .navlinks{display:none;gap:6px;align-items:center;list-style:none;margin:0;padding:0;}
+  .navlinks a{
+    text-decoration:none;color:var(--ink-dim);
+    font-family:'IBM Plex Mono',monospace;font-size:13px;
+    padding:12px 12px;min-height:44px;display:inline-flex;align-items:center;
+    border:var(--hair) solid transparent;
+    transition:color .2s ease,border-color .2s ease;
+  }
+  .navlinks a:hover{color:var(--cyan-bright);border-color:var(--line-soft);}
+  .btn{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:14px;letter-spacing:0.04em;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    min-height:44px;padding:12px 20px;
+    text-decoration:none;cursor:pointer;
+    border:var(--hair) solid var(--cyan);
+    background:transparent;color:var(--cyan-bright);
+    transition:background .2s ease,color .2s ease,transform .2s ease;
+  }
+  .btn:hover{background:var(--cyan);color:var(--paper);}
+  .btn-solid{background:var(--cyan);color:var(--paper);font-weight:600;}
+  .btn-solid:hover{background:var(--cyan-bright);}
+  @media(min-width:820px){.navlinks{display:flex;}}
+
+  /* HERO */
+  .hero{padding:56px 0 40px;}
+  .hero-grid{display:grid;gap:32px;grid-template-columns:1fr;}
+  @media(min-width:900px){.hero-grid{grid-template-columns:1.05fr 1fr;align-items:center;}}
+  .hero h1{
+    font-size:clamp(2rem,6vw,3.4rem);
+    letter-spacing:-0.01em;margin:18px 0 16px;
+  }
+  .hero h1 em{color:var(--cyan-bright);font-style:normal;}
+  .hero p.sub{font-size:1.08rem;color:var(--ink-dim);max-width:48ch;margin-bottom:26px;}
+  .cta-row{display:flex;flex-wrap:wrap;gap:12px;}
+  .hero-stats{display:flex;flex-wrap:wrap;gap:8px 28px;margin-top:30px;}
+  .hero-stats .stat{}
+  .hero-stats .num{font-family:'IBM Plex Mono',monospace;font-size:1.5rem;color:var(--cyan-bright);}
+  .hero-stats .lbl{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-dim);letter-spacing:0.06em;}
+
+  .blueprint-box{
+    padding:14px;
+    background:rgba(12,31,61,0.55);
+  }
+  .blueprint-box svg{width:100%;height:auto;display:block;}
+  .callout-hd{
+    display:flex;justify-content:space-between;align-items:baseline;
+    padding:0 4px 10px;border-bottom:var(--hair) dashed var(--line-soft);margin-bottom:12px;
+  }
+  .callout-hd .t{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.1em;color:var(--ink-dim);text-transform:uppercase;}
+
+  /* SECTION HEAD */
+  .sec{padding:56px 0;border-top:var(--hair) dashed var(--line-soft);}
+  .sec-head{margin-bottom:34px;max-width:60ch;}
+  .sec-head h2{font-size:clamp(1.5rem,4vw,2.2rem);margin:14px 0 12px;}
+  .sec-head p{color:var(--ink-dim);}
+
+  /* FLOW STEPS */
+  .flow{display:grid;gap:18px;grid-template-columns:1fr;}
+  @media(min-width:640px){.flow{grid-template-columns:1fr 1fr;}}
+  @media(min-width:980px){.flow{grid-template-columns:repeat(4,1fr);}}
+  .step{
+    padding:20px 18px;position:relative;
+    background:rgba(12,31,61,0.5);
+    transition:transform .2s ease,border-color .2s ease;
+  }
+  .step:hover{transform:translateY(-3px);border-color:var(--cyan);}
+  .step .idx{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--cyan);
+    letter-spacing:0.1em;display:block;margin-bottom:12px;
+  }
+  .step .icon{color:var(--cyan-bright);margin-bottom:14px;}
+  .step h3{font-size:1.1rem;margin-bottom:8px;}
+  .step p{font-size:0.95rem;color:var(--ink-dim);}
+  .step .dim{
+    position:absolute;top:12px;right:14px;
+    font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--line);
+  }
+
+  /* FITCOIN */
+  .coin-grid{display:grid;gap:26px;grid-template-columns:1fr;}
+  @media(min-width:860px){.coin-grid{grid-template-columns:1fr 1fr;align-items:center;}}
+  .coin-list{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:14px;}
+  .coin-list li{display:flex;gap:12px;align-items:flex-start;}
+  .coin-list .mk{color:var(--accent);flex-shrink:0;margin-top:2px;}
+  .coin-list b{color:var(--ink);}
+  .coin-list span{color:var(--ink-dim);font-size:0.95rem;}
+  .coin-visual{padding:20px;background:rgba(12,31,61,0.55);}
+  .coin-visual svg{width:100%;height:auto;display:block;}
+
+  /* B2B */
+  .api-grid{display:grid;gap:22px;grid-template-columns:1fr;}
+  @media(min-width:860px){.api-grid{grid-template-columns:1fr 1fr;}}
+  .code-panel{
+    background:#071121;border:var(--hair) solid var(--line);
+    padding:0;overflow:hidden;
+  }
+  .code-panel .bar{
+    display:flex;gap:8px;align-items:center;padding:10px 14px;
+    border-bottom:var(--hair) solid var(--line-soft);
+  }
+  .code-panel .bar span{width:10px;height:10px;border:var(--hair) solid var(--line);}
+  .code-panel .bar .fn{margin-left:8px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-dim);}
+  .code-panel pre{margin:0;padding:16px;overflow-x:auto;}
+  .code-panel code{font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;color:var(--ink-dim);white-space:pre;}
+  .code-panel .k{color:var(--cyan);}
+  .code-panel .s{color:var(--accent);}
+  .code-panel .c{color:var(--line);}
+  .api-points{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:16px;}
+  .api-points li{padding-left:26px;position:relative;color:var(--ink-dim);}
+  .api-points li b{color:var(--ink);display:block;margin-bottom:2px;}
+  .api-points li::before{
+    content:"+";position:absolute;left:0;top:-2px;
+    font-family:'IBM Plex Mono',monospace;color:var(--cyan);font-size:18px;
+  }
+
+  /* FOOTER */
+  footer.site{
+    border-top:var(--hair) solid var(--line);
+    padding:44px 0 30px;margin-top:30px;
+    background:rgba(7,17,33,0.6);
+  }
+  .foot-grid{display:grid;gap:28px;grid-template-columns:1fr;}
+  @media(min-width:720px){.foot-grid{grid-template-columns:2fr 1fr 1fr;}}
+  .foot-col h4{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--cyan);margin-bottom:14px;}
+  .foot-col ul{list-style:none;padding:0;margin:0;display:grid;gap:4px;}
+  .foot-col a{
+    text-decoration:none;color:var(--ink-dim);font-size:0.95rem;
+    padding:8px 0;min-height:44px;display:inline-flex;align-items:center;
+    transition:color .2s ease;
+  }
+  .foot-col a:hover{color:var(--cyan-bright);}
+  .foot-bottom{
+    display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;
+    margin-top:34px;padding-top:20px;border-top:var(--hair) dashed var(--line-soft);
+    font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-dim);
+  }
+  .cross{color:var(--line);}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <nav aria-label="Primary">
+      <a class="wordmark" href="#top" aria-label="FitInsured home">
+        <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+          <rect x="1" y="1" width="24" height="24" stroke="#5fd3ff" stroke-width="1"/>
+          <path d="M6 18 L11 11 L15 15 L20 7" stroke="#8ce6ff" stroke-width="1.4" fill="none"/>
+          <circle cx="20" cy="7" r="2" fill="#ffd166"/>
+          <line x1="1" y1="13" x2="25" y2="13" stroke="#2f6fb0" stroke-width="0.6" stroke-dasharray="2 2"/>
+        </svg>
+        FitInsured
+      </a>
+      <ul class="navlinks">
+        <li><a href="#flow">/system-flow</a></li>
+        <li><a href="#fitcoin">/fitcoin</a></li>
+        <li><a href="#api">/partner-api</a></li>
+        <li><a class="btn" href="#cta">Get a quote</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="tag">Rev 3.4 · Health-linked underwriting</span>
+        <h1>Move more.<br><em>Pay less.</em></h1>
+        <p class="sub">FitInsured wires your wearables straight into your insurance. Every step, workout, and night of sleep feeds an AI risk model that turns real activity into real savings — measured, not guessed.</p>
+        <div class="cta-row">
+          <a class="btn btn-solid" href="#cta" id="cta">Get my quote</a>
+          <a class="btn" href="#flow">See how it works</a>
+        </div>
+        <div class="hero-stats" aria-label="Key metrics">
+          <div class="stat"><div class="num">−31%</div><div class="lbl">avg. premium</div></div>
+          <div class="stat"><div class="num">5</div><div class="lbl">device sources</div></div>
+          <div class="stat"><div class="num">2.4M</div><div class="lbl">FitCoin issued</div></div>
+        </div>
+      </div>
+
+      <div class="frame blueprint-box" aria-hidden="false">
+        <div class="callout-hd">
+          <span class="t">Fig. 1 — System schematic</span>
+          <span class="t">scale 1:1</span>
+        </div>
+        <svg viewBox="0 0 420 300" role="img" aria-label="Schematic diagram: wearables feed health tracking, which generates FitCoin rewards and an AI risk score, which lowers insurance rates.">
+          <defs>
+            <marker id="arw" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0 0 L6 3 L0 6" fill="none" stroke="#5fd3ff" stroke-width="1"/>
+            </marker>
+          </defs>
+          <!-- registration crosshairs -->
+          <g stroke="#2f6fb0" stroke-width="0.8">
+            <line x1="8" y1="8" x2="8" y2="18"/><line x1="3" y1="13" x2="13" y2="13"/>
+            <line x1="412" y1="292" x2="412" y2="282"/><line x1="407" y1="287" x2="417" y2="287"/>
+          </g>
+
+          <!-- Node: Wearables -->
+          <rect x="16" y="120" width="86" height="60" fill="none" stroke="#5fd3ff" stroke-width="1"/>
+          <text x="59" y="145" text-anchor="middle" fill="#e6f2ff" font-family="IBM Plex Mono, monospace" font-size="10">WEARABLES</text>
+          <text x="59" y="160" text-anchor="middle" fill="#9fc4e8" font-family="IBM Plex Mono, monospace" font-size="7.5">Apple · Fitbit</text>
+          <text x="59" y="170" text-anchor="middle" fill="#9fc4e8" font-family="IBM Plex Mono, monospace" font-size="7.5">Garmin · Strava</text>
+
+          <!-- Node: Tracking -->
+          <rect x="150" y="120" width="86" height="60" fill="none" stroke="#5fd3ff" stroke-width="1"/>
+          <text x="193" y="148" text-anchor="middle" fill="#e6f2ff" font-family="IBM Plex Mono, monospace" font-size="10">HEALTH</text>
+          <text x="193" y="161" text-anchor="middle" fill="#e6f2ff" font-family="IBM Plex Mono, monospace" font-size="10">TRACKING</text>
+
+          <!-- Node: FitCoin -->
+          <rect x="284" y="40" width="86" height="54" fill="none" stroke="#ffd166" stroke-width="1"/>
+          <text x="327" y="63" text-anchor="middle" fill="#ffd166" font-family="IBM Plex Mono, monospace" font-size="10">FITCOIN</text>
+          <text x="327" y="76" text-anchor="middle" fill="#9fc4e8" font-family="IBM Plex Mono, monospace" font-size="7.5">rewards</text>
+
+          <!-- Node: AI score -->
+          <rect x="284" y="206" width="86" height="54" fill="none" stroke="#5fd3ff" stroke-width="1"/>
+          <text x="327" y="229" text-anchor="middle" fill="#e6f2ff" font-family="IBM Plex Mono, monospace" font-size="10">AI RISK</text>
+          <text x="327" y="242" text-anchor="middle" fill="#9fc4e8" font-family="IBM Plex Mono, monospace" font-size="7.5">score model</text>
+
+          <!-- connectors -->
+          <line x1="102" y1="150" x2="150" y2="150" stroke="#5fd3ff" stroke-width="1" marker-end="url(#arw)"/>
+          <path d="M236 140 L262 140 L262 67 L284 67" fill="none" stroke="#5fd3ff" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#arw)"/>
+          <path d="M236 160 L262 160 L262 233 L284 233" fill="none" stroke="#5fd3ff" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#arw)"/>
+
+          <!-- dimension line top -->
+          <g stroke="#2f6fb0" stroke-width="0.7">
+            <line x1="16" y1="104" x2="236" y2="104"/>
+            <line x1="16" y1="100" x2="16" y2="108"/>
+            <line x1="236" y1="100" x2="236" y2="108"/>
+          </g>
+          <text x="126" y="99" text-anchor="middle" fill="#9fc4e8" font-family="IBM Plex Mono, monospace" font-size="8">ingest ≤ 60s</text>
+
+          <!-- output label -->
+          <text x="327" y="284" text-anchor="middle" fill="#8ce6ff" font-family="IBM Plex Mono, monospace" font-size="8.5">→ lower premium</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- FLOW -->
+  <section class="sec" id="flow">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="tag">Assembly · A→D</span>
+        <h2>Four connected components, one lower rate</h2>
+        <p>Each stage passes a clean signal to the next. Sync a device, we track the metrics that matter, you earn on activity, and the model reprices your risk continuously.</p>
+      </div>
+      <div class="flow">
+        <article class="step frame">
+          <span class="dim">[A]</span>
+          <span class="idx">01 / CONNECT</span>
+          <span class="icon" aria-hidden="true">
+            <svg width="30" height="30" viewBox="0 0 30 30" fill="none"><rect x="9" y="3" width="12" height="24" rx="3" stroke="currentColor" stroke-width="1.2"/><line x1="12" y1="7" x2="18" y2="7" stroke="currentColor" stroke-width="1.2"/><circle cx="15" cy="22" r="1.5" fill="currentColor"/></svg>
+          </span>
+          <h3>Sync your wearables</h3>
+          <p>Link Apple Health, Google Fit, Fitbit, Garmin, or Strava in one tap. Encrypted, read-only, revocable anytime.</p>
+        </article>
+        <article class="step frame">
+          <span class="dim">[B]</span>
+          <span class="idx">02 / MEASURE</span>
+          <span class="icon" aria-hidden="true">
+            <svg width="30" height="30" viewBox="0 0 30 30" fill="none"><path d="M3 20 L9 20 L12 9 L16 24 L19 14 L22 20 L27 20" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linejoin="round"/></svg>
+          </span>
+          <h3>Track health metrics</h3>
+          <p>Steps, active minutes, resting heart rate, and sleep roll up into a live activity profile — no manual logging.</p>
+        </article>
+        <article class="step frame">
+          <span class="dim">[C]</span>
+          <span class="idx">03 / EARN</span>
+          <span class="icon" aria-hidden="true">
+            <svg width="30" height="30" viewBox="0 0 30 30" fill="none"><circle cx="15" cy="15" r="11" stroke="currentColor" stroke-width="1.2"/><circle cx="15" cy="15" r="6" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2"/><text x="15" y="19" text-anchor="middle" fill="currentColor" font-family="monospace" font-size="9">Ƒ</text></svg>
+          </span>
+          <h3>Earn FitCoin</h3>
+          <p>Hit daily goals and streaks to bank FitCoin. Redeem it against premiums, gear, or partner perks.</p>
+        </article>
+        <article class="step frame">
+          <span class="dim">[D]</span>
+          <span class="idx">04 / SAVE</span>
+          <span class="icon" aria-hidden="true">
+            <svg width="30" height="30" viewBox="0 0 30 30" fill="none"><path d="M15 4 L25 8 V15 C25 21 20 25 15 26 C10 25 5 21 5 15 V8 Z" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M11 15 L14 18 L20 11" stroke="currentColor" stroke-width="1.4" fill="none"/></svg>
+          </span>
+          <h3>Lower your rate</h3>
+          <p>Our AI risk model reprices you as you get healthier — savings that compound instead of a one-time discount.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- FITCOIN -->
+  <section class="sec" id="fitcoin">
+    <div class="wrap coin-grid">
+      <div>
+        <span class="tag">Component C · Rewards ledger</span>
+        <h2 style="font-size:clamp(1.5rem,4vw,2.2rem);margin:14px 0 12px;">FitCoin turns motion into money</h2>
+        <p style="color:var(--ink-dim);">Every qualifying move is minted to your balance on an auditable ledger. It is the reward layer that makes staying active worth it — today, not just at renewal.</p>
+        <ul class="coin-list">
+          <li><span class="mk" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 18 18"><rect x="2" y="2" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></span><span><b>Daily goals &amp; streaks.</b> Consistent activity earns more per action than one-off spikes.</span></li>
+          <li><span class="mk" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 18 18"><rect x="2" y="2" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></span><span><b>Redeem against premiums.</b> Apply FitCoin directly to your next bill — a transparent, itemized credit.</span></li>
+          <li><span class="mk" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 18 18"><rect x="2" y="2" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></span><span><b>Partner marketplace.</b> Spend on gear, gyms, and wellness brands from FitInsured partners.</span></li>
+        </ul>
+      </div>
+      <div class="frame coin-visual">
+        <div class="callout-hd">
+          <span class="t">Fig. 2 — Earn curve</span>
+          <span class="t">Ƒ / week</span>
+        </div>
+        <svg viewBox="0 0 380 220" role="img" aria-label="Chart showing FitCoin earned rising week over week with activity streaks.">
+          <!-- axes -->
+          <line x1="40" y1="20" x2="40" y2="184" stroke="#2f6fb0" stroke-width="1"/>
+          <line x1="40" y1="184" x2="360" y2="184" stroke="#2f6fb0" stroke-width="1"/>
+          <!-- ticks -->
+          <g stroke="#1c447a" stroke-width="0.7">
+            <line x1="40" y1="150" x2="360" y2="150"/>
+            <line x1="40" y1="116" x2="360" y2="116"/>
+            <line x1="40" y1="82" x2="360" y2="82"/>
+            <line x1="40" y1="48" x2="360" y2="48"/>
+          </g>
+          <g fill="#9fc4e8" font-family="IBM Plex Mono, monospace" font-size="8">
+            <text x="34" y="187" text-anchor="end">0</text>
+            <text x="34" y="153" text-anchor="end">250</text>
+            <text x="34" y="119" text-anchor="end">500</text>
+            <text x="34" y="85" text-anchor="end">750</text>
+            <text x="34" y="51" text-anchor="end">1k</text>
+          </g>
+          <!-- bars -->
+          <g fill="none" stroke="#ffd166" stroke-width="1.2">
+            <rect x="66" y="150" width="26" height="34" fill="rgba(255,209,102,0.12)"/>
+            <rect x="122" y="130" width="26" height="54" fill="rgba(255,209,102,0.12)"/>
+            <rect x="178" y="104" width="26" height="80" fill="rgba(255,209,102,0.12)"/>
+            <rect x="234" y="70" width="26" height="114" fill="rgba(255,209,102,0.12)"/>
+            <rect x="290" y="44" width="26" height="140" fill="rgba(255,209,102,0.18)"/>
+          </g>
+          <!-- trend -->
+          <path d="M79 150 L135 130 L191 104 L247 70 L303 44" fill="none" stroke="#8ce6ff" stroke-width="1.4" stroke-dasharray="4 3"/>
+          <g fill="#8ce6ff"><circle cx="79" cy="150" r="2"/><circle cx="135" cy="130" r="2"/><circle cx="191" cy="104" r="2"/><circle cx="247" cy="70" r="2"/><circle cx="303" cy="44" r="2"/></g>
+          <g fill="#9fc4e8" font-family="IBM Plex Mono, monospace" font-size="8" text-anchor="middle">
+            <text x="79" y="198">W1</text><text x="135" y="198">W2</text><text x="191" y="198">W3</text><text x="247" y="198">W4</text><text x="303" y="198">W5</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- B2B API -->
+  <section class="sec" id="api">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="tag">Interface · B2B partner API</span>
+        <h2>Anonymized risk data, built for insurers</h2>
+        <p>Insurance companies plug into FitInsured to underwrite on real behavior. Query aggregated, privacy-preserving risk signals through a documented REST API — no PII leaves the enclave.</p>
+      </div>
+      <div class="api-grid">
+        <div class="frame code-panel" aria-label="Example API request">
+          <div class="bar" aria-hidden="true">
+            <span></span><span></span><span></span>
+            <span class="fn">GET /v1/risk/cohort</span>
+          </div>
+<pre><code><span class="c"># Anonymized cohort risk score</span>
+<span class="k">curl</span> https://api.fitinsured.com/v1/risk/cohort \
+  -H <span class="s">"Authorization: Bearer $KEY"</span> \
+  -d cohort=<span class="s">"age:30-39;region:EU"</span>
+
+<span class="c"># → response</span>
+{
+  <span class="k">"risk_index"</span>: <span class="s">0.62</span>,
+  <span class="k">"activity_pct"</span>: <span class="s">78</span>,
+  <span class="k">"sample_size"</span>: <span class="s">14204</span>,
+  <span class="k">"pii"</span>: <span class="s">null</span>
+}</code></pre>
+        </div>
+        <div>
+          <ul class="api-points">
+            <li><b>Aggregated risk indices</b>Cohort-level scores derived from live wearable data — never individual records.</li>
+            <li><b>Privacy by design</b>Differential-privacy thresholds and k-anonymity enforced before any response leaves our systems.</li>
+            <li><b>Drop-in REST + webhooks</b>Versioned endpoints, OpenAPI spec, and sandbox keys so your team ships underwriting logic in days.</li>
+            <li><b>Compliance-ready</b>SOC 2 controls, regional data residency, and full audit logs on every query.</li>
+          </ul>
+          <div class="cta-row" style="margin-top:26px;">
+            <a class="btn btn-solid" href="#cta">Request API access</a>
+            <a class="btn" href="#flow">Read the docs</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-col">
+        <a class="wordmark" href="#top" aria-label="FitInsured home" style="margin-bottom:12px;">
+          <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+            <rect x="1" y="1" width="24" height="24" stroke="#5fd3ff" stroke-width="1"/>
+            <path d="M6 18 L11 11 L15 15 L20 7" stroke="#8ce6ff" stroke-width="1.4" fill="none"/>
+            <circle cx="20" cy="7" r="2" fill="#ffd166"/>
+          </svg>
+          FitInsured
+        </a>
+        <p class="dim-note" style="max-width:36ch;">Move more. Pay less. Health-linked insurance powered by your own devices and priced by AI.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#flow">System flow</a></li>
+          <li><a href="#fitcoin">FitCoin rewards</a></li>
+          <li><a href="#api">Partner API</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#top">About</a></li>
+          <li><a href="#top">Security &amp; privacy</a></li>
+          <li><a href="#cta">Contact sales</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span><span class="cross">✚</span> © 2026 FitInsured, Inc. — Rev 3.4</span>
+      <span>DRAWN: FI-ENG · SCALE 1:1 · SHEET 34/34</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

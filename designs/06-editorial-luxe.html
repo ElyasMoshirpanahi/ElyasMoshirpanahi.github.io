@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FitInsured — The Quarterly of Well-Insured Living</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Newsreader:ital@0;1&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#efe9df;
+    --bg-2:#e6ded1;
+    --ink:#1c1712;
+    --wine:#5a2331;
+    --gold:#a8792f;
+    --muted:#6f665a;
+    --line:#c9bfae;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Inter",sans-serif;
+    background:var(--bg);color:var(--ink);
+    -webkit-font-smoothing:antialiased;line-height:1.5;overflow-x:hidden;
+  }
+  .wrap{max-width:1200px;margin:0 auto;padding:0 40px}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--wine);color:var(--bg)}
+  .serif{font-family:"Fraunces",serif}
+
+  /* MASTHEAD */
+  .masthead{border-bottom:2px solid var(--ink)}
+  .mast-top{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:16px 0;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted);
+  }
+  .mast-title{text-align:center;padding:12px 0 20px}
+  .mast-title h1{
+    font-family:"Fraunces",serif;font-weight:400;font-size:clamp(38px,9vw,104px);
+    letter-spacing:0.01em;line-height:0.9;
+  }
+  .mast-title .sub{
+    font-family:"Newsreader",serif;font-style:italic;font-size:15px;color:var(--muted);
+    margin-top:10px;letter-spacing:0.04em;
+  }
+  nav.rag{
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    display:flex;justify-content:center;gap:44px;padding:12px 0;
+    font-size:12px;letter-spacing:0.16em;text-transform:uppercase;font-weight:500;
+  }
+  nav.rag a{color:var(--ink);transition:color .2s}
+  nav.rag a:hover{color:var(--wine)}
+  @media(max-width:720px){nav.rag{gap:20px;flex-wrap:wrap;font-size:10px}}
+
+  /* HERO / LEAD */
+  .lead{padding:72px 0 64px;border-bottom:1px solid var(--line)}
+  .lead-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:64px;align-items:center}
+  .kicker{
+    font-family:"Newsreader",serif;font-style:italic;font-size:16px;color:var(--wine);
+    margin-bottom:22px;
+    display:flex;align-items:center;gap:14px;
+  }
+  .kicker::before{content:"";width:44px;height:1px;background:var(--wine)}
+  .lead h2{
+    font-family:"Fraunces",serif;font-weight:300;
+    font-size:clamp(40px,6vw,78px);line-height:1.0;letter-spacing:-0.01em;
+  }
+  .lead h2 em{font-family:"Newsreader",serif;font-style:italic;font-weight:400;color:var(--wine)}
+  .lead .body{
+    font-size:17px;color:var(--muted);line-height:1.7;margin:28px 0 34px;max-width:440px;
+    font-family:"Newsreader",serif;
+  }
+  .drop::first-letter{
+    font-family:"Fraunces",serif;font-size:64px;float:left;line-height:0.8;
+    padding:6px 12px 0 0;color:var(--wine);font-weight:400;
+  }
+  .btn{
+    display:inline-flex;align-items:center;gap:12px;
+    background:var(--ink);color:var(--bg);padding:15px 30px;
+    font-size:13px;letter-spacing:0.12em;text-transform:uppercase;font-weight:500;
+    transition:.25s;
+  }
+  .btn:hover{background:var(--wine)}
+  .lead-art{
+    aspect-ratio:3/4;border:1px solid var(--ink);
+    background:
+      radial-gradient(120% 90% at 30% 20%, #6b2c3b 0%, transparent 55%),
+      radial-gradient(120% 120% at 90% 90%, #a8792f 0%, transparent 50%),
+      var(--bg-2);
+    position:relative;overflow:hidden;
+    display:flex;align-items:flex-end;padding:28px;
+  }
+  .lead-art .plate{
+    font-family:"Fraunces",serif;font-style:italic;font-size:14px;color:var(--bg);
+    background:rgba(28,23,18,.55);backdrop-filter:blur(3px);padding:10px 16px;
+  }
+  .lead-art .big-figure{
+    position:absolute;top:24px;left:28px;
+    font-family:"Fraunces",serif;font-size:clamp(70px,12vw,150px);font-weight:300;
+    color:var(--bg);line-height:0.8;letter-spacing:-0.02em;
+  }
+  .lead-art .big-figure small{display:block;font-size:14px;letter-spacing:0.14em;text-transform:uppercase;font-family:"Inter";margin-top:12px}
+  @media(max-width:860px){
+    .lead-grid{grid-template-columns:1fr;gap:40px}
+    .lead-art{order:-1;aspect-ratio:16/10}
+  }
+
+  /* SECTION LABEL */
+  .sec-label{
+    font-size:11px;letter-spacing:0.24em;text-transform:uppercase;color:var(--wine);
+    display:flex;align-items:center;gap:16px;margin-bottom:14px;
+  }
+  .sec-label::after{content:"";flex:1;height:1px;background:var(--line)}
+  .sec-title{
+    font-family:"Fraunces",serif;font-weight:300;font-size:clamp(30px,4.4vw,54px);
+    line-height:1.02;margin-bottom:44px;max-width:760px;
+  }
+
+  /* HOW IT WORKS — as feature essay columns */
+  .method{padding:80px 0;border-bottom:1px solid var(--line)}
+  .cols{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+    border-top:1px solid var(--ink);
+  }
+  .col{
+    padding:32px 26px 40px;border-right:1px solid var(--line);
+  }
+  .col:last-child{border-right:none}
+  .col .no{font-family:"Fraunces",serif;font-style:italic;font-size:34px;color:var(--wine);margin-bottom:18px}
+  .col h3{font-family:"Fraunces",serif;font-weight:500;font-size:22px;margin-bottom:12px}
+  .col p{font-family:"Newsreader",serif;font-size:15.5px;color:var(--muted);line-height:1.65}
+  @media(max-width:860px){.cols{grid-template-columns:1fr 1fr}.col{border-bottom:1px solid var(--line)}}
+  @media(max-width:520px){.cols{grid-template-columns:1fr}.col{border-right:none}}
+
+  /* DEVICES marquee-ish list */
+  .devices{padding:56px 0;border-bottom:1px solid var(--line);text-align:center}
+  .devices .eye{font-family:"Newsreader",serif;font-style:italic;color:var(--muted);font-size:15px;margin-bottom:26px}
+  .device-line{
+    display:flex;justify-content:center;flex-wrap:wrap;gap:12px 40px;
+    font-family:"Fraunces",serif;font-weight:300;font-size:clamp(20px,3vw,34px);
+  }
+  .device-line span{opacity:.85}
+  .device-line span:hover{color:var(--wine);opacity:1}
+
+  /* B2B — full spread */
+  .spread{background:var(--ink);color:var(--bg);padding:88px 0}
+  .spread .sec-label{color:var(--gold)}
+  .spread .sec-label::after{background:#3a332b}
+  .spread-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+  .spread h2{
+    font-family:"Fraunces",serif;font-weight:300;font-size:clamp(34px,5vw,64px);line-height:1.02;
+  }
+  .spread h2 em{font-family:"Newsreader",serif;font-style:italic;color:var(--gold)}
+  .spread .body{font-family:"Newsreader",serif;font-size:17px;color:#c8bdac;line-height:1.75;margin:26px 0 32px}
+  .btn-gold{
+    display:inline-flex;align-items:center;gap:12px;border:1px solid var(--gold);color:var(--gold);
+    padding:14px 28px;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;transition:.25s;
+  }
+  .btn-gold:hover{background:var(--gold);color:var(--ink)}
+  .ledger{border-top:1px solid #3a332b}
+  .ledger-row{
+    display:flex;justify-content:space-between;align-items:baseline;gap:20px;
+    padding:20px 0;border-bottom:1px solid #3a332b;
+  }
+  .ledger-row .t{font-family:"Fraunces",serif;font-size:19px}
+  .ledger-row .d{font-family:"Newsreader",serif;font-size:14px;color:#a49a8a;max-width:60%;text-align:right}
+  @media(max-width:860px){.spread-grid{grid-template-columns:1fr;gap:40px}}
+
+  /* PULLQUOTE / CTA */
+  .quote{padding:96px 0;text-align:center;border-bottom:1px solid var(--line)}
+  .quote blockquote{
+    font-family:"Fraunces",serif;font-weight:300;font-size:clamp(28px,4.6vw,58px);
+    line-height:1.08;max-width:900px;margin:0 auto 36px;letter-spacing:-0.01em;
+  }
+  .quote blockquote em{font-family:"Newsreader",serif;font-style:italic;color:var(--wine)}
+
+  /* FOOTER / COLOPHON */
+  footer{padding:64px 0 40px}
+  .colophon{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px}
+  .col-brand h4{font-family:"Fraunces",serif;font-size:26px;margin-bottom:14px}
+  .col-brand p{font-family:"Newsreader",serif;font-size:15px;color:var(--muted);max-width:300px;line-height:1.6}
+  .fcol h5{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--wine);margin-bottom:16px}
+  .fcol a{display:block;font-size:14px;margin-bottom:10px;color:var(--ink);transition:.2s}
+  .fcol a:hover{color:var(--wine)}
+  .foot-rule{
+    margin-top:56px;padding-top:22px;border-top:1px solid var(--ink);
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;
+    font-family:"Newsreader",serif;font-style:italic;font-size:13px;color:var(--muted);
+  }
+  @media(max-width:860px){.colophon{grid-template-columns:1fr 1fr}.col-brand{grid-column:1/3}}
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="wrap">
+    <div class="mast-top">
+      <span>Vol. I — No. 07</span>
+      <span>The Quarterly of Well-Insured Living</span>
+      <span>Summer 2026</span>
+    </div>
+    <div class="mast-title">
+      <h1 class="serif">FitInsured</h1>
+      <div class="sub">Where the measured life earns the finer rate.</div>
+    </div>
+    <nav class="rag">
+      <a href="#method">The Method</a>
+      <a href="#devices">The Instruments</a>
+      <a href="#insurers">For the House</a>
+      <a href="#join">Membership</a>
+    </nav>
+  </div>
+</div>
+
+<header class="lead">
+  <div class="wrap lead-grid">
+    <div>
+      <div class="kicker">The Feature</div>
+      <h2>Your body already keeps<br>the ledger. We simply <em>read it.</em></h2>
+      <p class="body drop">Connect the wearable already on your wrist and let FitInsured translate movement, rest and recovery into FitCoin — a currency our AI converts into an insurance rate written for the person you actually are, revised as often as you change.</p>
+      <a href="#join" class="btn">Request an invitation →</a>
+    </div>
+    <div class="lead-art">
+      <div class="big-figure">31<small>Percent, saved</small></div>
+      <div class="plate">Portrait of a member, in motion</div>
+    </div>
+  </div>
+</header>
+
+<section class="method" id="method">
+  <div class="wrap">
+    <div class="sec-label">How it works</div>
+    <div class="sec-title serif">Four movements, from the first step you take to the premium you are finally quoted.</div>
+    <div class="cols">
+      <div class="col">
+        <div class="no">i.</div>
+        <h3>Connect</h3>
+        <p>Pair Apple Health, Google Fit, Fitbit, Garmin or Strava. The data flows quietly, in the background, on your terms.</p>
+      </div>
+      <div class="col">
+        <div class="no">ii.</div>
+        <h3>Earn FitCoin</h3>
+        <p>Every walk, workout and well-slept night is minted into FitCoin — the reward currency of the well-measured life.</p>
+      </div>
+      <div class="col">
+        <div class="no">iii.</div>
+        <h3>Be scored</h3>
+        <p>Our AI reads the long arc of your habits, not a single stumble, into a transparent and personalised risk score.</p>
+      </div>
+      <div class="col">
+        <div class="no">iv.</div>
+        <h3>Save</h3>
+        <p>A better score commissions a better premium. Rates are re-drawn monthly — never left to an annual guess.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="devices" id="devices">
+  <div class="wrap">
+    <div class="eye">Composed for the instruments you already carry —</div>
+    <div class="device-line serif">
+      <span>Apple Health</span>
+      <span>·</span>
+      <span>Google Fit</span>
+      <span>·</span>
+      <span>Fitbit</span>
+      <span>·</span>
+      <span>Garmin</span>
+      <span>·</span>
+      <span>Strava</span>
+    </div>
+  </div>
+</section>
+
+<section class="spread" id="insurers">
+  <div class="wrap spread-grid">
+    <div>
+      <div class="sec-label">For the House · The Insurer's Desk</div>
+      <h2>Price the individual, <em>not the average.</em></h2>
+      <p class="body">FitInsured opens an enterprise API of anonymised, privacy-preserving risk cohorts and live AI scores. Underwrite with the grain of real behaviour, tighten loss ratios, and reward the members worth keeping.</p>
+      <a href="#" class="btn-gold">Read the API documentation →</a>
+    </div>
+    <div class="ledger">
+      <div class="ledger-row"><span class="t">Anonymised risk data</span><span class="d">Aggregated cohorts under differential privacy. No PII leaves the vault.</span></div>
+      <div class="ledger-row"><span class="t">Real-time scoring</span><span class="d">Continuously updated AI scores, piped into your pricing engine.</span></div>
+      <div class="ledger-row"><span class="t">Programmable FitCoin</span><span class="d">Author your own reward curves atop our shared ledger.</span></div>
+      <div class="ledger-row"><span class="t">Compliance, by design</span><span class="d">GDPR & HIPAA aligned, audited, and consent-first throughout.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="quote" id="join">
+  <div class="wrap">
+    <blockquote class="serif">"Insurance was built to price a stranger. <em>We built it to know you.</em>"</blockquote>
+    <a href="#" class="btn">Begin your membership →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="colophon">
+      <div class="col-brand">
+        <h4 class="serif">FitInsured</h4>
+        <p>The behaviour-based insurance layer, connecting wearables, FitCoin and AI risk-scoring into cover written for the individual.</p>
+      </div>
+      <div class="fcol">
+        <h5>The Reader</h5>
+        <a href="#method">The Method</a>
+        <a href="#devices">Instruments</a>
+        <a href="#join">FitCoin</a>
+        <a href="#">Rates</a>
+      </div>
+      <div class="fcol">
+        <h5>The House</h5>
+        <a href="#insurers">API overview</a>
+        <a href="#">Documentation</a>
+        <a href="#">Compliance</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="fcol">
+        <h5>The Masthead</h5>
+        <a href="#">About</a>
+        <a href="#">Careers</a>
+        <a href="#">Privacy</a>
+        <a href="#">Security</a>
+      </div>
+    </div>
+    <div class="foot-rule">
+      <span>© 2026 FitInsured Inc. — Printed digitally, worldwide.</span>
+      <span>Set in Fraunces & Newsreader.</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FitInsured — Design Concepts Gallery</title>
+<style>
+  :root {
+    --bg: #07060d;
+    --card: #14101f;
+    --pink: #ff00ff;
+    --cyan: #00ffff;
+    --text: #f5f5fa;
+    --muted: #9aa0b5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
+    background:
+      radial-gradient(60% 50% at 20% 0%, rgba(255,0,255,0.10), transparent 70%),
+      radial-gradient(50% 40% at 90% 10%, rgba(0,255,255,0.08), transparent 70%),
+      var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 4vw;
+    -webkit-font-smoothing: antialiased;
+  }
+  header { max-width: 1200px; margin: 0 auto 3rem; }
+  .brand {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    background: linear-gradient(90deg, var(--pink), var(--cyan));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .sub { color: var(--muted); margin-top: 0.75rem; font-size: 1.05rem; max-width: 60ch; line-height: 1.6; }
+  .count { color: var(--cyan); font-weight: 600; }
+  .grid {
+    max-width: 1200px; margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.25rem;
+  }
+  .tile {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+  }
+  .tile::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,0,255,0.06), rgba(0,255,255,0.06));
+    opacity: 0; transition: opacity .25s ease;
+  }
+  .tile:hover, .tile:focus-visible {
+    transform: translateY(-4px);
+    border-color: rgba(0,255,255,0.4);
+    box-shadow: 0 10px 40px -10px rgba(255,0,255,0.35);
+    outline: none;
+  }
+  .tile:hover::before { opacity: 1; }
+  .num {
+    font-size: 0.8rem; font-weight: 700; letter-spacing: 0.15em;
+    color: var(--cyan);
+    position: relative;
+  }
+  .name {
+    font-size: 1.25rem; font-weight: 600; margin-top: 0.5rem; position: relative;
+    letter-spacing: -0.01em;
+  }
+  .desc { color: var(--muted); font-size: 0.9rem; margin-top: 0.4rem; position: relative; line-height: 1.45; }
+  footer { max-width: 1200px; margin: 3rem auto 0; color: var(--muted); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+  <header>
+    <h1 class="brand">FitInsured</h1>
+    <p class="sub"><span class="count">50</span> landing-page design concepts — each a distinct aesthetic direction, all self-contained HTML. Click any tile to open it.</p>
+  </header>
+  <main class="grid" id="grid"></main>
+  <footer>Turn your daily movement into FitCoin — lower your insurance rate. · Design exploration gallery.</footer>
+<script>
+  // [number, name, description, exact filename] — href uses the filename verbatim so links can't drift.
+  const designs = [
+    ["01","Bioluminescent Deep","Near-black with glowing organic light — health as light.","01-bioluminescent-deep.html"],
+    ["02","Glassmorphic Aurora","Frosted glass panels over an animated aurora.","02-glassmorphic-aurora.html"],
+    ["03","Organic Cellular","Cell-membrane biology motifs, calm and futuristic.","03-organic-cellular.html"],
+    ["04","Gradient Mesh Dream","Dreamy pastel-neon mesh, airy negative space.","04-gradient-mesh-dream.html"],
+    ["05","Swiss Minimal Future","Light, massive whitespace, one electric accent.","05-swiss-minimal-future.html"],
+    ["06","Editorial Luxe","Magazine layout, elegant serif, premium feel.","06-editorial-luxe.html"],
+    ["07","Monochrome + Accent","High-contrast B&W with a single electric pop.","07-monochrome-accent.html"],
+    ["08","Nordic Calm Tech","Muted sage/stone wellness palette, gentle.","08-nordic-calm-tech.html"],
+    ["09","Data-Viz Cockpit","HUD hero with live rings, gauges, FitCoin counter.","09-dataviz-cockpit.html"],
+    ["10","Spatial Depth","Layered parallax, floating translucent cards.","10-spatial-depth.html"],
+    ["11","Neo Soft-UI","Tasteful modern neumorphism, tactile surfaces.","11-neo-soft-ui.html"],
+    ["12","Cyber-Corporate","Refined pink/cyan glassmorphism — the house style.","12-cyber-corporate.html"],
+    ["13","Brutalist Neon","Raw grid, thick borders, neon jolts.","13-brutalist-neon.html"],
+    ["14","Kinetic Typography","Type is the design — huge animated headlines.","14-kinetic-typography.html"],
+    ["15","Terminal / Command","Retro-futuristic CLI hero, phosphor glow.","15-terminal-command.html"],
+    ["16","Neon Grid Synthwave","Sunset horizon over a perspective neon grid.","16-synthwave-grid.html"],
+    ["17","Holographic Iridescent","Shifting holo-foil gradients, premium shimmer.","17-holographic-iridescent.html"],
+    ["18","Liquid Chrome","Animated metaball chrome blobs, fluid motion.","18-liquid-chrome.html"],
+    ["19","Retro-Future Y2K","Translucent chrome & bubbles, modern take.","19-retrofuture-y2k.html"],
+    ["20","Alien Artifact","Otherworldly asymmetry, glowing glyph monoliths.","20-alien-artifact.html"],
+    ["21","Aurora Borealis","Ethereal aurora curtains over a deep night sky.","21-aurora-borealis.html"],
+    ["22","Deep Space Observatory","Starfield, planetary rings, HUD data readouts.","22-deep-space-observatory.html"],
+    ["23","Molten Glass","Thick refractive glass with caustic warm-cool tints.","23-molten-glass.html"],
+    ["24","Neo-Memphis","Playful 80s Memphis shapes and bold primaries.","24-neo-memphis.html"],
+    ["25","Bento Grid Modular","Japanese bento grid of modular varying-size tiles.","25-bento-grid-modular.html"],
+    ["26","Duotone Bold","Strict two-color ink + signal-orange poster feel.","26-duotone-bold.html"],
+    ["27","Kinetic Ribbon","Flowing animated ribbon and wave shapes.","27-kinetic-ribbon.html"],
+    ["28","Grid-Break Editorial","Asymmetric magazine grid that breaks its columns.","28-grid-break-editorial.html"],
+    ["29","Gradient Noise Grain","Rich gradients with a tactile film-grain overlay.","29-gradient-noise-grain.html"],
+    ["30","Corporate Memphis 2.0","Refined premium flat-illustration style.","30-corporate-memphis-2.html"],
+    ["31","Claymorphism","Soft puffy 3D clay forms in pastels.","31-claymorphism.html"],
+    ["32","Vaporwave Pastel","Soft retro-future vaporwave in pastel pink/cyan.","32-vaporwave-pastel.html"],
+    ["33","Isometric 3D","Axonometric grid and layered dimensional cards.","33-isometric-3d.html"],
+    ["34","Wireframe Blueprint","Blue blueprint grid with drafting-line annotations.","34-wireframe-blueprint.html"],
+    ["35","Particle Field","Interactive constellation particle field.","35-particle-field.html"],
+    ["36","Ethereal Mist","Soft volumetric fog and diffuse light.","36-ethereal-mist.html"],
+    ["37","Golden Ratio Luxe","Proportional harmony, refined premium spacing.","37-golden-ratio-luxe.html"],
+    ["38","Noir Cinematic","High-contrast B/W, letterboxed, single accent.","38-noir-cinematic.html"],
+    ["39","Botanical Data","Organic plant forms meeting data visualization.","39-botanical-data.html"],
+    ["40","Constructivist","Bold Soviet-poster geometry and diagonals.","40-constructivist.html"],
+    ["41","Solarpunk","Optimistic green-tech, sunlight and foliage.","41-solarpunk.html"],
+    ["42","Origami Paper","Folded paper planes and crisp shadow creases.","42-origami-paper.html"],
+    ["43","Ink & Sumi-e","Japanese ink-wash brushstrokes, calm negative space.","43-ink-sumie.html"],
+    ["44","Thermal / Infrared","Heat-map gradients, infrared body-scan palette.","44-thermal-infrared.html"],
+    ["45","Frosted Arctic","Icy blues and whites, crisp frosted-glass clarity.","45-frosted-arctic.html"],
+    ["46","Circuit Board","PCB traces in tech-green/gold as data flow.","46-circuit-board.html"],
+    ["47","Liquid Metal Mercury","Flowing reflective chrome and mercury blobs.","47-liquid-metal-mercury.html"],
+    ["48","Prismatic Light","Prism refraction and rainbow dispersion on white.","48-prismatic-light.html"],
+    ["49","Zero-G Floating","Weightless floating elements, space-station calm.","49-zero-g-floating.html"],
+    ["50","Quantum Dot","Glowing quantum dots, energy-state metaphor.","50-quantum-dot.html"],
+  ];
+  const grid = document.getElementById('grid');
+  designs.forEach(([num,name,desc,file]) => {
+    const a = document.createElement('a');
+    a.className = 'tile';
+    a.href = file;
+    a.innerHTML = `<div class="num">CONCEPT ${num}</div><div class="name">${name}</div><div class="desc">${desc}</div>`;
+    grid.appendChild(a);
+  });
+</script>
+</body>
+</html>
