@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRON Cinematic Scene (ES6)</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #000; }
+        #info {
+            position: absolute; top: 20px; width: 100%; text-align: center;
+            color: #00f3ff; font-family: 'Courier New', Courier, monospace;
+            z-index: 100; pointer-events: none; text-transform: uppercase;
+            letter-spacing: 2px; text-shadow: 0 0 10px #00f3ff;
+        }
+    </style>
+</head>
+<body>
+    <div id="info">TRON Light Cycle Cinematic</div>
+
+    <!-- ES6 Import Map -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+        import { Reflector } from 'three/addons/objects/Reflector.js';
+        
+        // Import GSAP (using global script for simplicity with module/UMD mix, or dynamic import)
+        import { gsap } from 'https://cdn.skypack.dev/gsap';
+
+        // --- CONFIG ---
+        const CONF = {
+            colors: {
+                cyan: 0x00f3ff,
+                pink: 0xff00ff,
+                blue: 0x0055ff,
+                orange: 0xff9900,
+                sky: 0x020205
+            }
+        };
+
+        // --- GLOBALS ---
+        let scene, camera, renderer, composer;
+        let clock = new THREE.Clock();
+        let bikes = [];
+        let terrainMat;
+
+        init();
+        animate();
+
+        function init() {
+            // SCENE
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(CONF.colors.sky);
+            scene.fog = new THREE.FogExp2(CONF.colors.sky, 0.008);
+
+            // CAMERA
+            camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 2000);
+            camera.position.set(0, 4, 15);
+            camera.lookAt(0, 1, -20);
+
+            // RENDERER
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.2;
+            document.body.appendChild(renderer.domElement);
+
+            // POST-PROCESSING
+            const renderScene = new RenderPass(scene, camera);
+            const bloomPass = new UnrealBloomPass(
+                new THREE.Vector2(window.innerWidth, window.innerHeight), 
+                1.5, 0.4, 0.85
+            );
+            bloomPass.threshold = 0.1;
+            bloomPass.strength = 1.5;
+            bloomPass.radius = 0.5;
+
+            composer = new EffectComposer(renderer);
+            composer.addPass(renderScene);
+            composer.addPass(bloomPass);
+
+            // LIGHTS
+            const ambient = new THREE.AmbientLight(0xffffff, 0.3);
+            scene.add(ambient);
+            
+            const sunLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            sunLight.position.set(0, 50, -100);
+            scene.add(sunLight);
+
+            const keyLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            keyLight.position.set(-15, 30, 20);
+            scene.add(keyLight);
+
+            // ENVIRONMENT
+            createEnvironment();
+            createCar(); 
+            
+            // BIKES
+            // Left (Blue)
+            const bike1 = new TronBike(scene, CONF.colors.cyan, new THREE.Vector3(-40, 0, 60), new THREE.Vector3(-5, 0, 4));
+            // Right (Orange)
+            const bike2 = new TronBike(scene, CONF.colors.orange, new THREE.Vector3(40, 0, 60), new THREE.Vector3(5, 0, 4));
+            
+            bikes.push(bike1, bike2);
+
+            // RESIZE
+            window.addEventListener('resize', onWindowResize);
+        }
+
+        function createEnvironment() {
+            // FLOOR (Reflector)
+            const roadGeo = new THREE.PlaneGeometry(30, 1000);
+            const roadReflector = new Reflector(roadGeo, {
+                clipBias: 0.003,
+                textureWidth: window.innerWidth * window.devicePixelRatio,
+                textureHeight: window.innerHeight * window.devicePixelRatio,
+                color: 0x101010
+            });
+            roadReflector.rotation.x = -Math.PI / 2;
+            roadReflector.position.set(0, 0, -300);
+            scene.add(roadReflector);
+
+            // TERRAIN (Synthwave Grid)
+            const gridGeo = new THREE.PlaneGeometry(600, 800, 80, 80);
+            gridGeo.rotateX(-Math.PI / 2);
+            gridGeo.translate(0, -1, -300);
+
+            terrainMat = new THREE.ShaderMaterial({
+                uniforms: {
+                    uColor: { value: new THREE.Color(CONF.colors.pink) },
+                    uTime: { value: 0 }
+                },
+                vertexShader: `
+                    varying vec2 vUv;
+                    uniform float uTime;
+                    void main() {
+                        vUv = uv;
+                        vec3 pos = position;
+                        float dist = length(pos.xz);
+                        float wave = sin(pos.z * 0.05 + uTime) * cos(pos.x * 0.05);
+                        if (abs(pos.x) > 20.0) {
+                            pos.y += wave * 5.0 * (abs(pos.x)/100.0);
+                        }
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    varying vec2 vUv;
+                    uniform vec3 uColor;
+                    void main() {
+                        float gridX = step(0.98, fract(vUv.x * 80.0));
+                        float gridY = step(0.98, fract(vUv.y * 80.0));
+                        float grid = max(gridX, gridY);
+                        float alpha = (1.0 - vUv.y) * 0.8; 
+                        vec3 finalColor = uColor * grid * 2.0;
+                        gl_FragColor = vec4(finalColor, alpha * grid);
+                    }
+                `,
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                side: THREE.DoubleSide
+            });
+            scene.add(new THREE.Mesh(gridGeo, terrainMat));
+
+            // SUN
+            const sunGeo = new THREE.CircleGeometry(80, 64);
+            const sunMat = new THREE.MeshBasicMaterial({ color: CONF.colors.pink });
+            const sun = new THREE.Mesh(sunGeo, sunMat);
+            sun.position.set(0, 40, -450);
+            scene.add(sun);
+        }
+
+        function createCar() {
+            const carGroup = new THREE.Group();
+            const body = new THREE.Mesh(
+                new THREE.BoxGeometry(3, 1, 6),
+                new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.1, metalness: 0.9 })
+            );
+            body.position.y = 0.5;
+            carGroup.add(body);
+            
+            const cockpit = new THREE.Mesh(
+                new THREE.BoxGeometry(2.5, 0.8, 3),
+                new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.0, metalness: 1.0 })
+            );
+            cockpit.position.set(0, 1.2, -0.5);
+            carGroup.add(cockpit);
+
+            const line = new THREE.Mesh(
+                new THREE.BoxGeometry(3.1, 0.05, 6.1),
+                new THREE.MeshBasicMaterial({ color: CONF.colors.blue })
+            );
+            line.position.y = 0.5;
+            carGroup.add(line);
+
+            carGroup.position.set(0, 0, 4);
+            scene.add(carGroup);
+        }
+
+        class TronBike {
+            constructor(scene, color, spawnPos, stopPos) {
+                this.scene = scene;
+                this.color = color;
+                this.spawnPos = spawnPos;
+                this.stopPos = stopPos;
+                
+                this.mesh = new THREE.Group();
+                this.trailPoints = [];
+                this.isMoving = false;
+                
+                // Optimized Trail Settings
+                this.trailMaxLen = 80;
+                this.trailWidth = 0.4;
+                
+                this.init();
+            }
+
+            init() {
+                const loader = new GLTFLoader();
+                loader.load('models/tron_bike.glb', (gltf) => {
+                    const model = gltf.scene;
+                    model.scale.set(1.5, 1.5, 1.5);
+                    model.rotation.y = Math.PI; // Face forward
+                    
+                    model.traverse((o) => {
+                        if (o.isMesh) {
+                            if (o.name.includes('Light') || o.name.includes('Rim')) {
+                                o.material = new THREE.MeshBasicMaterial({ color: this.color });
+                                o.material.toneMapped = false;
+                            } else {
+                                o.material = new THREE.MeshStandardMaterial({
+                                    color: 0x050505,
+                                    roughness: 0.2,
+                                    metalness: 0.8
+                                });
+                            }
+                        }
+                    });
+                    this.mesh.add(model);
+                }, undefined, () => {
+                    this.createProceduralBike();
+                });
+
+                this.mesh.position.copy(this.spawnPos);
+                this.scene.add(this.mesh);
+                this.initTrail();
+                this.startSequence();
+            }
+
+            createProceduralBike() {
+                const matBody = new THREE.MeshStandardMaterial({ color: 0x101010, metalness: 0.8, roughness: 0.2 });
+                const matGlow = new THREE.MeshBasicMaterial({ color: this.color });
+                matGlow.toneMapped = false; // Glow pop
+
+                const body = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.8, 3.5), matBody);
+                body.position.y = 0.6;
+                this.mesh.add(body);
+
+                const strip = new THREE.Mesh(new THREE.BoxGeometry(1.25, 0.1, 3.6), matGlow);
+                strip.position.y = 1.0;
+                this.mesh.add(strip);
+
+                const wheelGeo = new THREE.CylinderGeometry(0.8, 0.8, 0.5, 32);
+                wheelGeo.rotateZ(Math.PI/2);
+                
+                [1.4, -1.4].forEach(z => {
+                    const w = new THREE.Mesh(wheelGeo, matBody); 
+                    w.position.set(0, 0.8, z); 
+                    this.mesh.add(w);
+                    
+                    const h = new THREE.Mesh(new THREE.TorusGeometry(0.8, 0.05, 16, 48).rotateY(Math.PI/2), matGlow); 
+                    h.position.set(0, 0.8, z); 
+                    this.mesh.add(h);
+                });
+            }
+
+            initTrail() {
+                this.trailGeo = new THREE.BufferGeometry();
+                const vertexCount = this.trailMaxLen * 2;
+                this.trailGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(vertexCount * 3), 3));
+                
+                const indices = [];
+                for(let i=0; i < this.trailMaxLen - 1; i++) {
+                    const top = i * 2;
+                    const bot = i * 2 + 1;
+                    const nextTop = (i + 1) * 2;
+                    const nextBot = (i + 1) * 2 + 1;
+                    indices.push(top, bot, nextTop);
+                    indices.push(bot, nextBot, nextTop);
+                }
+                this.trailGeo.setIndex(indices);
+
+                this.trailMesh = new THREE.Mesh(this.trailGeo, new THREE.MeshBasicMaterial({ 
+                    color: this.color, 
+                    side: THREE.DoubleSide, 
+                    blending: THREE.AdditiveBlending, 
+                    transparent: true, 
+                    opacity: 0.8 
+                }));
+                this.trailMesh.frustumCulled = false;
+                this.scene.add(this.trailMesh);
+            }
+
+            updateTrail() {
+                if(!this.isMoving) return;
+                
+                const p = this.mesh.position.clone(); 
+                p.z += 1.8; 
+                p.y = 0; 
+
+                this.trailPoints.unshift(p);
+                if(this.trailPoints.length > this.trailMaxLen) this.trailPoints.pop();
+                
+                const arr = this.trailGeo.attributes.position.array;
+                
+                for(let i=0; i<this.trailPoints.length; i++) {
+                    const pt = this.trailPoints[i];
+                    const idx = i * 6;
+                    
+                    arr[idx] = pt.x; arr[idx+1] = pt.y + this.trailWidth; arr[idx+2] = pt.z;
+                    arr[idx+3] = pt.x; arr[idx+4] = pt.y; arr[idx+5] = pt.z;
+                }
+                
+                this.trailGeo.attributes.position.needsUpdate = true;
+                this.trailGeo.setDrawRange(0, Math.max(0, (this.trailPoints.length - 1) * 6));
+            }
+
+            startSequence() {
+                this.isMoving = true;
+                
+                // Entry
+                gsap.to(this.mesh.position, {
+                    x: this.stopPos.x,
+                    z: this.stopPos.z,
+                    duration: 2.5,
+                    ease: "power2.out",
+                    onComplete: () => {
+                        // Idle
+                        gsap.to(this.mesh.position, { y: 0.1, duration: 1, yoyo: true, repeat: 4 });
+                        setTimeout(() => this.exit(), 5000);
+                    }
+                });
+
+                // Bank
+                const startAngle = this.spawnPos.x < 0 ? -0.5 : 0.5;
+                this.mesh.rotation.z = startAngle;
+                gsap.to(this.mesh.rotation, { z: 0, duration: 2.0, ease: "power1.out" });
+            }
+
+            exit() {
+                this.isMoving = true;
+                // Wheelie pop
+                gsap.to(this.mesh.rotation, { x: -0.2, duration: 0.3, yoyo: true, repeat: 1 });
+
+                gsap.to(this.mesh.position, {
+                    z: -1000,
+                    duration: 3.0,
+                    ease: "power3.in",
+                    onComplete: () => this.reset()
+                });
+            }
+
+            reset() {
+                this.trailPoints = [];
+                this.trailGeo.setDrawRange(0, 0);
+                this.mesh.position.copy(this.spawnPos);
+                this.mesh.rotation.set(0, 0, 0); 
+                this.mesh.rotation.y = Math.PI;
+                setTimeout(() => this.startSequence(), 1000);
+            }
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            composer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const time = clock.getElapsedTime();
+            if(terrainMat) terrainMat.uniforms.uTime.value = time;
+            bikes.forEach(b => b.updateTrail());
+            composer.render();
+        }
+    </script>
+</body>
+</html>
